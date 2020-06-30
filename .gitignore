@@ -1,6 +1,35 @@
-assets/*
-!assets/.gitignore
-protected/runtime/*
-!protected/runtime/.gitignore
-protected/data/*.db
-themes/classic/views/
+runtime/*
+
+# phpstorm project files
+.idea
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer vendor dir
+/src/vendor
+
+# composer itself is not needed
+/src/composer.phar
+
+# Mac DS_Store Files
+.DS_Store
+
+/.nuxt
+/web/_nuxt
+/src/composer.lock
+/src/server/api/config/params.php
+/src/server/backend/config/params.php
+/src/server/common/config/params.php
+/src/server/console/config/params.php
+/src/yii_test.bat
+/src/yii_test
+/src/yii
+/logs/nginx/access_office.log
+/logs/nginx/access_api.log
+/logs/nginx/error_front.log
+/logs/nginx/error_office.log
+/logs/nginx/error_api.log
+/logs/nginx/access_front.log
+/src/api/config/params.php
+/src/frontend/package-lock.json
