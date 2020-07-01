@@ -46,9 +46,7 @@ docker logs mp_php // mp_php name of container
 ### Make init migration and fill admin and menus in BD
 
 ```bash
-php init                                                  // To init config files of env
 docker exec -it mp_php /bin/bash                          // Login container
-./yii migrate                                             // Run migrations
 ./yii user/generate-admin && ./yii menu/generate-default  // Generate admin and menu
 exit                                                      // to logout from container
 ```
