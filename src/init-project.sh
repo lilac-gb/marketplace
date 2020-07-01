@@ -53,5 +53,3 @@ case $OS in 'Linux')
     esac
    ;;
 esac
-
-
