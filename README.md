@@ -6,16 +6,6 @@
 git clone git@github.com:lilac-gb/marketplace.git MarketPlace
 ```
 
-## !!! For windows users !!!
-
-if you have errors with file init-project.sh
-
-For fixed process you need to install Notepad++
-
-You need to convert /src/init-project.sh like 
-
-`Edit > EOL Conversion > UNIX/OSX Format`
-
 ### I think you install docker yet
 
 Go to settings of docker and add this folder `MarketPlace` to share project, if you don't do this project will break on start
@@ -77,4 +67,22 @@ Pass: toor
 https://office.marketplace.docker
 Login: admin
 Pass: admin
+```
+
+## !!! For windows users !!!
+
+if you have errors with file init.sh to try fixed it, you need to install Notepad++
+
+Then you need to convert /src/init.sh like 
+
+`Edit > EOL Conversion > UNIX/OSX Format`
+
+Then convert `environments/docker/yii` like this and `init` file
+
+Or run: 
+
+```bash
+awk '{ sub("\r$", ""); print }' init.sh > init2.sh && mv init2.sh init.sh
+awk '{ sub("\r$", ""); print }' init > init2 && mv init2 init
+cd environments/docker && awk '{ sub("\r$", ""); print }' yii > yii2 && mv yii2 yii
 ```
