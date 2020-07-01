@@ -43,10 +43,12 @@ docker logs mp_php // mp_php name of container
 127.0.0.1 api.marketplace.docker
 127.0.0.1 pma.marketplace.docker
 ```
-### Add admin and menus
+### Make init migration and fill admin and menus in BD
 
 ```bash
-docker exec -it mp_php /bin/bash                          //Login container
+php init                                                  // To init config files of env
+docker exec -it mp_php /bin/bash                          // Login container
+./yii migrate                                             // Run migrations
 ./yii user/generate-admin && ./yii menu/generate-default  // Generate admin and menu
 exit                                                      // to logout from container
 ```
