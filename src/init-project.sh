@@ -29,6 +29,8 @@ case "$ENV" in
         echo "$HOST_IP office.marketplace.docker" >> /etc/hosts
         echo "$HOST_IP pma.marketplace.docker" >> /etc/hosts
         wget https://raw.githubusercontent.com/composer/getcomposer.org/1b137f8bf6db3e79a38a5bc45324414a6b1f9df2/web/installer -O - -q | php -- --quiet  > /dev/null
-        ./composer.phar install --no-interaction --prefer-dist --quiet && ./yii migrate <<< "yes" # ./init --env=Docker --overwrite=y &&
+        ./composer.phar install --no-interaction --prefer-dist --quiet
     ;;
 esac
+
+# ./init --env=Docker --overwrite=y && ./yii migrate <<< "yes"
