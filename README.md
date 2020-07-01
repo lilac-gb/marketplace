@@ -8,12 +8,13 @@ git clone git@github.com:lilac-gb/marketplace.git MarketPlace
 
 ## !!! For windows users !!!
 
-if yo have errors with file init-project.sh
+if you have errors with file init-project.sh
 
-For process you need to install Notepad++
+For fixed process you need to install Notepad++
 
-You need to convert /src/init-project.sh like Edit > EOL Conversion > UNIX/OSX Format.
+You need to convert /src/init-project.sh like 
 
+`Edit > EOL Conversion > UNIX/OSX Format`
 
 ### I think you install docker yet
 
