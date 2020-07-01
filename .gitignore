@@ -22,9 +22,9 @@ Thumbs.db
 /src/server/backend/config/params.php
 /src/server/common/config/params.php
 /src/server/console/config/params.php
-#/src/yii_test.bat
-#/src/yii_test
-#/src/yii
+/src/yii_test.bat
+/src/yii_test
+/src/yii
 /src/api/config/params.php
 /src/frontend/package-lock.json
 /src/backend/config/params.php
