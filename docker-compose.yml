@@ -2,7 +2,7 @@ version: '3'
 services:
   frontend:
     container_name: mp_frontend
-    image: node:10.15.1
+    image: node:latest
     command: bash -c "npm install && npm run dev"
     volumes:
       - ./src/frontend:/var/www/html/app
@@ -10,7 +10,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      HOST: 172.0.0.2
+      HOST: 0.0.0.0
     networks:
       - mp
 
