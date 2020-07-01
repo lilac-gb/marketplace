@@ -58,6 +58,12 @@ docker exec -it mp_php /bin/bash      //Login container
 ./yii migrate                         //run all migrations
 ```
 
+### SSL Certificate attach for MAC Users
+
+```bash
+composer sert
+```
+
 ### MySqlAdmin
 
 ```bash
