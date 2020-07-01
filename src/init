@@ -2,9 +2,7 @@
 <?php
 /**
  * Yii Application Initialization Tool
- *
  * In order to run in non-interactive mode:
- *
  * init --env=Development --overwrite=n
  */
 
