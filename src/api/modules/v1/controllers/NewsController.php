@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: artemshmanovsky
- * Date: 04.03.17
- * Time: 19:41
- */
+
 namespace api\modules\v1\controllers;
 use api\components\ActiveController;
 use common\models\Page;

@@ -6,17 +6,12 @@ use Yii;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
-use yii\httpclient\XmlFormatter;
 use yii\web\Response;
+use \yii\rest\ActiveController as BaseActiveController;
+use yii\web\XmlResponseFormatter;
 
-class ActiveController extends \yii\rest\ActiveController
+class ActiveController extends BaseActiveController
 {
-//    public static $urlRule = [
-//        'class' => 'yii\rest\UrlRule',
-//        'pluralize' => false,
-//        'controller' => ['artist'],
-//    ];
-
     public $serializer = 'api\components\Serializer';
 
     public function actions()
@@ -77,7 +72,7 @@ class ActiveController extends \yii\rest\ActiveController
     public function asRawXml($content)
     {
         $response = Yii::$app->response;
-        $formatter = new XmlFormatter();
+        $formatter = new XmlResponseFormatter();
 
         $response->format = Response::FORMAT_RAW;
         $response->content = $content;

@@ -2,8 +2,7 @@
 
 namespace common\components;
 
-//use common\models\History;
-use common\models\MetaTag;
+use v0lume\yii2\metaTags\models\MetaTag;
 use yii;
 
 
@@ -15,21 +14,17 @@ class ActiveRecord extends yii\db\ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
-
-//        History::saveToHistory($this, $insert ? History::ACTION_ADD : History::ACTION_UPDATE);
     }
 
     public function afterDelete()
     {
-//        History::saveToHistory($this, History::ACTION_DELETE);
-
         parent::afterDelete();
     }
 
     public function get_metaTags()
     {
         $model = MetaTag::findOne([
-            'model_id' => $this->model->id,
+            'model_id' => $this->id,
             'model'  => (new \ReflectionClass($this))->getShortName()
         ]);
 

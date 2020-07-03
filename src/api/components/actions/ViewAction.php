@@ -2,7 +2,6 @@
 
 namespace api\components\actions;
 
-use Yii;
 use yii\rest\Action;
 
 class ViewAction extends Action

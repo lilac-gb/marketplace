@@ -63,11 +63,8 @@ return [
                     $response->format = 'sitemap';
                 } elseif (
                     Yii::$app->request->getPathInfo() === 'news.rss'
-                    || Yii::$app->request->getPathInfo() === 'objects.rss'
                     || Yii::$app->request->getPathInfo() === 'ya-news.rss'
-                    || Yii::$app->request->getPathInfo() === 'ya-objects.rss'
                     || Yii::$app->request->getPathInfo() === 'ya-turbo-news.rss'
-                    || Yii::$app->request->getPathInfo() === 'ya-turbo-objects.rss'
                 ) {
                     $response->data = null;
                 } else {

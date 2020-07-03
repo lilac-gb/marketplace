@@ -2,7 +2,6 @@
 
 namespace api\models;
 
-use common\models\MetaTag;
 use yii\caching\DbDependency;
 
 class Page extends \common\models\Page

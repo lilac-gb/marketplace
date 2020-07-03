@@ -3,6 +3,7 @@
 $rules = [];
 
 $controllers = \yii\helpers\FileHelper::findFiles(Yii::getAlias('@api/controllers'), ['recursive' => true]);
+
 foreach($controllers as $path) {
     $className = "\api\controllers\\" . str_replace('.php', '', basename($path));
 

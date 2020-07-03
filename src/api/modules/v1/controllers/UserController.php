@@ -4,12 +4,9 @@ namespace api\modules\v1\controllers;
 use api\components\ActiveController;
 use common\models\forms\LoginForm;
 use Yii;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use api\components\User;
-use yii\web\Response;
-use yii\web\UnauthorizedHttpException;
-use yii\web\UnprocessableEntityHttpException;
+
 
 class UserController extends ActiveController {
     public $modelClass = 'api\models\User';

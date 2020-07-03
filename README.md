@@ -86,3 +86,14 @@ awk '{ sub("\r$", ""); print }' init.sh > init2.sh && mv init2.sh init.sh
 awk '{ sub("\r$", ""); print }' init > init2 && mv init2 init
 cd environments/docker && awk '{ sub("\r$", ""); print }' yii > yii2 && mv yii2 yii
 ```
+
+## INFO
+
+To recive from api request in JSON create URl like this 
+
+`https://api.marketplace.docker/menu?_format=json` 
+
+or send in headers 
+
+`Accept:application/json`
+
