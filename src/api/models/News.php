@@ -5,6 +5,7 @@ namespace api\models;
 use Yii;
 use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 
 class News extends \common\models\News
 {
@@ -25,6 +26,15 @@ class News extends \common\models\News
                     'status' => $this->user->status,
                 ];
             },
+            'coverImages' => function ($model) {
+                /** @var $model News */
+                return [
+                    'preview' => $model->getPreview(),
+                    // 'socImage' => $model->getSocialImage(),
+                    'i600x250' => $model->getNewsCover(),
+                    'i1200x500' => $model->getGalleryCover(),
+                ];
+            },
             'description',
             'views',
             'created_at',
@@ -35,6 +45,30 @@ class News extends \common\models\News
     {
         return [
             '_metaTags',
+            'gallery' => function () {
+                $images = $this->getBehavior('galleryBehavior')->getImages();
+
+                return ArrayHelper::toArray($images, [
+                    'zxbodya\yii2\galleryManager\GalleryImage' => [
+                        'id',
+                        'name',
+                        'description',
+                        'rank',
+                        'original' => function ($model) {
+                            return $model->getUrl('original');
+                        },
+                        'i600x250' => function ($model) {
+                            return $model->getUrl('i600x250');
+                        },
+                        'i1200x500' => function ($model) {
+                            return $model->getUrl('i1200x500');
+                        },
+                        'preview' => function ($model) {
+                            return $model->getUrl('preview');
+                        },
+                    ],
+                ]);
+            },
         ];
     }
 

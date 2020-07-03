@@ -3,6 +3,7 @@
 use backend\widgets\CKEditor;
 // use backend\widgets\MetaTags;
 
+use backend\widgets\GalleryManager;
 use backend\widgets\MetaTags;
 use common\components\ActiveForm;
 use common\models\User;
@@ -38,6 +39,14 @@ $this->title = $model->isNewRecord ? "Создание новости" : 'Обн
     <br>
     <div class="tab-content">
         <div id="info" class="tab-pane fade in active">
+            <div class="photo-block">
+                <?php echo $model->id > 0 ? GalleryManager::widget([
+                    'model' => $model,
+                    'behaviorName' => 'galleryBehavior',
+                    'apiRoute' => 'news/galleryApi',
+                ]) : '<i title="Так как материалу не присвоен ID галлерею нельзя загрузить" class="glyphicon glyphicon-question-sign"></i> 
+                           <b>Фото можно загрузить после сохранения материала</b><br><br>'; ?>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <i title="Время автоматической публикации новости" class="glyphicon glyphicon-question-sign"></i>

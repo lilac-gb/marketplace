@@ -2,6 +2,7 @@
 
 namespace backend\modules\news\controllers;
 
+use zxbodya\yii2\galleryManager\GalleryManagerAction;
 use backend\components\ActiveController;
 use common\models\News;
 use yii\bootstrap\Modal;
@@ -20,6 +21,13 @@ class NewsController extends ActiveController
 
         $actions['update']['afterLoad'] = [$this, 'afterLoad'];
 
+        $actions['galleryApi'] = [
+            'class' => GalleryManagerAction::class,
+            'types' => [
+                'news' => News::class,
+            ],
+        ];
+
         return $actions;
     }
 
@@ -30,7 +38,7 @@ class NewsController extends ActiveController
         $behaviors['access']['rules'] = [
             [
                 'actions' => [
-                    'index', 'delete', 'update', 'set'
+                    'index', 'delete', 'update', 'set', 'galleryApi',
                 ],
                 'allow' => true,
                 'roles' => ['@'],

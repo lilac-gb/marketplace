@@ -2,8 +2,8 @@
 return [
     'domains' => [
         'schema' => 'https',
-        'frontend' => 'art.docker',
-        'cookie' => 'art.docker',
+        'frontend' => 'marketplace.docker',
+        'cookie' => 'marketplace.docker',
     ],
     'jwt' => [
         'secret' => 'bQ9u3lPEDeLMXrkbUi5f=m9K92qx8Uyj2dA8ow6/keca',
