@@ -12,3 +12,6 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+            An event occured in ${{ github.repository }} repository.
+            ${{ github.event_name }}
