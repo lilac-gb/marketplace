@@ -6,9 +6,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@develop
     - name: Telegram Notify
       uses: appleboy/telegram-action@0.0.3
       with:
-        to: -1001314237028
-        token: 1346162031:AAGshVwTvoRpzfJWYLJQnE9koFPDAnwQL5s
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
