@@ -3,7 +3,7 @@
     <b-container>
       <b-row style="min-height:48rem;" class="mt-5">
         <b-col>
-          <h2>Heading</h2>
+          <h2>about</h2>
 
           <p>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et

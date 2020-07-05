@@ -5,6 +5,8 @@ use api\components\ActiveController;
 
 class PageController extends ActiveController
 {
+    //public $enableCsrfValidation = false;
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();

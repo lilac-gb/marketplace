@@ -77,6 +77,8 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./logs:/logs:cached
       - sock_volume:/var/run
+    environment:
+      - "http.cors.allow-origin=*"
     links:
       - php
     depends_on:
