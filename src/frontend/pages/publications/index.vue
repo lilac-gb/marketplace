@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import { appDomen } from '@/shared/constants';
 import PublicationsCard from '@/pages/publications/card';
+import config from "../../config";
 
 export default {
   name: "publications",
@@ -24,7 +24,7 @@ export default {
     }
   },
   async fetch() {
-   let result = await this.$http.$get(`${appDomen}/news?expand=_metaTags`);
+      let result = await this.$http.$get(`${config.api_url}/news?expand=_metaTags`);
    this.publications = result.data.models;
   }
 }

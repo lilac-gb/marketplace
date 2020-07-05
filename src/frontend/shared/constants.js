@@ -1,1 +1,0 @@
-export const appDomen = 'https://api.marketplace.docker';
