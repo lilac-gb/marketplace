@@ -1,0 +1,17 @@
+.mp-container {
+  padding: 0;
+  
+  @media (min-width: 1200px) {
+    max-width: 1180px
+  }
+}
+
+.mp-button {
+  padding: 14px 65px 14px 65px;
+  font-size: $font-size;
+  line-height: 19px;
+}
+
+.mp-input {
+  height: 49px;
+}

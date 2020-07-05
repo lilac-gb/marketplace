@@ -1,5 +1,10 @@
 <template>
-  <b-container class="mt-4 mb-4" id="publications">
+  <b-container class="mt-4 mb-4 mp-container" id="publications">
+    <div class="d-flex flex-row justify-content-between w-100 mb-4">
+      <b-form-input class="mp-input search-field" v-model="searchText" placeholder="Введите название"></b-form-input>
+      <b-button class="background-purple mp-button" @click="$fetch">ПОИСК</b-button>
+      <b-button class="background-purple mp-button">ФИЛЬТР</b-button>
+    </div>
     <div class="publications-grid">
       <publication-card
         v-for="publication in publications"
@@ -11,7 +16,8 @@
 
 <script>
 import PublicationsCard from '@/pages/publications/card';
-import config from "../../config";
+import config from "@/config";
+import { constructUrl } from '@/shared/api';
 
 export default {
   name: "publications",
@@ -20,12 +26,17 @@ export default {
   },
   data() {
     return {
-      publications: []
+      publications: [],
+      searchText: null
     }
   },
   async fetch() {
-      let result = await this.$http.$get(`${config.api_url}/news?expand=_metaTags`);
-   this.publications = result.data.models;
+    let params = {expand: '_metaTags'};
+    if (this.searchText) {
+      params['News[name]'] = this.searchText;
+    }
+    let result = await this.$http.$get(constructUrl(`${config.api_url}/news`, params));
+    this.publications = result.data.models;
   }
 }
 </script>
@@ -38,6 +49,10 @@ export default {
       grid-template-rows: auto;
       grid-column-gap: 20px;
       grid-row-gap: 20px;
+    }
+
+    .search-field {
+      width: 760px;
     }
   }
 </style>

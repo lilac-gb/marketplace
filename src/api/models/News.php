@@ -93,6 +93,11 @@ class News extends \common\models\News
 
         $query->andFilterWhere(['status' => self::STATUS_PUBLISHED]);
 
+        if (isset($params)) {
+            $this->load($params);
+        }
+        $query->andFilterWhere(['like', 'LOWER(name)', $this->name]);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [

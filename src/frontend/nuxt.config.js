@@ -43,12 +43,18 @@ export default {
     ** Nuxt.js modules
     */
     modules: [
-        // Doc: https://axios.nuxtjs.org/usage
-        '@nuxtjs/axios',
-        '@nuxtjs/router',
-        'bootstrap-vue/nuxt',
-        '@nuxt/http'
+      // Doc: https://axios.nuxtjs.org/usage
+      '@nuxtjs/axios',
+      '@nuxtjs/router',
+      'bootstrap-vue/nuxt',
+      '@nuxt/http',
+      '@nuxtjs/style-resources',
     ],
+    styleResources: {
+      scss: [
+        'assets/scss/main.scss',
+      ]
+    },
     /*
     ** Axios module configuration
     ** See https://axios.nuxtjs.org/options
