@@ -3,7 +3,7 @@ const {join} = require('path');
 const {copySync, removeSync} = require('fs-extra');
 
 export default {
-    mode: 'spa',
+    mode: 'universal',
     srcDir: __dirname,
     env: {
         apiUrl: process.env.API_URL || process.env.APP_URL + '/api',
@@ -47,13 +47,16 @@ export default {
         '@nuxtjs/axios',
         '@nuxtjs/router',
         'bootstrap-vue/nuxt',
-        '@nuxt/http'
+        '@nuxt/http',
+        '@nuxtjs/proxy'
     ],
     /*
     ** Axios module configuration
     ** See https://axios.nuxtjs.org/options
     */
-    axios: {},
+    axios: {
+      proxy: true
+    },
     /*
     ** Build configuration
     */
