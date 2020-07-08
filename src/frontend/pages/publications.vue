@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import PublicationsCard from '@/pages/publications/card';
+import PublicationsCard from '@/components/publications/card';
 import config from "@/config";
 import { constructUrl } from '@/shared/api';
 
