@@ -8,7 +8,7 @@ use yii\bootstrap\Modal;
 use zxbodya\yii2\galleryManager\GalleryManagerAction;
 
 /**
- * AdsController implements the CRUD actions for Ads model.
+ * AdsController implements the CRUD actions for Ads model
  */
 class AdController extends ActiveController
 {
