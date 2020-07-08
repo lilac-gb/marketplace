@@ -26,7 +26,6 @@ Thumbs.db
 /src/yii_test
 /src/yii
 /src/api/config/params.php
-/src/frontend/package-lock.json
 /src/backend/config/params.php
 /src/common/config/params.php
 /src/console/config/params.php
