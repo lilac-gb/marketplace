@@ -12,4 +12,4 @@ jobs:
       with:
         to: ${{ secrets.CHAT }}
         token: ${{ secrets.TOKEN }}
-        args: An event occured in ${{ github.repository }} repository. ${{ github.event_name }}
+        args: User ${{github.actor}} in ${{ github.repository }} repository. Make ${{ github.event_name }}. Job ${{github.job}}
