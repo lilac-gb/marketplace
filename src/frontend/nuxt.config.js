@@ -69,7 +69,17 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    proxy: true,
+  },
+  proxy: {
+    '/api/': {
+      target:
+        'https://api.marketplaсe.docker/ (https://api.xn--marketplae-kwi.docker/)',
+      pathRewrite: { '^/api/': '' },
+      changeOrigin: true,
+    },
+  },
   /*
    ** Build configuration
    */
