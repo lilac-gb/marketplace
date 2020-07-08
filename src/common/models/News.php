@@ -5,6 +5,7 @@ namespace common\models;
 use common\components\ActiveRecord;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
+use yii\behaviors\SluggableBehavior;
 use zxbodya\yii2\galleryManager\GalleryBehavior;
 use himiklab\sitemap\behaviors\SitemapBehavior;
 use v0lume\yii2\metaTags\MetaTagBehavior;
@@ -54,7 +55,6 @@ class News extends ActiveRecord
         return [
             [['status'], 'required'],
             [['name', 'description', 'anons'], 'string'],
-            ['url', 'unique', 'message' => 'Такой URL уже есть'],
             [[
                 'views', 'status',
                 'updated_at',
@@ -91,6 +91,12 @@ class News extends ActiveRecord
         return [
             'MetaTag' => ['class' => MetaTagBehavior::class],
             'TimeStamp' => ['class' => TimestampBehavior::class],
+            [
+                'class' => SluggableBehavior::class,
+                'attribute' => 'name',
+                'slugAttribute' => 'url',
+                'uniqueSlugGenerator' => '-',
+            ],
             'galleryBehavior' => [
                 'class' => GalleryBehavior::class,
                 'type' => 'news',
@@ -160,7 +166,7 @@ class News extends ActiveRecord
             date('Y', $this->created_at) . '/' .
             date('m', $this->created_at) . '/' .
             date('d', $this->created_at) . '/' .
-            ($this->url ? $this->url : $this->id);
+            ($this->url ?? $this->id);
 
         return $headUrl . $backUrl;
     }
