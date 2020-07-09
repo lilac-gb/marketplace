@@ -1,15 +1,28 @@
 name: telegram message
-on: [push]
+on: [push, pull_request]
 jobs:
 
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Telegram Notify
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.CHAT }}
-        token: ${{ secrets.TOKEN }}
-        args: An event occured in ${{ github.repository }} repository. ${{ github.event_name }}
+     - uses: actions/checkout@master
+    
+    #Request
+     - name: Telegram Notify request
+       if: ${{ github.event_name == 'pull_request' }}
+       uses: appleboy/telegram-action@master
+       with:
+         to: ${{ secrets.CHAT }}
+         token: ${{ secrets.TOKEN }}
+         args: User ${{github.actor}} in ${{ github.repository }} repository. Make ${{ github.event_name }}. Job ${{github.job}} URL - "${{ github.event.pull_request.title }} --> ${{ github.event.pull_request.html_url }}"
+    
+    #Push  
+     - name: Telegram Notify push
+       if: ${{ github.event_name == 'push' }}
+       uses: appleboy/telegram-action@master
+       with:
+         to: ${{ secrets.CHAT }}
+         token: ${{ secrets.TOKEN }}
+         if: ${{ github.event_name == 'push'}}
+         args: User ${{github.actor}} in ${{ github.repository }} repository. Make ${{ github.event_name }}. Job ${{github.job}} URL - "${{ github.event.head_commit.message }} --> ${{ github.event.head_commit.url }}"

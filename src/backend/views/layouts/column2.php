@@ -1,10 +1,29 @@
 <?php
 
+use common\models\Ad;
+use common\models\Order;
 use yii\bootstrap\Nav;
 use yii\widgets\Breadcrumbs;
 use yii\helpers\Url;
 
+$ads = count(Ad::findAll(['status' => 2]));
+$orders = count(Order::findAll(['status' => Order::STATUS_PROCESS]));
+
 $menuItems = [
+    [
+        'label' => (@($ads != 0) ? '<i class="ic ic-bullhorn"></i><i class="count">' . $ads . '</i>' : '<i class="ic ic-bullhorn"></i>') . ' <span class="sm-hidden">ОБЪЯВЛЕНИЯ</span>',
+        'encode' => false,
+        'url' => '/ad',
+        'active' => Yii::$app->controller->module->id == "ad",
+        'visible' => Yii::$app->user->can('backend.ads'),
+    ],
+    [
+        'label' => (@($orders != 0) ? '<i class="ic ic-briefcase"></i><i class="count">' . $orders . '</i>' : '<i class="ic ic-briefcase"></i>') . ' <span class="sm-hidden">ЗАКАЗЫ</span>',
+        'encode' => false,
+        'url' => '/orders',
+        'active' => Yii::$app->controller->module->id == "orders",
+        'visible' => Yii::$app->user->can('backend.orders.order') || Yii::$app->user->can('backend.orders.publication-orders'),
+    ],
     [
         'label' => '<i class="ic ic-more-items"></i><span class="sm-hidden">КОНТЕНТ</span>',
         'encode' => false,
