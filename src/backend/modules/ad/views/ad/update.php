@@ -1,5 +1,6 @@
 <?php
 
+use backend\widgets\GalleryManager;
 use common\components\ActiveForm;
 use common\models\AdSection;
 use common\models\AdType;
@@ -27,8 +28,16 @@ $this->params['breadcrumbs'][] = 'Update';
     'enableClientValidation' => false,
 ]); ?>
     <div class="modal-body">
-
         <div class="row">
+            <div class="photo-block">
+                <?php echo $model->id > 0 ? GalleryManager::widget([
+                    'model' => $model,
+                    'id' => 'gallery-ad',
+                    'behaviorName' => 'galleryBehavior',
+                    'apiRoute' => 'ad/galleryApi',
+                ]) : '<i title="Так как материалу не присвоен ID галлерею нельзя загрузить" class="glyphicon glyphicon-question-sign"></i> 
+                           <b>Фото можно загрузить после сохранения материала</b><br><br>'; ?>
+            </div>
             <div class="col-md-6">
                 <i title="Раздел по которому относится объявление"
                    class="glyphicon glyphicon-question-sign"></i>

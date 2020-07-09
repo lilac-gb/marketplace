@@ -24,7 +24,7 @@ class AdController extends ActiveController
         $actions['galleryApi'] = [
             'class' => GalleryManagerAction::class,
             'types' => [
-                'ads' => Ad::class,
+                'ad' => Ad::class,
             ],
         ];
 

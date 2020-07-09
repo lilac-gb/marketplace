@@ -128,7 +128,7 @@ class Ad extends ActiveRecord
             'TimeStamp' => ['class' => TimestampBehavior::class],
             'galleryBehavior' => [
                 'class' => GalleryBehavior::class,
-                'type' => 'ads',
+                'type' => 'ad',
                 'extension' => 'jpg',
                 // image dimmentions for preview in widget
                 'previewWidth' => 300,
@@ -174,8 +174,6 @@ class Ad extends ActiveRecord
 
     public function getSections($section_id = 0)
     {
-        // TODO Rebuild this sheet
-        $lang = Yii::$app->language;
         $adName = [
             self::GOODS_SECTION => 'Товары',
             self::SERVICE_SECTION => 'Услуги',
@@ -189,8 +187,6 @@ class Ad extends ActiveRecord
 
     public function getTypes($type_id = 0)
     {
-        // TODO Rebuild this sheet
-        $lang = Yii::$app->language;
         $adName = [
             self::SERVICE_GOODS_TYPE => 'Услуги общие',
             self::SERVICE_TYPE => 'Услуги к товарам',
