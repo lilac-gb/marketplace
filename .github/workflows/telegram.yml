@@ -19,7 +19,7 @@ jobs:
     
     #Push  
      - name: Telegram Notify push
-       if: ${{ github.event_name == 'pull_request' }}
+       if: ${{ github.event_name == 'push' }}
        uses: appleboy/telegram-action@master
        with:
          to: ${{ secrets.CHAT }}
