@@ -24,17 +24,17 @@
 </template>
 
 <script>
+import config from '@/config/config';
+
 export default {
   name: 'Header',
   async fetch() {
-    const header = await this.$axios.$get(
-      'https://api.marketplace.docker/menu/header',
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      }
-    );
+    const header = await this.$axios.$get(`${config.api_url}/menu/header`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
     this.menu = header.data.children;
   },
   data: () => ({

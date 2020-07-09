@@ -58,17 +58,16 @@
 </template>
 
 <script>
+import config from '@/config/config';
 export default {
   name: 'Footer',
   async fetch() {
-    const footer = await this.$http.$get(
-      'https://api.marketplace.docker/menu/footer',
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      }
-    );
+    const footer = await this.$http.$get(`${config.api_url}/menu/footer`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
     this.menu = footer.data.children;
   },
   data: () => ({
