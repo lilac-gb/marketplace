@@ -1,3 +1,22 @@
 @import "variables";
 @import "color";
 @import "components";
+@import "fonts";
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+}
+
+h1, h2, h3, h4, ul, p, {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-size: $font-size;
+  font-family: Roboto Regular, sans-serif;
+}
