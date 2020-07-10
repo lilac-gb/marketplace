@@ -17,7 +17,10 @@
             </ul>
           </nav>
         </b-col>
-        <b-col md="6"></b-col>
+        <b-col md="6" class="d-flex justify-content-end">
+          <MiniCart />
+          <User />
+        </b-col>
       </b-row>
     </b-container>
   </header>
@@ -25,9 +28,15 @@
 
 <script>
 import config from '@/config/config';
+import User from '@/components/user/User';
+import MiniCart from '@/components/Cart/MiniCart';
 
 export default {
   name: 'Header',
+  components: {
+    User,
+    MiniCart,
+  },
   async fetch() {
     const header = await this.$axios.$get(`${config.api_url}/menu/header`, {
       headers: {
