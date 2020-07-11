@@ -8,6 +8,7 @@ class UserController extends \api\modules\v1\controllers\UserController {
         'pluralize' => false,
         'controller' => ['user', 'v1/user'],
         'extraPatterns' => [
+            'GET me' => 'me',
             'OPTIONS' => 'options',
             'OPTIONS {model}/{model_id}' => 'options',
             'OPTIONS {nickname}' => 'options',
