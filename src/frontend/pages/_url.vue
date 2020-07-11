@@ -3,8 +3,11 @@
     <b-container>
       <b-row style="min-height:48rem;" class="mt-5">
         <b-col>
-          <h1>Link {{$route.params.url}}</h1>
-          <h1>Link {{ link }}</h1>
+          <!--          TODO: добавить хлебных крошек, см. ISS-21 -->
+          <h1>{{ name }}</h1>
+
+          <p v-html="description"></p>
+
         </b-col>
       </b-row>
     </b-container>
@@ -12,20 +15,39 @@
 </template>
 
 <script>
+  import config from "../config";
+
   export default {
-    title: "${$route.params.url}",
-    data: () => ({
-      link: 'rules'
-    }),
-    async mounted() {
-      //this.link = await this.$axios.$get(`https://api.marketplace.docker/rules?expand=_metaTags`)
-      //let response = await this.$axios.$get(`https://jsonplaceholder.typicode.com/posts?_limit=1`)
-      //this.link = response[0]
-      console.log(this.link)
+    async fetch() {
+      const response = await this.$axios.$get(`${config.api_url}/page/${this.$route.params.url}?expand=_metaTags&_format=json`)
+      const {name, description, _metaTags} = response.data
+      this.name = name
+      this.description = description
+      this.metaTags = _metaTags
     },
-    // validate({params}) {
-    //   return true //  /^\d+$/.test(params.id) например только цифры
-    // }
+    data: () => ({
+      link: '',
+      name: '',
+      description: '',
+      metaTags: {}
+    }),
+    head() {
+
+      return {
+        title: this.metaTags.title,
+        meta: [
+          {
+            description: this.metaTags.description,
+            keywords: this.metaTags.keywords
+          }
+        ],
+      };
+    },
+    // TODO: сделать валидацию вводимых роутов
+    validate({params}) {
+      console.log(/^\w+$/.test(params.url))
+      return true
+    }
   }
 </script>
 
