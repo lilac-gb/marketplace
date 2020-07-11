@@ -4,6 +4,7 @@ namespace common\services;
 
 use common\models\Ad;
 use common\models\Setting;
+use Elasticsearch\ClientBuilder;
 use Yii;
 
 class AdService

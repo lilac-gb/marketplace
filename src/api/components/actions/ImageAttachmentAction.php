@@ -2,9 +2,10 @@
 
 namespace api\components\actions;
 
+use \zxbodya\yii2\imageAttachment\ImageAttachmentAction as ImageAction;
 use Yii;
 
-class ImageAttachmentAction extends \zxbodya\yii2\imageAttachment\ImageAttachmentAction
+class ImageAttachmentAction extends ImageAction
 {
     public function run($type, $behavior, $id)
     {

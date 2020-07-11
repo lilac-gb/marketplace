@@ -13,6 +13,7 @@ class User extends \common\models\User {
             'last_name',
             'email',
             'created_at',
+            'role',
         ];
     }
     public static function findIdentityByAccessToken($token, $type = null) {

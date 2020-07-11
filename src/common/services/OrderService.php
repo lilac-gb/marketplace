@@ -11,11 +11,11 @@ class OrderService
 {
     public static function sendNotificationEmail(Order $model)
     {
-        $sender_email = Setting::getValue('sender_email');
+        $sender_email = Setting::findOne(['code' => 'sender_email', 'status' => 0]);
         $link = Yii::$app->urlManager->createAbsoluteUrl(['orders/order/update', 'id' => $model->id]);
 
         return EmailService::sendWithView(
-            $sender_email,
+            $sender_email->value,
             'Уведомление о заказе',
             'order/notification-new',
             ['model' => $model, 'link' => $link]
