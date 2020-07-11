@@ -3,7 +3,7 @@ const {join} = require('path');
 const {copySync, removeSync} = require('fs-extra');
 
 export default {
-    mode: 'universal',
+    mode: 'spa',
     srcDir: __dirname,
     env: {
         apiUrl: process.env.API_URL || process.env.APP_URL + '/api',
@@ -45,7 +45,7 @@ export default {
     modules: [
         // Doc: https://axios.nuxtjs.org/usage
         '@nuxtjs/axios',
-        '@nuxtjs/router',
+        //'@nuxtjs/router',
         'bootstrap-vue/nuxt',
         '@nuxt/http',
         '@nuxtjs/proxy'
@@ -56,6 +56,13 @@ export default {
     */
     axios: {
       proxy: true
+    },
+    proxy: {
+      '/api/': {
+        target: 'https://api.marketplaсe.docker/ (https://api.xn--marketplae-kwi.docker/)',
+        pathRewrite: {'^/api/': ''},
+        changeOrigin: true
+      }
     },
     /*
     ** Build configuration
