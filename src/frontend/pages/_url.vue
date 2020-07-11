@@ -45,8 +45,7 @@
     },
     // TODO: сделать валидацию вводимых роутов
     validate({params}) {
-      console.log(/^\w+$/.test(params.url))
-      return true
+      return /^\w+$/.test(params.url)
     }
   }
 </script>
