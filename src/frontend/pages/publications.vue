@@ -1,7 +1,10 @@
 <template>
-  <b-container class="mt-4 mb-4 mp-container" id="publications">
+  <b-container id="publications" class="mt-4 mb-4 mp-container">
     <div class="d-flex flex-row justify-content-between w-100 mb-4">
-      <b-form-input class="mp-input search-field" v-model="searchText" placeholder="Введите название"></b-form-input>
+      <b-form-input
+        v-model="searchText"
+        class="mp-input search-field"
+        placeholder="Введите название"/>
       <b-button class="background-purple mp-button-purple" @click="$fetch">ПОИСК</b-button>
       <b-button class="background-purple mp-button-purple">ФИЛЬТР</b-button>
     </div>
@@ -14,10 +17,14 @@
     </div>
 
     <div class="mb-4 mt-4 d-flex justify-content-center">
-      <b-link class="background-white text-purple mp-button-white mr-4 page-link" @click="fetchMoreItems">ЗАГРУЗИТЬ ЕЩЕ</b-link>
+      <b-link
+        class="background-white text-purple mp-button-white mr-4 page-link"
+        @click="fetchMoreItems">
+        ЗАГРУЗИТЬ ЕЩЕ
+      </b-link>
       <b-pagination
-        class="mp-pagination"
         v-model="currentPage"
+        class="mp-pagination"
         :per-page="perPage"
         :total-rows="totalCount"
         first-number
@@ -30,13 +37,31 @@
 
 <script>
 import PublicationsCard from '@/components/publications/card';
-import config from "@/config";
+import config from '@/config';
 import { constructUrl } from '@/shared/api';
 
 export default {
-  name: "publications",
+  name: 'Publications',
   components: {
-    'publication-card': PublicationsCard
+    'publication-card': PublicationsCard,
+  },
+  async fetch() {
+    let params = {
+      expand: '_metaTags',
+      page: this.currentPage,
+      pageSize: this.perPage,
+    };
+    if (this.searchText) {
+      params['News[name]'] = this.searchText;
+    }
+    let result = await this.$http.$get(
+      constructUrl(`${config.api_url}/news`, params)
+    );
+    this.publications = result.data.models;
+    this.currentPage = result.data._meta.currentPage;
+    this.pageCount = result.data._meta.pageCount;
+    this.perPage = result.data._meta.perPage;
+    this.totalCount = result.data._meta.totalCount;
   },
   data() {
     return {
@@ -45,42 +70,30 @@ export default {
       currentPage: 1,
       pageCount: 1,
       perPage: 12,
-      totalCount: null
-    }
-  },
-  async fetch(add = false) {
-    let params = {expand: '_metaTags', page: this.currentPage, pageSize: this.perPage};
-    if (this.searchText) {
-      params['News[name]'] = this.searchText;
-    }
-    let result = await this.$http.$get(constructUrl(`${config.api_url}/news`, params));
-    this.publications = result.data.models;
-    this.currentPage = result.data._meta.currentPage;
-    this.pageCount = result.data._meta.pageCount;
-    this.perPage = result.data._meta.perPage;
-    this.totalCount = result.data._meta.totalCount;
+      totalCount: null,
+    };
   },
   methods: {
     fetchMoreItems() {
       this.perPage += 12;
       this.$fetch();
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-  #publications {
-    .publications-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 380px);
-      grid-template-rows: auto;
-      grid-column-gap: 20px;
-      grid-row-gap: 20px;
-    }
-
-    .search-field {
-      width: 760px;
-    }
+#publications {
+  .publications-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 380px);
+    grid-template-rows: auto;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
   }
+
+  .search-field {
+    width: 760px;
+  }
+}
 </style>
