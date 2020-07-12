@@ -2,10 +2,10 @@
 /** @var $model \common\models\Order */
 ?>
 
-<tr style="text-align: center;">
+<!--<tr style="text-align: center;">
     <td>
         <div style="
-                background-image: url('<?= Yii::$app->params['domainFrontend'] ?>/img/mail/email-fon.jpg');
+                background-image: url('<? /*= Yii::$app->params['domainFrontend'] */ ?>/img/mail/email-fon.jpg');
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: center;
@@ -13,7 +13,7 @@
                 ">
         </div>
     </td>
-</tr>
+</tr>-->
 <tr>
     <td style="text-align: center; background-color: #ecf0f1;">
         <h3 style="text-transform:uppercase;margin:10px;padding:10px">
@@ -26,7 +26,7 @@
         <h3>Мы получили от Вас новый заказ. В ближайшее время мы рассмотрим его</h3>
         <h4>Краткая информация:</h4>
         <b>Номер заявки:</b> <?= $model->id ?>
-        <br><b>Дата публикации:</b> <?= date("d.m.Y H:i:s", $model->time_create) ?>
+        <br><b>Дата публикации:</b> <?= date("d.m.Y H:i:s", $model->created_at) ?>
         <br><b>Email:</b> <?= $model->email ?>
         <br><b>Телефон:</b> <?= $model->phone ?>
         <br><b>Адрес:</b> <?= $model->address ?>
