@@ -2,35 +2,49 @@
 namespace common\models;
 
 use common\components\ActiveRecord;
+use Imagine\Image\Box;
+use Imagine\Image\ImageInterface;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
+use zxbodya\yii2\imageAttachment\ImageAttachmentBehavior;
 
 /**
  * User model
  *
  * @property integer $id
- * @property string $username
- * @property string $first_name
- * @property string $last_name
- * @property string $password_hash
- * @property string $password_reset_token
- * @property string $verification_token
- * @property string $email
- * @property string $auth_key
+ * @property string  $username
+ * @property string  $first_name
+ * @property string  $last_name
+ * @property string  $password_hash
+ * @property string  $password_reset_token
+ * @property string  $verification_token
+ * @property string  $confirmation_secret
+ * @property string  $role
+ * @property string  $email
+ * @property string  $auth_key
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
- * @property string $password write-only password
+ * @property string  $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface
 {
     public $password;
 
-    const STATUS_DELETED = -1;
+    const SCENARIO_SIGN_UP = 'signup';
+    const SCENARIO_LOGIN = 'login';
+    const SCENARIO_CHANGE_PASSWORD = 'change-password';
+
+    const ROLE_ADMIN = "admin";
+    const ROLE_GUEST = "guest";
+    const ROLE_USER = "user";
+
     const STATUS_INACTIVE = 0;
+    const STATUS_EMAIL_NC = 2;
     const STATUS_ACTIVE = 1;
+    const STATUS_DELETED = -1;
 
     /**
      * {@inheritdoc}
@@ -46,7 +60,28 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            [
+                'class' => TimestampBehavior::class,
+            ],
+            'avatarBehavior' => [
+                'class' => ImageAttachmentBehavior::class,
+                'type' => 'user',
+                'previewWidth' => 400,
+                'previewHeight' => 200,
+                'extension' => 'jpg',
+                'directory' => Yii::getAlias('@frontend') . '/uploads/users',
+                'url' => Yii::$app->params['domainFrontend'] . '/uploads/users',
+                'versions' => [
+                    'i300x300' => function ($img) {
+                        $width = 300;
+                        $height = 300;
+
+                        return $img
+                            ->copy()
+                            ->thumbnail(new Box($width, $height), ImageInterface::THUMBNAIL_OUTBOUND);
+                    },
+                ],
+            ],
         ];
     }
 
@@ -56,16 +91,34 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'last_name', 'first_name'], 'string'],
             ['username', 'unique', 'message' => 'Такой никнейм уже есть'],
             [[
                 'password_hash', 'password_reset_token', 'verification_token',
+                'username', 'last_name', 'first_name', 'confirmation_secret', 'role',
                 'email', 'auth_key', 'password'
             ], 'string'],
             [['created_at', 'updated_at'], 'integer'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['status', 'in', 'range' => [
+                self::STATUS_ACTIVE,
+                self::STATUS_INACTIVE,
+                self::STATUS_DELETED,
+                self::STATUS_EMAIL_NC,
+            ]],
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios = array_merge($scenarios, [
+            self::SCENARIO_SIGN_UP => ['name', 'email'],
+            self::SCENARIO_CHANGE_PASSWORD => ['password'],
+            self::SCENARIO_LOGIN => ['name', 'email'],
+        ]);
+
+        return $scenarios;
     }
 
     public function attributeLabels()
@@ -182,6 +235,11 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->getPrimaryKey();
     }
 
+    public function getFullName()
+    {
+        return $this->first_name . (!empty($this->last_name) ? ' ' . $this->last_name : '');
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -246,6 +304,17 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function getAvatar($version = 'i300x300')
+    {
+        $result = '/img/no-photo.jpg';
+
+        if ($this->getBehavior('avatarBehavior')->hasImage()) {
+            $result = $this->getBehavior('avatarBehavior')->getUrl($version);
+        }
+
+        return $result;
     }
 
     public static function list($prompt = false)
