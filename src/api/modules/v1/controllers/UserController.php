@@ -79,22 +79,22 @@ class UserController extends ActiveController {
             throw new ForbiddenHttpException();
         }
 
-        $cookies = Yii::$app->response->cookies;
         $token = (string)Yii::$app->user->refreshToken();
 
         $cookie = new Cookie([
             'name' => 'token',
             'value' => $token,
-            'domain' => Yii::$app->params['domainFrontend']['cookie'],
+            'domain' => Yii::$app->params['domainFrontend'],
             'secure' => true,
         ]);
 
-        $cookies->add($cookie);
-
         $form = new LoginForm();
 
-        if ($form->load(Yii::$app->request->post(), '') && $form->login()) {
-            return Yii::$app->user->identity;
+        if ($form->load(Yii::$app->request->post('data'), '') && $form->login()) {
+            return [
+                'user' => Yii::$app->user->identity,
+                'cookie' => $cookie,
+            ];
         }
 
         return $form;
@@ -157,7 +157,7 @@ class UserController extends ActiveController {
         $model = new User();
         $model->scenario = User::SCENARIO_SIGN_UP;
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post('data'))) {
 
             if (Yii::$app->request->isAjax && isset($_POST['ajax'])) {
                 Yii::$app->response->format = 'json';

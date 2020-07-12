@@ -34,6 +34,7 @@ class User extends ActiveRecord implements IdentityInterface
     public $password;
 
     const SCENARIO_SIGN_UP = 'signup';
+    const SCENARIO_LOGIN = 'login';
     const SCENARIO_CHANGE_PASSWORD = 'change-password';
 
     const ROLE_ADMIN = "admin";
@@ -41,9 +42,9 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_USER = "user";
 
     const STATUS_INACTIVE = 0;
-    const STATUS_EMAIL_NC = 1;
-    const STATUS_ACTIVE = 10;
-    const STATUS_DELETED = 20;
+    const STATUS_EMAIL_NC = 2;
+    const STATUS_ACTIVE = 1;
+    const STATUS_DELETED = -1;
 
     /**
      * {@inheritdoc}
@@ -114,6 +115,7 @@ class User extends ActiveRecord implements IdentityInterface
         $scenarios = array_merge($scenarios, [
             self::SCENARIO_SIGN_UP => ['name', 'email'],
             self::SCENARIO_CHANGE_PASSWORD => ['password'],
+            self::SCENARIO_LOGIN => ['name', 'email'],
         ]);
 
         return $scenarios;
