@@ -11,7 +11,9 @@
     "lint": "eslint --fix --ext .js,.vue ./"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.1",
     "@fortawesome/free-brands-svg-icons": "^5.13.1",
+    "@fortawesome/free-solid-svg-icons": "^5.13.1",
     "@nuxt/http": "^0.5.7",
     "@nuxtjs/axios": "^5.11.0",
     "@nuxtjs/pwa": "^3.0.0-0",
