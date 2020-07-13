@@ -11,8 +11,8 @@
     <b-collapse id="filter-collapse" class="mt-2">
       <filter-card>
         <div class="d-flex flex-row sorting-controls">
-          <sorting-button class="ml-0 mr-3" text="По дате"/>
-          <sorting-button text="По просмотрам"/>
+          <sorting-button class="ml-0 mr-3" text="По дате" @changed="sortByDate"/>
+          <sorting-button text="По просмотрам" @changed="sortByViews"/>
         </div>
       </filter-card>
     </b-collapse>
@@ -49,6 +49,7 @@ import CardFilter from "@/components/CardFilter";
 import SortingButton from "@/components/SortingButton";
 import config from '@/config';
 import { constructUrl } from '@/shared/api';
+import { NewsModel, SortDirection } from '@/shared/constants';
 
 export default {
   name: 'Publications',
@@ -62,6 +63,8 @@ export default {
       expand: '_metaTags',
       page: this.currentPage,
       pageSize: this.perPage,
+      sortBy: this.sortBy,
+      sortDesc: this.sortDesc,
     };
     if (this.searchText) {
       params['News[name]'] = this.searchText;
@@ -83,6 +86,8 @@ export default {
       pageCount: 1,
       perPage: 12,
       totalCount: null,
+      sortBy: NewsModel.CREATED_AT,
+      sortDesc: SortDirection.ASK,
     };
   },
   methods: {
@@ -90,6 +95,16 @@ export default {
       this.perPage += 12;
       this.$fetch();
     },
+    sortByDate(direction) {
+      this.sortBy = NewsModel.CREATED_AT;
+      this.sortDesc = direction;
+      this.$fetch();
+    },
+    sortByViews(direction) {
+      this.sortBy = NewsModel.VIEWS;
+      this.sortDesc = direction;
+      this.$fetch();
+    }
   },
 };
 </script>

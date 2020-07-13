@@ -98,13 +98,14 @@ class News extends \common\models\News
         }
         $query->andFilterWhere(['like', 'LOWER(name)', $this->name]);
 
+        if (isset($params['sortBy']) && isset($params['sortDesc'])) {
+            $sortBy = $params['sortBy'];
+            $sortDesc = $params['sortDesc'];
+            $query->orderBy("{$sortBy} {$sortDesc}");
+        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC,
-                ],
-            ],
             'pagination' => [
                 'pageSize' => Yii::$app->request->get('pageSize',
                     Yii::$app->cache->get(self::class . '_pageSize') ?
