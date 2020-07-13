@@ -10,7 +10,7 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
-    public $username;
+    public $email;
     public $password;
 
     private $_user;
@@ -23,6 +23,7 @@ class LoginForm extends Model
     {
         return [
             [['email', 'password'], 'required'],
+            ['email', 'email'],
             ['password', 'validatePassword'],
         ];
     }
@@ -59,7 +60,7 @@ class LoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findOne(['email' => $this->email]);
+            $this->_user = User::findOne(['email' => $this->email, 'status' => User::STATUS_ACTIVE]);
         }
 
         return $this->_user;
