@@ -3,10 +3,12 @@
     href="#"
     @click.prevent="changeDirection"
     class="sort-button">
-    <div>
+    <div class="d-flex flex-row">
       {{ text }}
-      <font-awesome-icon :icon="['fas', 'chevron-down']" :class="downDisabled"/>
-      <font-awesome-icon :icon="['fas', 'chevron-up']" :class="upDisabled"/>
+      <div class="d-flex flex-row arrow-container">
+        <font-awesome-icon :icon="['fas', 'chevron-down']" :class="downDisabled"/>
+        <font-awesome-icon :icon="['fas', 'chevron-up']" :class="upDisabled"/>
+      </div>
     </div>
   </b-link>
 </template>
@@ -48,15 +50,17 @@ export default {
   line-height: 19px;
   color: $black;
   text-decoration: none;
+  margin: 2px 5px 2px 5px;
 
-  div {
+  .arrow-container {
     position: relative;
-    width: fit-content;
+    width: 23px;
+    margin-left: 3px;
 
     .fa-chevron-up {
       position: absolute;
       top: 1px;
-      right: -12px;
+      right: -2px;
     }
   }
 }

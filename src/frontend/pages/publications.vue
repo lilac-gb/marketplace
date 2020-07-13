@@ -10,8 +10,10 @@
     </div>
     <b-collapse id="filter-collapse" class="mt-2">
       <filter-card>
-        <sorting-button
-          text="По дате"/>
+        <div class="d-flex flex-row sorting-controls">
+          <sorting-button class="ml-0 mr-3" text="По дате"/>
+          <sorting-button text="По просмотрам"/>
+        </div>
       </filter-card>
     </b-collapse>
 
@@ -104,6 +106,10 @@ export default {
 
   .search-field {
     width: 760px;
+  }
+
+  .sorting-controls {
+    margin-top: 15px;
   }
 }
 </style>
