@@ -66,11 +66,6 @@ export default {
       },
     ],
   ],
-  http: {
-    common: {
-      'blah': 'blaaaaah'
-    },
-  },
   styleResources: {
     scss: ['assets/scss/main.scss'],
   },
