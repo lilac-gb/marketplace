@@ -23,6 +23,7 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
+import config from '@/config/config';
 
 export default {
   name: 'LoginForm',
@@ -35,8 +36,12 @@ export default {
     async onSubmit() {
       console.log('email: ', this.email);
       console.log('password', this.password);
-      const response = await this.$axios.$get('https://api/marketplace/user', {
+      const response = await this.$axios.$post(`${config.api_url}/user/login`, {
         headers: { Accept: 'application/json' },
+        data: {
+          email: this.email,
+          password: this.password,
+        },
       });
 
       console.log(response);
