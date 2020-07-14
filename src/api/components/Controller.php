@@ -23,17 +23,14 @@ class Controller extends \yii\rest\Controller
     {
         $behaviors = parent::behaviors();
 
+        $auth = $behaviors['authenticator'];
+        unset($behaviors['authenticator']);
+
         $behaviors['corsFilter'] = [
             'class' => \yii\filters\Cors::class,
-            'cors' => [
-                'Origin' => ['*'],
-                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-                'Access-Control-Request-Headers' => ['X-Wsse'],
-                'Access-Control-Allow-Credentials' => true,
-                'Access-Control-Max-Age' => 3600,
-                'Access-Control-Expose-Headers' => ['X-Pagination-Current-Page'],
-            ],
         ];
+
+        $behaviors['authenticator'] = $auth;
 
         $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
