@@ -1,7 +1,7 @@
 <template>
   <section>
     <b-container>
-      <b-row style="min-height: 48rem;" class="mt-5">
+      <b-row class="mt-5">
         <b-col>
           <h1>{{ name }}</h1>
 
@@ -13,12 +13,14 @@
 </template>
 
 <script>
-import config from '../config';
+import config from '@/config';
+import { constructUrl } from '@/shared/api';
 
 export default {
   async fetch() {
-    const response = await this.$axios.$get(
-      `${config.api_url}/page/${this.$route.params.url}?expand=_metaTags&_format=json`
+    let params = { expand: '_metaTags' };
+    let response = await this.$axios.$get(
+      constructUrl(`${config.api_url}/page/${this.$route.params.url}`, params)
     );
     const { name, description, _metaTags } = response.data;
     this.name = name;
@@ -42,9 +44,9 @@ export default {
       ],
     };
   },
-  // TODO: сделать валидацию вводимых роутов
-  validate({ params }) {
-    return /^\w+$/.test(params.url);
+  async validate({ params }) {
+    let response = await fetch(`${config.api_url}/page/${params.url}`);
+    return response.ok;
   },
 };
 </script>
