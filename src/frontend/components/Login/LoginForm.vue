@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver v-slot="{ handleSubmit }">
-    <b-form class="w-50 m-auto" @submit.prevent="handleSubmit(onSubmit)">
+    <b-form class="w-50 m-auto" @submit.prevent="handleSubmit(login)">
       <ValidationProvider v-slot="v" rules="required|email">
         <b-form-group label="Email" label-for="email">
           <b-form-input
@@ -48,25 +48,30 @@ import config from '@/config/config';
 export default {
   name: 'LoginForm',
   components: { ValidationProvider, ValidationObserver },
-  data: () => ({
-    email: '',
-    password: '',
-  }),
-  methods: {
-    async onSubmit() {
-      console.log('email: ', this.email);
-      console.log('password', this.password);
-      const response = await this.$axios.$post(`${config.api_url}/user/login`, {
-        headers: { Accept: 'application/json' },
-        data: {
-          email: this.email,
-          password: this.password,
-        },
-      });
-
-      console.log(response);
-    },
+  data() {
+    return {
+      email: '',
+      password: '',
+      error: null,
+    }
   },
+
+  methods: {
+    async login() {
+      try {
+        await this.$auth.loginWith('local', {
+          data: {
+            email: this.email,
+            password: this.password
+          }
+        });
+
+        // this.$router.push('/')
+      } catch (e) {
+        console.log(e.response);
+      }
+    }
+  }
 };
 </script>
 

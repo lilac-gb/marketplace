@@ -56,11 +56,11 @@ class ActiveController extends BaseActiveController
             'class' => CompositeAuth::class,
             'except' => ['options'],
             'authMethods' => [
+                HttpBearerAuth::class,
                 [
                     'class' => QueryParamAuth::class,
                     'tokenParam' => 'token',
                 ],
-                HttpBearerAuth::class,
             ],
         ];
 

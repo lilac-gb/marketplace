@@ -12,7 +12,6 @@ use Yii;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
-use yii\web\Cookie;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
@@ -49,6 +48,7 @@ class UserController extends ActiveController {
             'recovery',
             'logout',
             'me',
+            'check-activate-key', // POST token returns user
             'change-password',
             'imgAttachApi',
             'save',
@@ -79,25 +79,19 @@ class UserController extends ActiveController {
             throw new ForbiddenHttpException();
         }
 
-        $token = (string)Yii::$app->user->refreshToken();
+        $request = Yii::$app->request;
 
-        $cookie = new Cookie([
-            'name' => 'token',
-            'value' => $token,
-            'domain' => Yii::$app->params['domainFrontend'],
-            'secure' => true,
-        ]);
+        $loginForm = new LoginForm();
 
-        $form = new LoginForm();
+        $loginForm->load($request->post(), '');
 
-        if ($form->load(Yii::$app->request->post('data'), '') && $form->login()) {
-            return [
-                'user' => Yii::$app->user->identity,
-                'cookie' => $cookie,
-            ];
+        if ($loginForm->validate() && $loginForm->login()) {
+            Yii::$app->user->refreshToken();
+
+            return Yii::$app->user->identity;
         }
 
-        return $form;
+        return $loginForm->errors;
     }
 
     public function actionCheckActivateKey(): array
@@ -139,13 +133,6 @@ class UserController extends ActiveController {
         }
 
         return $changePasswordForm;
-    }
-
-    public function actionInfo()
-    {
-        $user = User::findOne(Yii::$app->user->id);
-
-        return $user;
     }
 
     public function actionSignup()
