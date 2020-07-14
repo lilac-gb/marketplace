@@ -11,7 +11,10 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   rules: {
-    'prettier/prettier': ['error', { 'singleQuote': true }],
+    'prettier/prettier': ['error', {
+      'singleQuote': true,
+      'endOfLine': 'auto'
+    }],
     'quotes': [2, 'single', { 'avoidEscape': true }],
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
