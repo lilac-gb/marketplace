@@ -66,9 +66,9 @@ export default {
           }
         });
 
-        // this.$router.push('/')
+        this.$router.push('/cabinet')
       } catch (e) {
-        console.log(e.response);
+        this.error = e.response.data;
       }
     }
   }
