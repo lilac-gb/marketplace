@@ -90,9 +90,15 @@ export default {
             method: 'get',
             propertyName: 'data'
           },
+          logout: {
+            url: `${config.base_host}/user/logout`,
+          },
         }
       }
-    }
+    },
+    redirect: {
+      home: '/cabinet',
+    },
   },
   build: {
     extractCSS: true,

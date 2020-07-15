@@ -9,7 +9,9 @@
       :class="{ active: dropdown }"
       @click.prevent="dropdown = !dropdown"
     >
-      <div class="user__btn-text">user</div>
+      <div class="user__btn-text">
+        {{ user.first_name + ' ' + user.last_name }}
+      </div>
     </a>
     <div v-show="dropdown" class="user__dropdown">
       <ul class="user__dropdown-menu">
@@ -32,7 +34,10 @@
           </b-link>
         </li>
         <li>
-          <b-link class="d-flex align-items-center pt-1 pb-2">
+          <b-link
+            class="d-flex align-items-center pt-1 pb-2"
+            @click.prevent="logout"
+          >
             <img src="~assets/pics/icons/logout.svg" alt="icon" />
             <span>Выход</span>
           </b-link>
@@ -45,9 +50,22 @@
 <script>
 export default {
   name: 'User',
+  async fetch() {
+    try {
+      this.user = await this.$auth.user;
+    } catch (e) {
+      console.log(e);
+    }
+  },
   data: () => ({
     dropdown: false,
+    user: {},
   }),
+  methods: {
+    logout() {
+      this.$auth.logout();
+    },
+  },
 };
 </script>
 
