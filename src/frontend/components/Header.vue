@@ -3,15 +3,15 @@
     <b-container class="h-100">
       <b-row class="h-100 align-items-center">
         <b-col md="6" class="d-flex w-100 align-items-center">
-            <b-link :to="`/`" class="header__logo mr-2">
+          <b-link :to="`/`" class="header__logo mr-2">
             <img src="~assets/logo/header-logo.svg" alt="header__logo" />
-            </b-link>
+          </b-link>
 
           <nav class="header__nav">
             <ul class="d-flex">
               <li v-for="link in menu" :key="link.id">
-                  <b-link :to="link.url" class="d-block p-2">
-                      {{ link.label }}
+                <b-link :to="link.url" class="d-block p-2">
+                  {{ link.label }}
                 </b-link>
               </li>
             </ul>
@@ -19,7 +19,8 @@
         </b-col>
         <b-col md="6" class="d-flex justify-content-end">
           <MiniCart />
-          <User />
+          <User v-if="isAuthenticated" />
+          <b-link v-else to="/login">Войти</b-link>
         </b-col>
       </b-row>
     </b-container>
@@ -28,6 +29,7 @@
 
 <script>
 import config from '@/config/config';
+import { mapGetters } from 'vuex';
 import User from '@/components/user/User';
 import MiniCart from '@/components/сart/MiniCart';
 
@@ -48,6 +50,7 @@ export default {
   data: () => ({
     menu: [],
   }),
+  computed: mapGetters(['isAuthenticated']),
 };
 </script>
 
@@ -55,7 +58,7 @@ export default {
 .header {
   height: 50px;
   background: #ffffff;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   z-index: 50;
 
   &__logo {

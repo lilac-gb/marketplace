@@ -13,8 +13,10 @@ class User extends \common\models\User {
             'last_name',
             'email',
             'created_at',
+            'role',
         ];
     }
+
     public static function findIdentityByAccessToken($token, $type = null) {
         $token = (new Parser())->parse((string) $token);
 
@@ -24,5 +26,4 @@ class User extends \common\models\User {
 
         return null;
     }
-
 }
