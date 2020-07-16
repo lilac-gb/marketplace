@@ -10,10 +10,3 @@ extend('email', {
   ...email,
   message: 'Неправильный email',
 });
-
-extend('username', (username) => {
-  if (/^[a-zA-Z0-9]+$/.test(username.trim())) {
-    return true;
-  }
-  return 'Неверное имя пользователя';
-});

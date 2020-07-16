@@ -65,7 +65,7 @@ Pass: toor
 ### Login to admin area
 ```bash
 https://office.marketplace.docker
-Login: admin
+Login: admin@marketplace.docker
 Pass: admin
 ```
 

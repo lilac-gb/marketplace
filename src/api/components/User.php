@@ -2,10 +2,12 @@
 
 namespace api\components;
 
+use Codeception\Lib\Interfaces\ActiveRecord;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
+use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use Yii;
@@ -25,8 +27,8 @@ class User extends \yii\web\User
     {
         if (!$this->isGuest && !isset($this->_model)) {
             $user = new $this->identityClass();
-
-            $this->_model = $user::findOne( $this->id );
+            /** @var $user ActiveRecord */
+            $this->_model = $user::findOne($this->id);
         }
 
         return $this->_model;
@@ -49,17 +51,16 @@ class User extends \yii\web\User
 
         $signer = $this->getSigner();
 
+        $key = new Key(Yii::$app->params['jwt']['secret']);
+
         //TODO: enable iss aud jti
         return (new Builder())
-            //->canOnlyBeUsedBy('http://example.org') // Configures the audience (aud claim)
-            //->identifiedBy('4f1g23a12aa', true) // Configures the id (jti claim), replicating as a header item
             ->issuedBy(Yii::$app->params['jwt']['issuer'])
             ->issuedAt($issued) // Configures the time that the token was issue (iat claim)
             ->canOnlyBeUsedAfter($issued) // Configures the time that the token can be used (nbf claim)
             ->expiresAt($expires) // Configures the expiration time of the token (nbf claim)
-            ->with('uid', $userId)
-            ->sign($signer, Yii::$app->params['jwt']['secret'])
-            ->getToken();
+            ->withClaim('uid', $userId)
+            ->getToken($signer, $key);
     }
 
     public function refreshToken($userId = null)

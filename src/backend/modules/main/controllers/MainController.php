@@ -3,6 +3,8 @@ namespace backend\modules\main\controllers;
 
 use backend\components\Controller;
 use common\models\forms\LoginForm;
+use common\models\User;
+use common\services\UserService;
 use yii\filters\AccessControl;
 use yii\web\UploadedFile;
 use Yii;
@@ -54,34 +56,19 @@ class MainController extends Controller
     {
         $this->layout = '//column2';
 
-        //return $this->render('index');
-
-//        $items =  News::find()
-//            ->where(['status' => News::STATUS_NOT_PUBLISHED])
-//            ->orderBy('time_create DESC')
-//            ->all();
-
-//        ArrayHelper::multisort($items, ['time_create'], [SORT_DESC]);
-
-        return $this->render('index', [
-//            'items' => $items,
-        ]);
+        return $this->render('index');
 
     }
 
     public function actionLogin()
     {
         $this->layout = '/login';
-//        $type = UserService::REG_TYPE_EMAIL;
 
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
-        $model = new LoginForm([
-//            'type' => $type,
-//            'scenario' => LoginForm::SCENARIO[$type]
-        ]);
+        $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
