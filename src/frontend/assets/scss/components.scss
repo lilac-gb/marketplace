@@ -50,3 +50,19 @@
     }
   }
 }
+
+.collapse-button {
+  &::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-left: 5px;
+  }
+
+  &.collapsed::after {
+    content: '\f078';
+  }
+
+  &.not-collapsed::after {
+    content: '\f077';
+  }
+}
