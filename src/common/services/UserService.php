@@ -74,8 +74,8 @@ class UserService
     {
 
         $confirmationSecret = $model->confirmation_secret;
-        $confirmationHash =
-            base64_encode(Yii::$app->security->encryptByKey($model->email, $confirmationSecret));
+        $encrypt = Yii::$app->security->encryptByKey($model->email, $confirmationSecret);
+        $confirmationHash = base64_encode($encrypt);
 
         $link = Yii::$app->params['domainFrontend']
             . '/users/'

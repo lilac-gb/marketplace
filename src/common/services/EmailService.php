@@ -6,7 +6,7 @@ use Yii;
 
 class EmailService
 {
-    const DEFAULT_FROM = ['post@resmedia.ru' => 'MarketPlace'];
+    const DEFAULT_FROM = ['post@vbs.one' => 'MarketPlace'];
 
     public static function sendWithBody($emailTo, $subject, $body, $from = self::DEFAULT_FROM)
     {
