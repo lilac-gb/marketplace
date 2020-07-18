@@ -81,7 +81,7 @@ class UserService
             . '/users/'
             . $model->id
             . '/activation-email?hash='
-            . urlencode($confirmationHash);
+            . $confirmationHash;
 
         return EmailService::sendWithView(
             $model->email,
