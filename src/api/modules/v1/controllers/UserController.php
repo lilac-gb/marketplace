@@ -140,7 +140,7 @@ class UserController extends ActiveController {
     {
         $exists = User::find()->where(['username' => $nik])->exists();
         if ($exists) {
-            $newNick = $nik . '-' . substr(uniqid('', true), -5);
+            $newNick = $nik . '-' . Yii::$app->security->generateRandomString(5);
 
             return $this->generateNickname($newNick);
         }

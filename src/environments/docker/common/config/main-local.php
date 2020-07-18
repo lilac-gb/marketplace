@@ -22,8 +22,8 @@ return [
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.yandex.ru',
-                'username' => 'post@resmedia.ru',
-                'password' => '24&Ty65&he09',
+                'username' => 'post@vbs.one',
+                'password' => '24&Ty65&he09Z',
                 'port' => 587,
                 'encryption' => 'tls',
                 'streamOptions' => [
