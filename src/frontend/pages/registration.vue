@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import RegistrationForm from '@/components/Forms/RegistrationForm';
+import RegistrationForm from '@/components/forms/RegistrationForm';
 
 export default {
   name: 'Registration',
   layout: 'empty',
   components: { RegistrationForm },
+  middleware: ['auth'],
+  auth: 'guest',
 };
 </script>
-
-<style scoped></style>

@@ -10,3 +10,13 @@ extend('email', {
   ...email,
   message: 'Неправильный email',
 });
+
+extend('username', (name) => {
+  const regExp = /^[\sa-zA-Zа-яА-я0-9-]+$/;
+
+  if (!regExp.test(name)) {
+    return 'Имя пользователя не может содержать символов, кроме "-"';
+  }
+
+  return true;
+});
