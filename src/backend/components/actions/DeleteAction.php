@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: artemshmanovsky
- * Date: 28.03.16
- * Time: 19:57
- */
 
 namespace backend\components\actions;
 

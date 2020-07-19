@@ -17,13 +17,13 @@ return [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            'viewPath' => '@app/mail',
+            'viewPath' => '@common/mail',
             'useFileTransport' => false,
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.yandex.ru',
-                'username' => 'post@resmedia.ru',
-                'password' => '24&Ty65&he09',
+                'username' => 'feedback@vbs.one',
+                'password' => 'kwxerskmfrohedhg',
                 'port' => 587,
                 'encryption' => 'tls',
                 'streamOptions' => [

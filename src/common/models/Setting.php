@@ -11,11 +11,13 @@ use Yii;
  * This is the model class for table "{{%settings}}".
  *
  * @property integer $id
- * @property string $section_id
- * @property string $code
- * @property string $name
- * @property string $input_type
+ * @property string  $section_id
+ * @property string  $code
+ * @property string  $name
+ * @property string  $entity
+ * @property string  $input_type
  * @property integer $status
+ * @property mixed   entity
  */
 class Setting extends ActiveRecord
 {
@@ -23,6 +25,8 @@ class Setting extends ActiveRecord
     const TYPE_STATISTIC = 2;
     const TYPE_NAMES = 3;
     const TYPE_KEYS = 4;
+
+    const STATUS_PUBLISHED = 1;
 
     static $settingsTypes = [
         self::TYPE_EMAIL => 'Email уведомлений',
@@ -82,10 +86,12 @@ class Setting extends ActiveRecord
     {
         if($code){
             $model = self::findOne(['code' => trim($code)]);
+            /** @var $model self */
             if(!$model){
                 return "Нет такого кода ($code)";
             }
-            return $model->translation->entity;
+
+            return $model->entity;
         }
         return 'Нет обязательного параметра CODE';
     }

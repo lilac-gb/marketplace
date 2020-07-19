@@ -1,5 +1,13 @@
 <template>
-  <b-container class="pt-5">
+  <div class="d-flex justify-content-center pt-5">
     <nuxt />
-  </b-container>
+  </div>
 </template>
+
+<script>
+export default {
+  name: 'Empty',
+};
+</script>
+
+<style scoped></style>

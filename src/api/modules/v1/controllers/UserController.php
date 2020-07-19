@@ -50,6 +50,7 @@ class UserController extends ActiveController {
             'me',
             'check-activate-key', // POST token returns user
             'change-password',
+            'activation-email',
             'imgAttachApi',
             'save',
         ];
@@ -135,26 +136,43 @@ class UserController extends ActiveController {
         return $changePasswordForm;
     }
 
+    private function generateNickname($nik)
+    {
+        $exists = User::find()->where(['username' => $nik])->exists();
+        if ($exists) {
+            $newNick = $nik . '-' . Yii::$app->security->generateRandomString(5);
+
+            return $this->generateNickname($newNick);
+        }
+
+        return $nik;
+    }
+
     public function actionSignup()
     {
         if (!\Yii::$app->user->isGuest) {
             return ['redirect' => Url::to('/')];
         }
 
+        $data = Yii::$app->request->post('data');
+
         $model = new User();
         $model->scenario = User::SCENARIO_SIGN_UP;
+        $model->username = $this->generateNickname(explode('@', $data['email'])[0]);
+        $model->password_hash = '';
+        $model->confirmation_secret = Yii::$app->security->generateRandomString(10);
 
-        if ($model->load(Yii::$app->request->post('data'))) {
+        if ($model->load($data, '')) {
 
             if (Yii::$app->request->isAjax && isset($_POST['ajax'])) {
                 Yii::$app->response->format = 'json';
-
                 return ActiveForm::validate($model);
             }
 
-            $model->setPassword($model->password);
+            //$model->setPassword($model->password);
             $model->generateEmailVerificationToken();
             $model->status = User::STATUS_EMAIL_NC;
+            $model->role = User::ROLE_GUEST;
 
             if ($model->validate()) {
                 $transaction = $model->getDb()->beginTransaction();
@@ -174,7 +192,7 @@ class UserController extends ActiveController {
 
         return [
             'statusCode' => 400,
-            'errors' => ['system' => 'Error sign up'],
+            'errors' => $model->errors,
         ];
     }
 
@@ -218,7 +236,7 @@ class UserController extends ActiveController {
     {
         $user = User::findOne($id);
 
-        if (!isset($user)) {
+        if (empty($user)) {
             throw new NotFoundHttpException();
         }
 

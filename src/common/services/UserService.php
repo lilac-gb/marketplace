@@ -74,13 +74,14 @@ class UserService
     {
 
         $confirmationSecret = $model->confirmation_secret;
-        $confirmationHash = base64_encode(Yii::$app->security->encryptByKey($model->email, $confirmationSecret));
+        $encrypt = Yii::$app->security->encryptByKey($model->email, $confirmationSecret);
+        $confirmationHash = base64_encode($encrypt);
 
         $link = Yii::$app->params['domainFrontend']
             . '/users/'
             . $model->id
             . '/activation-email?hash='
-            . urlencode($confirmationHash);
+            . $confirmationHash;
 
         return EmailService::sendWithView(
             $model->email,
