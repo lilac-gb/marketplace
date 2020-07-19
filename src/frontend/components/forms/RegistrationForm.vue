@@ -10,25 +10,7 @@
                 id="firstName"
                 v-model.trim="user.first_name"
                 type="text"
-                placeholder="Ввелите имя"
-                :class="{
-                  'is-invalid': v.invalid && (v.touched || v.changed),
-                  'is-valid': v.valid,
-                }"
-              >
-              </b-form-input>
-              <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
-                {{ v.errors[0] }}
-              </b-form-invalid-feedback>
-            </b-form-group>
-          </ValidationProvider>
-          <ValidationProvider v-slot="v" rules="required|username">
-            <b-form-group label="Фамилия:" name="last_name">
-              <b-form-input
-                id="firstName"
-                v-model.trim="user.last_name"
-                type="text"
-                placeholder="Ввелите фамилию"
+                placeholder="Введите имя"
                 :class="{
                   'is-invalid': v.invalid && (v.touched || v.changed),
                   'is-valid': v.valid,
@@ -41,7 +23,7 @@
             </b-form-group>
           </ValidationProvider>
           <ValidationProvider v-slot="v" rules="required|email">
-            <b-form-group label="Email:" label-for="userName">
+            <b-form-group label="Email:" label-for="email">
               <b-input
                 id="email"
                 v-model="user.email"
@@ -60,7 +42,15 @@
               </p>
             </b-form-group>
           </ValidationProvider>
-          <b-button type="submit" variant="primary">Отправить письмо</b-button>
+          <b-form-group>
+            <p class="error-message">{{ error }}</p>
+          </b-form-group>
+          <div class="d-flex">
+            <b-button type="submit" variant="primary" class="background-purple">
+              Отправить письмо
+            </b-button>
+            <Loader v-show="loading" class="ml-4" />
+          </div>
         </b-form>
       </ValidationObserver>
     </b-col>
@@ -69,26 +59,54 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
-import config from '@/config/config';
-
+import { mapActions } from 'vuex';
+import Loader from '@/components/Loader';
 export default {
   name: 'RegistrationForm',
-  components: { ValidationObserver, ValidationProvider },
+  components: { ValidationObserver, ValidationProvider, Loader },
   data: () => ({
     user: {
       email: '',
       first_name: '',
       last_name: '',
     },
+    error: '',
+    loading: false,
   }),
   methods: {
+    ...mapActions(['setMessage']),
     async onSubmit() {
-      const response = await this.$axios.post(`${config.api_url}/user/signup`, {
-        headers: { Accept: 'application/json' },
-        data: this.user,
-      });
-      console.log(response);
+      try {
+        this.loading = true;
+        const response = await this.$axios.post(
+          `${process.env.api_url}/user/signup`,
+          {
+            headers: { Accept: 'application/json' },
+            data: this.user,
+          }
+        );
+
+        if (response.data.success) {
+          this.setMessage(
+            `На электронный адресс ${this.user.email} было выслано письмо с активацией.`
+          );
+          await this.$router.push('/');
+        }
+      } catch (e) {
+        this.loading = false;
+        this.error = 'Что то пошло не так. Пожалуйста, повторите попытку позже';
+      }
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.error-message {
+  color: $red;
+}
+
+button {
+  border-color: $purple;
+}
+</style>

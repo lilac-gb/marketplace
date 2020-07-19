@@ -8,7 +8,8 @@ export default {
   mode: 'spa',
   srcDir: __dirname,
   env: {
-    apiUrl: process.env.API_URL || process.env.APP_URL + '/api',
+    api_url: process.env.API_URL || 'https://api.marketplace.docker',
+    base_url: process.env.BASE_URL || 'https://marketplace.docker',
     appName: process.env.APP_NAME || 'Yii Nuxt',
   },
   /*
