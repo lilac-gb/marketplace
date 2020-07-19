@@ -19,9 +19,10 @@
 
     <div class="publications-grid">
       <publication-card
-        v-for="publication in publications"
-        :key="publication.id"
-        :publication="publication"/>
+          v-for="publication in publications"
+          :key="publication.id"
+          :publication="publication"
+      />
     </div>
 
     <div class="mb-4 mt-4 d-flex justify-content-center">

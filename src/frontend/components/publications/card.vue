@@ -1,17 +1,18 @@
 <template>
   <b-card
-    img-src="~/assets/pics/publications/card_pic.svg"
-    img-alt=""
-    img-top
-    img-height="156"
-    img-width="380">
+      :img-src="publication.coverImages.i600x250"
+      :img-alt="publication.name"
+      img-top
+      img-height="156"
+      img-width="380"
+  >
     <div class="h-100 d-flex flex-column justify-content-center">
       <b-card-text>
         {{ publication.name }}
       </b-card-text>
     </div>
     <div class="card-details">
-      <div class="icon user">{{ publication.user.name }}</div>
+      <div v-if="!!publication.user" class="icon user">{{ publication.user.name }}</div>
       <div class="icon create-at">{{ timestampToDate(publication.created_at) }}</div>
       <div class="icon views">{{ publication.views }}</div>
     </div>
