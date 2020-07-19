@@ -1,7 +1,8 @@
 <template>
   <section>
     <b-container>
-      <b-row class="mt-5">
+      <b-row class="mt-5 flex-column">
+        <Breadcrumbs class="d-flex" />
         <b-col>
           <h1>{{ name }}</h1>
 
@@ -15,8 +16,10 @@
 <script>
 import config from '@/config';
 import { constructUrl } from '@/shared/api';
+import Breadcrumbs from '@/components/breadcrumbs';
 
 export default {
+  components: { Breadcrumbs },
   async fetch() {
     let params = { expand: '_metaTags' };
     let response = await this.$axios.$get(
