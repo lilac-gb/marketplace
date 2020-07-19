@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /signup
+Disallow: /login
+Disallow: /cabinet
+
+Host: https://resmedia.ru
+Sitemap: https://resmedia.ru/sitemap.xml
