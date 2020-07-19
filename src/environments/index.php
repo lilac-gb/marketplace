@@ -22,4 +22,20 @@ return [
             'api/config/main-local.php',
         ],
     ],
+    'Production' => [
+        'path' => 'prod',
+        'setWritable' => [
+            'api/runtime',
+            'backend/runtime',
+            'backend/web/assets',
+            'frontend/web',
+        ],
+        'setExecutable' => [
+            'yii',
+        ],
+        'setCookieValidationKey' => [
+            'api/config/main-local.php',
+            'backend/config/main-local.php',
+        ],
+    ],
 ];
