@@ -14,9 +14,9 @@
         <meta itemprop="position" content="1" />
         <span itemProp="name">Главная</span>
       </b-breadcrumb-item>
-      <b-breadcrumb-item v-for="(item, i) in crumbs" :key="i" :to="item.to">
+      <b-breadcrumb-item v-for="item in crumbs" :key="item.key" :to="item.to">
         <span itemProp="name">{{ item.text }}</span>
-        <meta itemProp="position" :content="`${++i + 1}`" />
+        <meta itemProp="position" :content="`${item.key}`" />
       </b-breadcrumb-item>
     </b-breadcrumb>
   </div>
@@ -35,6 +35,7 @@ export default {
             ? '/' + breadcrumbArray[idx - 1].path + '/' + path
             : '/' + path,
           text: text.charAt(0).toUpperCase() + text.slice(1),
+          key: ++idx + 1,
         });
         return breadcrumbArray;
       }, []);
