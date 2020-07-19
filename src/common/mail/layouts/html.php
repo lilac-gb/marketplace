@@ -42,7 +42,7 @@ $face_phone = preg_replace(
       <tr style="text-align: center;">
         <td>
           <img style="height: 40px;padding: 15px 0;"
-               src="<?= Yii::$app->params['domainFrontend'] ?>/header-logo.png"
+               src="<?= Yii::$app->params['domainFrontend'] ?>/images/mail/header-logo.png"
                alt=""
                height="60"/>
         </td>
@@ -107,12 +107,13 @@ $face_phone = preg_replace(
               <ul style="list-style:none; padding-left:0;">
                 <li style="display:inline-block;">
                   <a title="Facebook" style="text-decoration:none" href="https://www.facebook.com/">
-                    <img alt="Facebook" src="<?= Yii::$app->params['domainFrontend'] ?>/fb.png" width="30"/>
+                    <img alt="Facebook" src="<?= Yii::$app->params['domainFrontend'] ?>/images/mail/fb.png" width="30"/>
                   </a>
                 </li>
                 <li style="display:inline-block;">
                   <a title="Instagram" style="text-decoration:none" href="https://www.instagram.com/">
-                    <img alt="Instagram" src="<?= Yii::$app->params['domainFrontend'] ?>/im.png" width="30"/>
+                    <img alt="Instagram" src="<?= Yii::$app->params['domainFrontend'] ?>/images/mail/im.png"
+                         width="30"/>
                   </a>
                 </li>
               </ul>

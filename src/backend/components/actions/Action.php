@@ -3,12 +3,6 @@ namespace backend\components\actions;
 use backend\components\Controller;
 use yii\db\ActiveRecordInterface;
 
-/**
- * Created by PhpStorm.
- * User: artemshmanovsky
- * Date: 28.03.16
- * Time: 19:24
- */
 class Action extends \yii\rest\Action
 {
     /**

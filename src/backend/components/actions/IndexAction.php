@@ -4,12 +4,6 @@ namespace backend\components\actions;
 use Yii;
 use yii\data\ActiveDataProvider;
 
-/**
- * Created by PhpStorm.
- * User: artemshmanovsky
- * Date: 28.03.16
- * Time: 19:11
- */
 class IndexAction extends Action
 {
     public $afterLoad;

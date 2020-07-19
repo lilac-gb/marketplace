@@ -83,8 +83,6 @@ return [
             'class' => 'api\components\User',
             'identityClass' => 'api\models\User',
             'enableSession' => false,
-// 'identityCookie' => ['name' => '_identity-api', 'httpsOnly' => true],
-// 'enableAutoLogin' => false,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

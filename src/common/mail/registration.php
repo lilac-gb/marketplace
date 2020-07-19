@@ -1,7 +1,7 @@
 <tr style="text-align: center;">
     <td>
         <div style="
-            background-image: url('<?= Yii::$app->params['domainFrontend'] ?>/email-fon.jpg');
+            background-image: url('<?= Yii::$app->params['domainFrontend'] ?>/images/mail/mail-fon.png');
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: center;
