@@ -51,6 +51,7 @@ export default {
   color: $black;
   text-decoration: none;
   margin: 2px 5px 2px 5px;
+  width: max-content;
 
   .arrow-container {
     position: relative;

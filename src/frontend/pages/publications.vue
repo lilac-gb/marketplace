@@ -4,31 +4,42 @@
       <b-form-input
         v-model="searchText"
         class="mp-input search-field"
-        placeholder="Введите название"/>
-      <b-button class="background-purple mp-button-purple" @click="$fetch">ПОИСК</b-button>
-      <b-button v-b-toggle.filter-collapse class="background-purple mp-button-purple collapse-button">ФИЛЬТР</b-button>
+        placeholder="Введите название"
+      />
+      <b-button
+        class="background-purple mp-button-purple"
+        @click="$fetch">ПОИСК</b-button>
+      <b-button
+        v-b-toggle.filter-collapse
+        class="background-purple mp-button-purple collapse-button">ФИЛЬТР</b-button>
     </div>
     <b-collapse id="filter-collapse" class="mt-2">
-      <filter-card>
-        <div class="d-flex flex-row sorting-controls">
-          <sorting-button class="ml-0 mr-3" text="По дате" @changed="sortByDate"/>
-          <sorting-button text="По просмотрам" @changed="sortByViews"/>
+      <filter-card containerClass="mt-3 d-flex flex-row justify-content-between align-items-center">
+        <div class="d-flex flex-row align-items-center sorting-controls">
+          <sorting-button
+            class="ml-0 mr-3"
+            text="По дате"
+            @changed="sortByDate"/>
+          <sorting-button text="По просмотрам" @changed="sortByViews" />
+          <b-form-select class="select-author" v-model="authorFilterValue" :options="authorOptions" @change="getPublications"></b-form-select>
         </div>
+        <b-button pill class="background-purple clear-filter" @click="clearFilter">Сбросить фильтр</b-button>
       </filter-card>
     </b-collapse>
 
     <div class="publications-grid">
       <publication-card
-          v-for="publication in publications"
-          :key="publication.id"
-          :publication="publication"
+        v-for="publication in publications"
+        :key="publication.id"
+        :publication="publication"
       />
     </div>
 
     <div class="mb-4 mt-4 d-flex justify-content-center">
       <b-link
         class="background-white text-purple mp-button-white mr-4 page-link"
-        @click="fetchMoreItems">
+        @click="fetchMoreItems"
+      >
         ЗАГРУЗИТЬ ЕЩЕ
       </b-link>
       <b-pagination
@@ -39,15 +50,16 @@
         first-number
         last-number
         size="lg"
-        @input="$fetch"/>
+        @input="$fetch"
+      />
     </div>
   </b-container>
 </template>
 
 <script>
 import PublicationsCard from '@/components/publications/card';
-import CardFilter from "@/components/CardFilter";
-import SortingButton from "@/components/SortingButton";
+import CardFilter from '@/components/CardFilter';
+import SortingButton from '@/components/SortingButton';
 import config from '@/config';
 import { constructUrl } from '@/shared/api';
 import { NewsModel, SortDirection } from '@/shared/constants';
@@ -60,29 +72,17 @@ export default {
     'sorting-button': SortingButton,
   },
   async fetch() {
-    let params = {
-      expand: '_metaTags',
-      page: this.currentPage,
-      pageSize: this.perPage,
-      sortBy: this.sortBy,
-      sortDesc: this.sortDesc,
-    };
-    if (this.searchText) {
-      params['News[name]'] = this.searchText;
-    }
-    let result = await this.$http.$get(
-      constructUrl(`${config.api_url}/news`, params)
-    );
-    this.publications = result.data.models;
-    this.currentPage = result.data._meta.currentPage;
-    this.pageCount = result.data._meta.pageCount;
-    this.perPage = result.data._meta.perPage;
-    this.totalCount = result.data._meta.totalCount;
+    await Promise.all([
+      this.getPublications(),
+      this.getUsers()
+    ]);
   },
   data() {
     return {
       publications: [],
+      users: [],
       searchText: null,
+      authorFilterValue: null,
       currentPage: 1,
       pageCount: 1,
       perPage: 12,
@@ -91,7 +91,44 @@ export default {
       sortDesc: SortDirection.ASK,
     };
   },
+  computed: {
+    authorOptions() {
+      return this.users.map(u => {
+        return {
+          value: u.id,
+          text: `${u.first_name} ${u.last_name}`
+        }
+      });
+    },
+  },
   methods: {
+    async getUsers() {
+      let result = await this.$http.$get(`${config.api_url}/user`);
+      this.users = result.data.models;
+    },
+    async getPublications() {
+      let params = {
+        expand: '_metaTags',
+        page: this.currentPage,
+        pageSize: this.perPage,
+        sortBy: this.sortBy,
+        sortDesc: this.sortDesc,
+      };
+      if (this.searchText) {
+        params['News[name]'] = this.searchText;
+      }
+      if (this.authorFilterValue) {
+        params['user_id'] = this.authorFilterValue;
+      }
+      let result = await this.$http.$get(
+        constructUrl(`${config.api_url}/news`, params)
+      );
+      this.publications = result.data.models;
+      this.currentPage = result.data._meta.currentPage;
+      this.pageCount = result.data._meta.pageCount;
+      this.perPage = result.data._meta.perPage;
+      this.totalCount = result.data._meta.totalCount;
+    },
     fetchMoreItems() {
       this.perPage += 12;
       this.$fetch();
@@ -105,7 +142,13 @@ export default {
       this.sortBy = NewsModel.VIEWS;
       this.sortDesc = direction;
       this.$fetch();
-    }
+    },
+    async clearFilter() {
+      this.sortBy = NewsModel.CREATED_AT;
+      this.sortDesc = SortDirection.ASK;
+      this.authorFilterValue = null;
+      await this.getPublications();
+    },
   },
 };
 </script>
@@ -125,7 +168,17 @@ export default {
   }
 
   .sorting-controls {
-    margin-top: 15px;
+    width: fit-content;
+  }
+
+  .select-author {
+    width: 476px;
+    margin-left: 29px;
+  }
+
+  .clear-filter {
+    width: 161px;
+    height: 31px;
   }
 }
 </style>
