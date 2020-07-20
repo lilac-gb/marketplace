@@ -35,7 +35,7 @@ import { NewsModel, SortDirection } from '@/shared/constants';
 import PublicationsCard from '@/components/publications/card';
 
 export default {
-  name: '_publication',
+  name: 'Publication',
   components: {
     'publication-card': PublicationsCard,
   },
@@ -44,13 +44,14 @@ export default {
   ],
   async fetch() {
     await Promise.all([
-      this.getPublication(),
+      this.getPublication(this.$route.params.publication_id, true),
       this.getPublications(this.publicationsApiParams)
     ]);
   },
   data() {
     return {
       publications: [],
+      publication: null,
       currentPage: 1,
       pageCount: 1,
       perPage: 3,
@@ -71,7 +72,6 @@ export default {
     }
   },
   methods: {
-    async getPublication() {},
     async goRight() {
       if (this.currentPage !== this.pageCount) {
         this.currentPage += 1;

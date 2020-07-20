@@ -12,6 +12,15 @@ export default {
       this.pageCount = result.data._meta.pageCount;
       this.perPage = result.data._meta.perPage;
       this.totalCount = result.data._meta.totalCount;
+    },
+    async getPublication(id, metatags = false) {
+      let params = {};
+      if (metatags) {
+        params['expand'] = '_metaTags';
+      }
+
+      let result = await this.$http.$get(constructUrl(`${config.api_url}/news/${id}`, params));
+      this.publication = result.data;
     }
   }
 };

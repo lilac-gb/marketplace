@@ -8,7 +8,7 @@
   >
     <div class="h-100 d-flex flex-column justify-content-center">
       <b-card-text>
-        <router-link :to="{ name: 'publications-publication', params: { publication: publication.url }}">
+        <router-link :to="{ name: 'publications-publication_id', params: { publication_id: publication.url }}">
           {{ publication.name }}
         </router-link>
       </b-card-text>
@@ -27,7 +27,7 @@ import utils from '@/mixins/utils';
 export default {
   name: "PublicationsCard",
   props: {
-    publication: {type: Object, required: true}
+    publication: { type: Object, required: true }
   },
   mixins: [utils],
 }
