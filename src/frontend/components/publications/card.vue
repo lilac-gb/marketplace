@@ -8,7 +8,9 @@
   >
     <div class="h-100 d-flex flex-column justify-content-center">
       <b-card-text>
-        {{ publication.name }}
+        <router-link :to="{ name: 'publications-publication', params: { publication: publication.url }}">
+          {{ publication.name }}
+        </router-link>
       </b-card-text>
     </div>
     <div class="card-details">

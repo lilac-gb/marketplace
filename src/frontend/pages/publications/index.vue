@@ -21,7 +21,7 @@
             text="По дате"
             @changed="sortByDate"/>
           <sorting-button text="По просмотрам" @changed="sortByViews" />
-          <b-form-select class="select-author" v-model="authorFilterValue" :options="authorOptions" @change="getPublications"></b-form-select>
+          <b-form-select class="select-author" v-model="authorFilterValue" :options="authorOptions" @change="getPublications(publicationsApiParams)"></b-form-select>
         </div>
         <b-button pill class="background-purple clear-filter" @click="clearFilter">Сбросить фильтр</b-button>
       </filter-card>
@@ -31,8 +31,7 @@
       <publication-card
         v-for="publication in publications"
         :key="publication.id"
-        :publication="publication"
-      />
+        :publication="publication"/>
     </div>
 
     <div class="mb-4 mt-4 d-flex justify-content-center">
@@ -61,8 +60,8 @@ import PublicationsCard from '@/components/publications/card';
 import CardFilter from '@/components/CardFilter';
 import SortingButton from '@/components/SortingButton';
 import config from '@/config';
-import { constructUrl } from '@/shared/api';
 import { NewsModel, SortDirection } from '@/shared/constants';
+import publications from '@/mixins/publications';
 
 export default {
   name: 'Publications',
@@ -71,9 +70,12 @@ export default {
     'filter-card': CardFilter,
     'sorting-button': SortingButton,
   },
+  mixins: [
+    publications
+  ],
   async fetch() {
     await Promise.all([
-      this.getPublications(),
+      this.getPublications(this.publicationsApiParams),
       this.getUsers()
     ]);
   },
@@ -100,13 +102,7 @@ export default {
         }
       });
     },
-  },
-  methods: {
-    async getUsers() {
-      let result = await this.$http.$get(`${config.api_url}/user`);
-      this.users = result.data.models;
-    },
-    async getPublications() {
+    publicationsApiParams() {
       let params = {
         expand: '_metaTags',
         page: this.currentPage,
@@ -120,14 +116,13 @@ export default {
       if (this.authorFilterValue) {
         params['user_id'] = this.authorFilterValue;
       }
-      let result = await this.$http.$get(
-        constructUrl(`${config.api_url}/news`, params)
-      );
-      this.publications = result.data.models;
-      this.currentPage = result.data._meta.currentPage;
-      this.pageCount = result.data._meta.pageCount;
-      this.perPage = result.data._meta.perPage;
-      this.totalCount = result.data._meta.totalCount;
+      return params;
+    }
+  },
+  methods: {
+    async getUsers() {
+      let result = await this.$http.$get(`${config.api_url}/user`);
+      this.users = result.data.models;
     },
     fetchMoreItems() {
       this.perPage += 12;
@@ -147,13 +142,13 @@ export default {
       this.sortBy = NewsModel.CREATED_AT;
       this.sortDesc = SortDirection.ASK;
       this.authorFilterValue = null;
-      await this.getPublications();
+      await this.getPublications(this.publicationsApiParams);
     },
   },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #publications {
   .publications-grid {
     display: grid;
