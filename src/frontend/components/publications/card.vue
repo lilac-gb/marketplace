@@ -49,48 +49,6 @@ export default {
       line-height: 28px;
       margin-bottom: 34px;
     }
-
-    .icon {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      font-weight: 300;
-      font-size: 18px;
-      line-height: 21px;
-      margin-bottom: 13px;
-
-      &:last-of-type {
-        margin-bottom: 0;
-      }
-
-      &.icon::before {
-        content: '';
-        display:block;
-        background-repeat: no-repeat;
-        margin-right: 14px;
-      }
-
-      &.user::before {
-        height:24px;
-        width:23px;
-        background-size: 23px 24px;
-        background-image: url('~assets/pics/icons/user.svg');
-      }
-
-      &.create-at::before {
-        height:24px;
-        width:24px;
-        background-size: 24px 24px;
-        background-image: url('~assets/pics/icons/clock.svg');
-      }
-
-      &.views::before {
-        height:16px;
-        width:25px;
-        background-size: 25px 16px;
-        background-image: url('~assets/pics/icons/eye.svg');
-      }
-    }
   }
 }
 </style>

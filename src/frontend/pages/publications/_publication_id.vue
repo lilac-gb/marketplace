@@ -1,36 +1,71 @@
 <template>
-  <b-container id="publications" class="mt-4 mb-4 mp-container">
-    <div>
-
-    </div>
-    <div></div>
-    <div class="d-flex flex-row align-items-center">
-      <b-link
-        href="#"
-        :disabled="currentPage === 1"
-        @click.prevent="goLeft"
-        class="mr-3 button-scroll text-purple">
-        <font-awesome-icon :icon="['fas', 'chevron-left']"/>
-      </b-link>
-      <div class="publications-grid">
-        <publication-card
-          v-for="publication in publications"
-          :key="publication.id"
-          :publication="publication"/>
+  <div>
+    <b-container id="publication" class="mt-4 mb-4 mp-container">
+      <div v-if="publication">
+        <b-card
+          style="max-width: none !important;"
+          class="mb-4"
+          :img-src="publication.coverImages.i1200x500"
+          :img-alt="publication.name"
+          img-top
+          img-height="478"
+          img-width="1180"/>
+        <div class="mb-4 text-title">{{ publication.name }}</div>
+        <div class="d-flex flex-row">
+          <div class="card-details mr-4">
+            <div v-if="!!publication.user" class="icon user">{{ publication.user.name }}</div>
+            <div class="icon create-at">{{ timestampToDate(publication.created_at) }}</div>
+            <div class="icon views">{{ publication.views }}</div>
+            <div class="d-flex flex-row">
+              <a href="#" class="social-link">
+                <font-awesome-icon :icon="['fab', 'facebook-square']" />
+              </a>
+              <a href="#" class="social-link">
+                <font-awesome-icon :icon="['fab', 'twitter-square']" />
+              </a>
+              <a href="#" class="social-link">
+                <font-awesome-icon :icon="['fab', 'instagram-square']" />
+              </a>
+              <a href="#" class="social-link">
+                <font-awesome-icon :icon="['fab', 'whatsapp-square']" />
+              </a>
+            </div>
+          </div>
+          <div class="text-regular" v-html="publication.description"></div>
+        </div>
       </div>
-      <b-link
-        href="#"
-        :disabled="currentPage === pageCount"
-        @click.prevent="goRight"
-        class="ml-3 button-scroll text-purple">
-        <font-awesome-icon :icon="['fas', 'chevron-right']"/>
-      </b-link>
+      <div></div>
+    </b-container>
+    <div class="mt-4 mb-4 d-flex flex-row justify-content-center">
+      <div class="d-flex flex-row align-items-center">
+        <b-link
+          href="#"
+          :disabled="currentPage === 1"
+          @click.prevent="goLeft"
+          class="mr-3 button-scroll text-purple">
+          <font-awesome-icon :icon="['fas', 'chevron-left']"/>
+        </b-link>
+        <div class="publications-grid">
+          <publication-card
+            v-for="p in publications"
+            :key="p.id"
+            :publication="p"/>
+        </div>
+        <b-link
+          href="#"
+          :disabled="currentPage === pageCount"
+          @click.prevent="goRight"
+          class="ml-3 button-scroll text-purple">
+          <font-awesome-icon :icon="['fas', 'chevron-right']"/>
+        </b-link>
+      </div>
     </div>
-  </b-container>
+  </div>
 </template>
 
 <script>
 import publications from '@/mixins/publications';
+import utils from '@/mixins/utils';
 import { NewsModel, SortDirection } from '@/shared/constants';
 import PublicationsCard from '@/components/publications/card';
 
@@ -40,7 +75,8 @@ export default {
     'publication-card': PublicationsCard,
   },
   mixins: [
-    publications
+    publications,
+    utils
   ],
   async fetch() {
     await Promise.all([
@@ -104,5 +140,16 @@ export default {
 a.disabled {
   pointer-events: none;
   color: $gray;
+}
+
+.social-link {
+  display: block;
+  font-size: 32px;
+  margin-right: 34px;
+  color: $gray;
+
+  &:last-of-type {
+    margin-right: 0;
+  }
 }
 </style>
