@@ -12,7 +12,7 @@ module.exports = {
       instance_var: 'PORT',
       env: {
         "PORT": 3000,
-        "SERVER_HOST": "127.0.0.1",
+        "SERVER_HOST": "localhost",
         "NODE_APP_INSTANCE": "development"
       },
     },
