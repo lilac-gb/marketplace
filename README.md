@@ -97,3 +97,9 @@ or send in headers
 
 `Accept:application/json`
 
+## Start frontend on server 
+
+```bash
+pm2 start npm --name "nuxt" -- start
+```
+
