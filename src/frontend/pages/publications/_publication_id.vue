@@ -93,7 +93,7 @@ export default {
       perPage: 3,
       totalCount: null,
       sortBy: NewsModel.CREATED_AT,
-      sortDesc: SortDirection.ASK,
+      sortDesc: SortDirection.ASK
     };
   },
   computed: {
@@ -119,7 +119,7 @@ export default {
         await this.getPublications(this.publicationsApiParams);
       }
     }
-  },
+  }
 }
 </script>
 

@@ -76,7 +76,7 @@ export default {
   ],
   async fetch() {
     await Promise.all([
-      this.getPublications(this.publicationsApiParams),
+      this.getPublications(this.publicationsApiParams, true),
       this.getUsers()
     ]);
   },
@@ -105,7 +105,6 @@ export default {
     },
     publicationsApiParams() {
       let params = {
-        expand: '_metaTags',
         page: this.currentPage,
         pageSize: this.perPage,
         sortBy: this.sortBy,
