@@ -5,3 +5,10 @@ export function timestampToDate(timestamp) {
   let date = new Date(timestamp * 1000);
   return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
 }
+
+export function getFullName(user) {
+  let firstName = user.first_name ? user.first_name : '';
+  let lastName = user.last_name ? user.last_name : '';
+
+  return `${firstName} ${lastName}`;
+}

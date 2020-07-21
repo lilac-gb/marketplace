@@ -62,6 +62,7 @@ import SortingButton from '@/components/SortingButton';
 import config from '@/config';
 import { NewsModel, SortDirection } from '@/shared/constants';
 import publications from '@/mixins/publications';
+import { getFullName } from '@/shared/utils';
 
 export default {
   name: 'Publications',
@@ -98,7 +99,7 @@ export default {
       return this.users.map(u => {
         return {
           value: u.id,
-          text: u.name
+          text: getFullName(u)
         }
       });
     },
