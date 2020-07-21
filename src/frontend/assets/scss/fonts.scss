@@ -11,3 +11,19 @@
   font-family: 'Roboto Thin';
   src: url("~assets/fonts/Roboto/Roboto-Thin.ttf");
 }
+
+.text-title {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 36px;
+  line-height: 42px;
+  letter-spacing: 0.02em;
+}
+
+.text-regular {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0.02em;
+}
