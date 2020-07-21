@@ -15,7 +15,6 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-
 class UserController extends ActiveController {
     public $modelClass = 'api\models\User';
 
