@@ -105,6 +105,7 @@ export default {
     },
     publicationsApiParams() {
       let params = {
+        expand: '_metaTags',
         page: this.currentPage,
         pageSize: this.perPage,
         sortBy: this.sortBy,

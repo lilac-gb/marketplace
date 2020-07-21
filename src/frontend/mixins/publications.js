@@ -13,8 +13,13 @@ export default {
       this.perPage = result.data._meta.perPage;
       this.totalCount = result.data._meta.totalCount;
     },
-    async getPublication(id) {
-      let result = await this.$http.$get(`${config.api_url}/news/${id}`);
+    async getPublication(id, metatags = false) {
+      let params = {};
+      if (metatags) {
+        params['expand'] = '_metaTags';
+      }
+
+      let result = await this.$http.$get(constructUrl(`${config.api_url}/news/${id}`, params));
       this.publication = result.data;
     }
   }

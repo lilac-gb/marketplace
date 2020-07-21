@@ -99,7 +99,6 @@ export default {
   computed: {
     publicationsApiParams() {
       return {
-        expand: '_metaTags',
         page: this.currentPage,
         pageSize: this.perPage,
         sortBy: this.sortBy,
