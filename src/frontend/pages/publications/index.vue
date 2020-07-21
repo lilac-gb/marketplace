@@ -98,7 +98,7 @@ export default {
       return this.users.map(u => {
         return {
           value: u.id,
-          text: `${u.first_name} ${u.last_name}`
+          text: u.name
         }
       });
     },

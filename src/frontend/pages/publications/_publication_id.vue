@@ -3,8 +3,8 @@
     <b-container id="publication" class="mt-4 mb-4 mp-container">
       <div v-if="publication">
         <b-card
-          style="max-width: none !important;"
-          class="mb-4"
+          v-if="publication.coverImages.i1200x500"
+          class="mb-4 big-image-card"
           :img-src="publication.coverImages.i1200x500"
           :img-alt="publication.name"
           img-top
@@ -151,5 +151,9 @@ a.disabled {
   &:last-of-type {
     margin-right: 0;
   }
+}
+
+.big-image-card {
+  max-width: none !important;
 }
 </style>
