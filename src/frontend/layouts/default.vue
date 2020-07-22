@@ -38,6 +38,7 @@ export default {
 
 .custom-alert {
   z-index: 100;
+  width: max-content;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
   background: $purple;
   color: white;

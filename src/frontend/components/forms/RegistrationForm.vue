@@ -1,9 +1,15 @@
 <template>
   <b-row class="justify-content-center">
     <b-col lg="6" md="9" sm="12">
+      <div class="d-flex align-content-center justify-content-between">
+        <h2 class="mb-3">Регистрация</h2>
+        <h2>или</h2>
+        <b-link :to="`/login`">
+          <h2>Войти</h2>
+        </b-link>
+      </div>
       <ValidationObserver v-slot="{ handleSubmit }">
         <b-form class="w-100 m-auto" @submit.prevent="handleSubmit(onSubmit)">
-          <h1>Регистрация</h1>
           <ValidationProvider v-slot="v" rules="required|username">
             <b-form-group label="Имя:" name="first_name">
               <b-form-input

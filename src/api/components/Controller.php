@@ -2,6 +2,10 @@
 
 namespace api\components;
 
+header("Access-Control-Allow-Origin: *");
+header('Access-Control-Request-Method: POST, GET, OPTIONS');
+header('Access-Control-Max-Age: 3600');
+
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;

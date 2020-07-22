@@ -92,7 +92,7 @@ class UserController extends ActiveController {
             return Yii::$app->user->identity;
         }
 
-        return $loginForm->errors;
+        return $loginForm;
     }
 
     public function actionCheckActivateKey(): array
@@ -186,7 +186,10 @@ class UserController extends ActiveController {
 
                 return ['redirect' => Url::to('/')];
             } else {
-                return $model->errors;
+                return [
+                    'statusCode' => 400,
+                    'errors' => $model->errors,
+                ];
             }
         }
 
@@ -237,20 +240,23 @@ class UserController extends ActiveController {
         $user = User::findOne($id);
 
         if (empty($user)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Такого пользователя не существует');
         }
 
         $hash = Yii::$app->request->post('hash');
 
+        // return str_replace(' ', '+', $hash);
+
         try {
-            $confirmationHash = base64_decode($hash);
+            $confirmationHash = base64_decode(str_replace(' ', '+', $hash));
+
             $email = Yii::$app->security->decryptByKey($confirmationHash, $user->confirmation_secret);
 
             if (!$email) {
-                throw new ErrorException();
+                throw new ErrorException('Ошибка токена');
             }
         } catch (ErrorException $e) {
-            throw new BadRequestHttpException();
+            throw new BadRequestHttpException('Неверный токен!');
         }
 
         $password = Yii::$app->security->generateRandomString(8);
@@ -264,7 +270,9 @@ class UserController extends ActiveController {
 
         UserService::sendPassword($user, $password);
 
-        return ['status' => 200];
+        Yii::$app->user->refreshToken();
+
+        return Yii::$app->user->identity;
     }
 
     public function actionLogout()

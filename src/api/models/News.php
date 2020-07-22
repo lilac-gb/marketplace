@@ -9,6 +9,8 @@ use yii\helpers\ArrayHelper;
 
 class News extends \common\models\News
 {
+    public $my = false;
+
     public function fields()
     {
         return [
@@ -96,6 +98,14 @@ class News extends \common\models\News
         if (isset($params)) {
             $this->load($params);
         }
+
+        if ($this->my) {
+            $query->andWhere(['user_id' => Yii::$app->user->id])
+                ->andWhere(['<>', 'status', self::STATUS_DELETED]);
+        } else {
+            $query->andWhere(['=', 'status', self::STATUS_PUBLISHED]);
+        }
+
         $query->andFilterWhere(['like', 'LOWER(name)', $this->name]);
 
         if (isset($params['sortBy']) && isset($params['sortDesc'])) {

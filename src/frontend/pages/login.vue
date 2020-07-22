@@ -1,5 +1,5 @@
 <template>
-  <b-container class="pt-5 pb-5">
+  <b-container class="pt-5 pb-5 mt-4 h-100">
     <LoginForm />
   </b-container>
 </template>
@@ -12,6 +12,6 @@ export default {
   components: { LoginForm },
   middleware: ['auth'],
   auth: 'guest',
-  layout: 'empty',
+  layout: 'default',
 };
 </script>

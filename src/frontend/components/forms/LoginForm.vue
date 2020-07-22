@@ -1,9 +1,15 @@
 <template>
   <b-row class="justify-content-center">
     <b-col lg="6" md="9" sm="12">
+      <div class="d-flex align-content-center justify-content-between">
+        <h2 class="mb-3">Войти</h2>
+        <h2>или</h2>
+        <b-link :to="`/registration`">
+          <h2>Регистрация</h2>
+        </b-link>
+      </div>
       <ValidationObserver v-slot="{ handleSubmit }">
         <b-form class="w-100" @submit.prevent="handleSubmit(login)">
-          <h1 class="mb-3">Войти</h1>
           <ValidationProvider v-slot="v" rules="required|email">
             <b-form-group label="Email" label-for="email">
               <b-form-input
@@ -70,7 +76,7 @@ export default {
           },
         });
       } catch (e) {
-        this.error = e.response.data;
+        this.error = e.response.data.password;
       }
     },
   },
