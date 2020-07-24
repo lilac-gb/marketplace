@@ -5,35 +5,49 @@
 <script>
 import axios from 'axios';
 
-let response;
 export default {
   name: 'Activation',
-  layout: 'default',
-  async asyncData({query, store, redirect}) {
-    if (query.hash && query.id) {
+  layout: 'empty',
+  async asyncData({ query, store, redirect, params }) {
+    if (query.hash && params.id) {
       try {
-        await axios.post(
-          `${process.env.api_url}/user/${query.id}/activation-email`,
-          {hash: query.hash},
-        ).then(response => {
-          console.log(response.data.token);
-          // TODO here we catch token and can login, but it not works
-          // !!response && !!response.data && this.$auth.setUserToken(response.data.token);
-        });
-        store.commit('updateMessage', 'Email успешно подтвержден!');
-        redirect('/cabinet');
+        const response = await axios.post(
+          `${process.env.api_url}/user/${params.id}/activation-email`,
+          {
+            hash: query.hash,
+          }
+        );
+
+        if (response.data.success) {
+          store.commit('updateMessage', 'Email успешно подтвержден!');
+          return { token: response.data.token };
+        } else {
+          store.commit('updateMessage', response.date.error || 'Произошла ошибка запроса!');
+          redirect('/');
+        }
       } catch (e) {
         let error = JSON.parse(e.request);
-        store.commit('updateMessage', (error.response.data.message || 'Произошла ошибка запроса!'));
+        store.commit(
+          'updateMessage',
+          error.response.data.message || 'Произошла ошибка запроса!'
+        );
         redirect('/');
       }
     }
+  },
+  data: () => ({
+    token: '',
+  }),
+  mounted() {
+    this.$auth.loginWith('local', {
+      data: { token: this.token },
+    });
   },
 };
 </script>
 
 <style lang="scss">
-  #activate {
-    height: 50vh;
-  }
+#activate {
+  height: 50vh;
+}
 </style>
