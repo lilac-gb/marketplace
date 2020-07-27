@@ -13,12 +13,6 @@ export default {
     appName: process.env.APP_NAME || 'Yii Nuxt',
   },
 
-  router: {
-    extendRoutes(routes) {
-      routes.find((r) => r.path.includes('/activation'))
-        .path = '/users/:id/activation-email';
-    },
-  },
   /*
    ** Headers of the page
    */
