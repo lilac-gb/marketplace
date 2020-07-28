@@ -133,7 +133,7 @@
             </div>
             <div class="d-flex flex-row w-100 justify-content-between">
               <div class="w-50">
-                <ValidationProvider v-slot="v" class="w-50" vid="changePass">
+                <ValidationProvider v-slot="v" class="w-50">
                   <b-form-group
                     id="input-group-5"
                     label-for="input-5"
