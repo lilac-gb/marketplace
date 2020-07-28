@@ -15,9 +15,9 @@
           >
             <div class="d-flex flex-row flex-wrap border-bottom">
               <ValidationProvider
-                v-slot="v"
-                rules="required|min:2|max:100|name"
-                class="w-50"
+                  v-slot="v"
+                  rules="min:2|max:100|name"
+                  class="w-50"
               >
                 <b-form-group
                   id="input-group-1"
@@ -41,9 +41,9 @@
                 </b-form-group>
               </ValidationProvider>
               <ValidationProvider
-                v-slot="v"
-                rules="required|min:2|max:100|name"
-                class="w-50"
+                  v-slot="v"
+                  rules="min:2|max:100|name"
+                  class="w-50"
               >
                 <b-form-group
                   id="input-group-2"
@@ -67,9 +67,9 @@
                 </b-form-group>
               </ValidationProvider>
               <ValidationProvider
-                v-slot="v"
-                rules="required|min:2|max:100|username"
-                class="w-50"
+                  v-slot="v"
+                  rules="min:2|max:100|username"
+                  class="w-50"
               >
                 <b-form-group
                   id="input-group-3"
@@ -100,9 +100,9 @@
             </div>
             <div class="d-flex flex-row flex-wrap border-bottom">
               <ValidationProvider
-                v-slot="v"
-                rules="required|min:5|max:100|email"
-                class="w-50"
+                  v-slot="v"
+                  rules="min:5|max:100|email"
+                  class="w-50"
               >
                 <b-form-group
                   id="input-group-4"
@@ -120,7 +120,7 @@
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid,
                     }"
-                  ></b-form-input>
+                  />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -133,7 +133,7 @@
             </div>
             <div class="d-flex flex-row w-100 justify-content-between">
               <div class="w-50">
-                <ValidationProvider v-slot="v" rules="required" class="w-50">
+                <ValidationProvider v-slot="v" class="w-50">
                   <b-form-group
                     id="input-group-5"
                     label-for="input-5"
@@ -143,24 +143,23 @@
                     <b-form-input
                       id="input-5"
                       v-model="user.oldPassword"
-                      required
                       type="password"
                       placeholder="Введите старый пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
                         'is-valid': v.valid,
                       }"
-                    ></b-form-input>
+                    />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                       {{ v.errors[0] }}
                     </b-form-invalid-feedback>
                   </b-form-group>
                 </ValidationProvider>
                 <ValidationProvider
-                  v-slot="v"
-                  rules="required|min:8|atLeastOneDigAndSpec|atLeastLLetter|atLeastULetter|confirmed:confirmation"
-                  class="w-50"
-                  vid="confirmation"
+                    v-slot="v"
+                    rules="min:8|atLeastOneDigAndSpec|atLeastLLetter|atLeastULetter|confirmed:confirmation"
+                    class="w-50"
+                    vid="confirmation"
                 >
                   <b-form-group
                     id="input-group-6"
@@ -171,23 +170,22 @@
                     <b-form-input
                       id="input-6"
                       v-model="user.password"
-                      required
                       type="password"
                       placeholder="Введите новый пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
                         'is-valid': v.valid,
                       }"
-                    ></b-form-input>
+                    />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                       {{ v.errors[0] }}
                     </b-form-invalid-feedback>
                   </b-form-group>
                 </ValidationProvider>
                 <ValidationProvider
-                  v-slot="v"
-                  rules="required|confirmed:confirmation|min:8"
-                  class="w-50"
+                    v-slot="v"
+                    rules="confirmed:confirmation|min:8"
+                    class="w-50"
                 >
                   <b-form-group
                     id="input-group-7"
@@ -198,14 +196,13 @@
                     <b-form-input
                       id="input-7"
                       v-model="user.repeatPassword"
-                      required
                       type="password"
                       placeholder="Повторите пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
                         'is-valid': v.valid,
                       }"
-                    ></b-form-input>
+                    />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                       {{ v.errors[0] }}
                     </b-form-invalid-feedback>
