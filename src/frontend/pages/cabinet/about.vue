@@ -270,8 +270,9 @@
 </template>
 
 <script>
-import Breadcrumbs from '../../components/Breadcrumbs';
-import CabinetNav from '../../components/cabinet/CabinetNav';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import CabinetNav from '@/components/cabinet/CabinetNav';
+import config from '@/config/config';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 export default {
   name: 'About',
@@ -306,8 +307,16 @@ export default {
   }),
   computed: {},
   methods: {
-    onSubmit() {
-      alert(JSON.stringify(this.user));
+    async onSubmit() {
+      const response = await this.$axios.post(`${config.api_url}/user/save`, {
+        username: this.user.username,
+        first_name: this.user.first_name,
+        last_name: this.user.last_name,
+        email: this.user.email,
+        password: this.user.password,
+        oldPassword: this.user.oldPassword,
+      });
+      console.log(response);
     },
     onReset(evt) {
       evt.preventDefault();
