@@ -49,9 +49,9 @@ class UserController extends ActiveController
             'recovery',
             'logout',
             'me',
-            'check-activate-key', // POST token returns user
-            'change-password',
+            'check-activate-key',
             'activation-email',
+            'confirm-email',
             'imgAttachApi',
             'save',
         ];
@@ -63,19 +63,21 @@ class UserController extends ActiveController
     {
         /** @var User $user */
         /** @var User $pass */
-        $user = Yii::$app->user->getIdentity();
+        $user = User::findOne(Yii::$app->user->id);
         $postData = Yii::$app->request->post();
-
         $oldEmail = $user->email;
-
         $user->scenario = User::SCENARIO_UPDATE;
 
-        if (isset($postData['oldPassword']) && isset($postData['password']) && !empty($postData['oldPassword']) && !empty($postData['password'])) {
+        if (isset($postData['oldPassword'])
+            && isset($postData['password'])
+            && !empty($postData['oldPassword'])
+            && !empty($postData['password'])
+        ) {
             $pass = $user;
             $pass->scenario = User::SCENARIO_UPDATE_PASSWORD;
 
-            if ($pass->load(Yii::$app->request->post())) {
-                if (!Yii::$app->security->validatePassword($postData['password'], $user->password_hash)) {
+            if ($pass->load(Yii::$app->request->post(), '')) {
+                if (!Yii::$app->security->validatePassword($postData['oldPassword'], $user->password_hash)) {
                     return [
                         'statusCode' => 400,
                         'errors' => [
@@ -84,7 +86,7 @@ class UserController extends ActiveController
                     ];
                 }
 
-                $user->password = $user->setPassword($postData['oldPassword']);
+                $user->setPassword($postData['password']);
             }
         } else if ((isset($postData['oldPassword']) && !empty($postData['oldPassword']))
             || (isset($postData['password']) && !empty($postData['password']))
@@ -92,13 +94,26 @@ class UserController extends ActiveController
             return [
                 'statusCode' => 400,
                 'errors' => [
-                    'Оба поля обязательны для заполнения',
+                    'Для смены пароля, оба поля обязательны для заполнения',
                 ],
             ];
         }
 
-        if ($user->load($postData) && $user->validate()) {
+        if ($user->load($postData, '') && $user->validate()) {
+
             if ($user->email !== $oldEmail) {
+                $confirmationSecret = Yii::$app->security->generateRandomString();
+                $encrypt = Yii::$app->security->encryptByKey($user->email, $confirmationSecret);
+                $confirmationHash = base64_encode($encrypt);
+
+                UserService::sendChangeEmailConfirmation($user, $user->email, $confirmationHash);
+
+                $user->updateAttributes([
+                    'email' => $oldEmail,
+                    'status' => User::STATUS_EMAIL_NC,
+                    'confirmation_secret' => $confirmationSecret,
+                ]);
+
                 return [
                     'statusCode' => 200,
                     'message' => [
@@ -107,10 +122,25 @@ class UserController extends ActiveController
                 ];
             }
 
-            $user->save(false);
+            if ($user->save(false)) {
+                return [
+                    'statusCode' => 200,
+                    'message' => [
+                        'Данные успешно сохранены!',
+                    ],
+                ];
+            }
+
+            return [
+                'statusCode' => 400,
+                'errors' => $user->errors,
+            ];
         }
 
-        return $user;
+        return [
+            'statusCode' => 400,
+            'errors' => $user->errors,
+        ];
     }
 
     public function actionMe()
@@ -160,24 +190,6 @@ class UserController extends ActiveController
                 'valid' => true,
             ],
         ];
-    }
-
-    public function actionChangePassword()
-    {
-        $request = Yii::$app->request;
-        $changePasswordForm = new ChangePasswordForm();
-        $changePasswordForm->oldPassword = $request->post('oldPassword');
-        $changePasswordForm->newPassword = $request->post('newPassword');
-
-        if ($changePasswordForm->validate()) {
-            $changePasswordForm->changePassword();
-
-            Yii::$app->user->refreshToken();
-
-            return [];
-        }
-
-        return $changePasswordForm;
     }
 
     private function generateNickname($nik)
@@ -298,18 +310,49 @@ class UserController extends ActiveController
             throw new BadRequestHttpException();
         }
 
-        $userword = Yii::$app->security->generateRandomString(8);
+        $password = Yii::$app->security->generateRandomString(8);
 
         $user->updateAttributes([
             'status' => User::STATUS_ACTIVE,
             'role' => User::ROLE_USER,
-            'password_hash' => Yii::$app->security->generatePasswordHash($userword),
+            'password_hash' => Yii::$app->security->generatePasswordHash($password),
             'confirmation_secret' => '',
         ]);
 
-        UserService::sendPassword($user, $userword);
+        UserService::sendPassword($user, $password);
 
         return ['status' => 200];
+    }
+
+    public function actionConfirmEmail($id)
+    {
+        $user = User::findOne($id);
+
+        if (empty($user)) {
+            throw new NotFoundHttpException('Нет такого пользователя');
+        }
+
+        $hash = Yii::$app->request->post('hash');
+
+        try {
+            $confirmationHash = base64_decode(str_replace(' ', '+', $hash));
+
+            $email = Yii::$app->security->decryptByKey($confirmationHash, $user->confirmation_secret);
+
+            if (!$email) {
+                throw new ErrorException('Ошибка токена');
+            }
+        } catch (ErrorException $e) {
+            throw new BadRequestHttpException('Неверный токен!');
+        }
+
+        $user->updateAttributes([
+            'email' => $email,
+            'status' => User::STATUS_ACTIVE,
+            'confirmation_secret' => '',
+        ]);
+
+        return $user;
     }
 
     public function actionLogout()

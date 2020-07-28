@@ -52,12 +52,11 @@ class UserService
 
     public static function sendChangeEmailConfirmation(User $model, string $newEmail, string $confirmationHash)
     {
-
-        $link = Yii::$app->params['domainFrontend']
-            . '/users/'
-            . $model->id
-            . '/confirm-email?hash='
-            . urlencode($confirmationHash);
+        $link = Yii::$app->params['domainFrontend'] .
+            '/confirmation?id=' .
+            $model->id .
+            '&hash=' .
+            $confirmationHash;
 
         return EmailService::sendWithView(
             $newEmail,
