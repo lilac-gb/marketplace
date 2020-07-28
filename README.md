@@ -34,11 +34,6 @@ docker logs mp_php // mp_php name of container
 127.0.0.1 pma.marketplace.docker
 ```
 
-### Generate seed data in db (OPTIONAL)
-#####List of seed data items
-1. 10 users
-2. 200 publications
-
 *!!script will erase all data from related tables!!*
 
 ### Make init migration and fill admin and menus in BD
@@ -49,7 +44,11 @@ docker exec -it mp_php /bin/bash                          // Login container
 exit                                                      // to logout from container
 ```
 
-### Seed test items
+### Generate seed data in db (OPTIONAL)
+#####List of seed data items
+1. 10 users
+2. 100 publications
+3. 100 ads
 
 ```bash
 docker exec -it mp_php /bin/bash
