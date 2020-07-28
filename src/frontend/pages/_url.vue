@@ -16,7 +16,7 @@
 <script>
 import config from '@/config';
 import { constructUrl } from '@/shared/api';
-import Breadcrumbs from '@/components/breadcrumbs';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default {
   components: { Breadcrumbs },
