@@ -41,18 +41,20 @@ docker logs mp_php // mp_php name of container
 
 *!!script will erase all data from related tables!!*
 
-```bash
-docker exec -it mp_php /bin/bash
-./yii seeder
-exit
-```
-
 ### Make init migration and fill admin and menus in BD
 
 ```bash
 docker exec -it mp_php /bin/bash                          // Login container
 ./yii user/generate-admin && ./yii menu/generate-default  // Generate admin and menu
 exit                                                      // to logout from container
+```
+
+### Seed test items
+
+```bash
+docker exec -it mp_php /bin/bash
+./yii seeder
+exit
 ```
 
 ### Migration command with docker
