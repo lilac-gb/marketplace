@@ -97,6 +97,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['username', 'unique', 'message' => 'Такой никнейм уже есть'],
+            ['email', 'unique', 'message' => 'Такой пользователь уже есть'],
             [[
                 'password_hash', 'password_reset_token', 'verification_token',
                 'username', 'last_name', 'first_name', 'confirmation_secret', 'role',

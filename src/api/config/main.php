@@ -68,14 +68,19 @@ return [
                 ) {
                     $response->data = null;
                 } else {
-                    $response->data = array_merge([
-                        'success' => $success,
-                        'statusCode' => $response->statusCode,
-                        'data' => $response->data,
-                    ], $tokenData);
-
-                    //TODO this gives to API any time 200
-                    // $response->statusCode = 200;
+                    if ($response->data &&
+                        isset($response->data['statusCode']) &&
+                        $response->data['statusCode'] != 200) {
+                        $response->setStatusCode($response->data['statusCode']);
+                        $response->data;
+                    } else {
+                        $response->data = array_merge(
+                            [
+                                'success' => $success,
+                                'statusCode' => $response->statusCode,
+                                'data' => $response->data,
+                            ], $tokenData);
+                    }
                 }
             },
         ],

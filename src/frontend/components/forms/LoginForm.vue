@@ -1,9 +1,15 @@
 <template>
   <b-row class="justify-content-center">
     <b-col lg="6" md="9" sm="12">
+      <div class="d-flex align-content-center justify-content-between">
+        <h2 class="mb-3">Войти</h2>
+        <h2>или</h2>
+        <b-link :to="`/registration`">
+          <h2>Регистрация</h2>
+        </b-link>
+      </div>
       <ValidationObserver v-slot="{ handleSubmit }">
         <b-form class="w-100" @submit.prevent="handleSubmit(login)">
-          <h1 class="mb-3">Войти</h1>
           <ValidationProvider v-slot="v" rules="required|email">
             <b-form-group label="Email" label-for="email">
               <b-form-input
@@ -34,6 +40,9 @@
                 }"
               >
               </b-form-input>
+              <b-form-invalid-feedback :class="{ 'd-block': error }">
+                {{ error }}
+              </b-form-invalid-feedback>
               <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                 {{ v.errors[0] }}
               </b-form-invalid-feedback>
@@ -62,16 +71,16 @@ export default {
 
   methods: {
     async login() {
-      try {
-        await this.$auth.loginWith('local', {
-          data: {
-            email: this.email,
-            password: this.password,
-          },
-        });
-      } catch (e) {
-        this.error = e.response.data;
-      }
+      await this.$auth.loginWith('local', {
+        data: {
+          email: this.email,
+          password: this.password,
+        },
+      }).then(response => {
+        console.log(response)
+      }).catch(error => {
+        this.error = error.response.data.data.password
+      });
     },
   },
 };

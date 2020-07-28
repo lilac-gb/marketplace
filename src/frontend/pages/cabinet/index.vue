@@ -18,7 +18,7 @@ export default {
   }),
   computed: {
     fullUserName() {
-      return this.user.first_name + ' ' + this.user.last_name;
+      return `${this.user.first_name}${this.user.last_name ? ` ${this.user.last_name}` : ''}`;
     },
   },
 };
