@@ -103,3 +103,15 @@ or send in headers
 pm2 start npm --name "nuxt" -- start
 ```
 
+### Generate seed data in db (OPTIONAL)
+#####List of seed data items
+1. 10 users
+2. 200 publications
+
+*!!script will erase all data from related tables!!*
+
+```bash
+docker exec -it mp_php /bin/bash
+./yii seeder
+exit
+```
