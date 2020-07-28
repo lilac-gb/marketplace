@@ -15,9 +15,9 @@
           >
             <div class="d-flex flex-row flex-wrap border-bottom">
               <ValidationProvider
-                  v-slot="v"
-                  rules="min:2|max:100|name"
-                  class="w-50"
+                v-slot="v"
+                rules="min:2|max:100|name"
+                class="w-50"
               >
                 <b-form-group
                   id="input-group-1"
@@ -41,9 +41,9 @@
                 </b-form-group>
               </ValidationProvider>
               <ValidationProvider
-                  v-slot="v"
-                  rules="min:2|max:100|name"
-                  class="w-50"
+                v-slot="v"
+                rules="min:2|max:100|name"
+                class="w-50"
               >
                 <b-form-group
                   id="input-group-2"
@@ -67,9 +67,9 @@
                 </b-form-group>
               </ValidationProvider>
               <ValidationProvider
-                  v-slot="v"
-                  rules="min:2|max:100|username"
-                  class="w-50"
+                v-slot="v"
+                rules="min:2|max:100|username"
+                class="w-50"
               >
                 <b-form-group
                   id="input-group-3"
@@ -100,9 +100,9 @@
             </div>
             <div class="d-flex flex-row flex-wrap border-bottom">
               <ValidationProvider
-                  v-slot="v"
-                  rules="min:5|max:100|email"
-                  class="w-50"
+                v-slot="v"
+                rules="min:5|max:100|email"
+                class="w-50"
               >
                 <b-form-group
                   id="input-group-4"
@@ -156,10 +156,10 @@
                   </b-form-group>
                 </ValidationProvider>
                 <ValidationProvider
-                    v-slot="v"
-                    rules="min:8|atLeastOneDigAndSpec|atLeastLLetter|atLeastULetter|confirmed:confirmation"
-                    class="w-50"
-                    vid="confirmation"
+                  v-slot="v"
+                  rules="min:8|atLeastOneDigAndSpec|atLeastLLetter|atLeastULetter|confirmed:confirmation"
+                  class="w-50"
+                  vid="confirmation"
                 >
                   <b-form-group
                     id="input-group-6"
@@ -183,9 +183,9 @@
                   </b-form-group>
                 </ValidationProvider>
                 <ValidationProvider
-                    v-slot="v"
-                    rules="confirmed:confirmation|min:8"
-                    class="w-50"
+                  v-slot="v"
+                  rules="confirmed:confirmation|min:8"
+                  class="w-50"
                 >
                   <b-form-group
                     id="input-group-7"
