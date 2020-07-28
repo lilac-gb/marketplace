@@ -6,15 +6,17 @@
         <CabinetNav />
       </b-col>
       <b-col>
-        <h1 class="text-center">Добро пожаловать, {{ fullUserName }}</h1>
+        <div class="p-3 border bg-light">Тута публикации</div>
       </b-col>
     </b-row>
   </b-container>
 </template>
+
 <script>
 import Breadcrumbs from '../../components/Breadcrumbs';
 import CabinetNav from '../../components/cabinet/CabinetNav';
 export default {
+  name: 'Publications',
   components: { CabinetNav, Breadcrumbs },
   middleware: ['auth'],
   async fetch() {
@@ -34,3 +36,5 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped></style>

@@ -1,8 +1,8 @@
-import config from "./config/config";
+import config from './config/config';
 
 require('dotenv').config();
-const {join} = require('path');
-const {copySync, removeSync} = require('fs-extra');
+const { join } = require('path');
+const { copySync, removeSync } = require('fs-extra');
 
 export default {
   mode: 'spa',
@@ -17,20 +17,20 @@ export default {
   head: {
     title: process.env.npm_package_name || '',
     meta: [
-      {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
         hid: 'description',
         name: 'description',
         content: process.env.npm_package_description || '',
       },
     ],
-    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
   /*
    ** Customize the progress-bar color
    */
-  loading: {color: '#fff'},
+  loading: { color: '#fff' },
   /*
    ** Global CSS
    */
@@ -87,18 +87,18 @@ export default {
           login: {
             url: `${config.api_url}/user/login`,
             method: 'post',
-            propertyName: 'token'
+            propertyName: 'token',
           },
           user: {
             url: `${config.api_url}/user/me`,
             method: 'get',
-            propertyName: 'data'
+            propertyName: 'data',
           },
           logout: {
             url: `${config.base_host}/user/logout`,
           },
-        }
-      }
+        },
+      },
     },
     redirect: {
       home: '/cabinet',

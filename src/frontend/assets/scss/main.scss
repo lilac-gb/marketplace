@@ -21,3 +21,24 @@ body {
   font-size: $font-size;
   font-family: Roboto Regular, sans-serif;
 }
+
+.custom-control-label::before {
+  border-color: $purple;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: $purple;
+  background-color: $purple;
+}
+
+.custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {
+  background-color: $purple;
+}
+
+.custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
+  background-color: white;
+}
+
+.custom-control-input[disabled] ~ .custom-control-label, .custom-control-input:disabled ~ .custom-control-label {
+  color: black;
+}

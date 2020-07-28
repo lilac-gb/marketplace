@@ -16,19 +16,25 @@
     <div v-show="dropdown" class="user__dropdown">
       <ul class="user__dropdown-menu">
         <li>
-          <b-link class="d-flex align-items-center pt-1 pb-2">
+          <b-link
+            class="d-flex align-items-center pt-1 pb-2"
+            to="/cabinet/about"
+          >
             <img src="~assets/pics/icons/user.svg" alt="icon" />
             <span>Мои данные</span>
           </b-link>
         </li>
         <li>
-          <b-link class="d-flex align-items-center pt-1 pb-2">
+          <b-link class="d-flex align-items-center pt-1 pb-2" to="/cabinet/ads">
             <img src="~assets/pics/icons/announcement.svg" alt="icon" />
             <span>Мои объявления</span>
           </b-link>
         </li>
         <li>
-          <b-link class="d-flex align-items-center pt-1 pb-2">
+          <b-link
+            class="d-flex align-items-center pt-1 pb-2"
+            to="/cabinet/publications"
+          >
             <img src="~assets/pics/icons/pen.svg" alt="icon" />
             <span>Мои публикации</span>
           </b-link>
