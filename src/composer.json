@@ -38,9 +38,10 @@
         "2amigos/yii2-taggable-behavior": "~1.0",
         "unclead/yii2-multiple-input": "~2.0",
         "sentry/sdk": "2.1.0",
-      "yiisoft/yii2-redis": "^2.0",
+        "yiisoft/yii2-redis": "^2.0",
         "zxbodya/yii2-gallery-manager": "*@dev",
-        "zxbodya/yii2-image-attachment": "*@dev"
+        "zxbodya/yii2-image-attachment": "*@dev",
+        "tebazil/yii2-db-seeder": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
