@@ -32,9 +32,9 @@
                     placeholder="Введите имя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid,
+                      'is-valid': v.valid && v.changed,
                     }"
-                  ></b-form-input>
+                  />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -58,9 +58,9 @@
                     placeholder="Введите фамилию"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid,
+                      'is-valid': v.valid && v.changed,
                     }"
-                  ></b-form-input>
+                  />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -84,9 +84,9 @@
                     placeholder="Введите имя пользователя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid,
+                      'is-valid': v.valid && v.changed,
                     }"
-                  ></b-form-input>
+                  />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -118,7 +118,7 @@
                     placeholder="Введите e-mail адрес"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid,
+                      'is-valid': v.valid && v.changed,
                     }"
                   />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -147,7 +147,7 @@
                       placeholder="Введите старый пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
-                        'is-valid': v.valid,
+                        'is-valid': v.valid && v.changed,
                       }"
                     />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -174,7 +174,7 @@
                       placeholder="Введите новый пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
-                        'is-valid': v.valid,
+                        'is-valid': v.valid && v.changed,
                       }"
                     />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -200,7 +200,7 @@
                       placeholder="Повторите пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
-                        'is-valid': v.valid,
+                        'is-valid': v.valid && v.changed,
                       }"
                     />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
