@@ -2,12 +2,9 @@
 
 namespace api\models;
 
-use common\models\AdSection;
-use common\services\AdService;
 use Yii;
+use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
-use yii\db\Expression;
-use yii\helpers\ArrayHelper;
 
 /**
  * @property int   status
@@ -37,23 +34,19 @@ class Ad extends \common\models\Ad
             'id',
             'name',
             'author' => function () {
-                return $this->user ? $this->user->fullName : '';
-            },
-            'avatar' => function () {
-                return $this->user ? $this->user->getAvatar() : '';
-            },
-            'userUrl' => function () {
-                if ($this->user->username) {
-                    return '/@' . $this->user->username;
-                } else {
-                    return '/users/' . $this->user->id;
-                }
+                return [
+                    'id' => $this->user ? $this->user->id : '',
+                    'name' => $this->user ? $this->user->fullName : '',
+                    'avatar' => $this->user ? $this->user->getAvatar() : '',
+                    'userUrl' => $this->user ? ($this->user->username
+                        ? '/@' . $this->user->username
+                        : '/users/' . $this->user->id) : '',
+                ];
             },
             'price',
             'description',
             'life_time',
             'created_at',
-            'user_id',
             'ended_at',
             'preview',
             'status',
@@ -77,6 +70,21 @@ class Ad extends \common\models\Ad
             'type_id',
             'views',
         ];
+    }
+
+    public static function findOne($id)
+    {
+        if (!is_numeric($id) && !is_array($id)) {
+            $condition = ['url' => $id];
+        }
+
+        $condition['status'] = Ad::STATUS_PUBLISHED;
+
+        $dependency = new DbDependency(['sql' => 'SELECT max(created_at) FROM ads']);
+
+        return parent::getDb()->cache(function () use ($condition) {
+            return parent::findOne($condition);
+        }, 0, $dependency);
     }
 
     public function search($params = null)

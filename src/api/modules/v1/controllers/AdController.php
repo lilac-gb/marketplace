@@ -6,18 +6,11 @@ use api\components\actions\ImageAttachmentAction;
 use api\components\ActiveController;
 use common\components\ActiveRecord;
 use common\models\Ad;
-use common\models\AdAttachment;
-use common\models\AdSection;
-use common\models\AdType;
-use common\models\MetaTag;
 use common\models\Page;
-use common\models\Section;
 use common\services\AdService;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use yii\web\BadRequestHttpException;
-use yii\web\UploadedFile;
 
 class AdController extends ActiveController
 {

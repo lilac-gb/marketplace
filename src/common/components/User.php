@@ -27,11 +27,6 @@ class User extends \yii\web\User
         return [];
     }
 
-    public function getUsername()
-    {
-        return $this->getModel() ? $this->getModel()->name : '';
-    }
-
     public function getStatus()
     {
         return $this->getModel() ? $this->getModel()->status : \common\models\User::STATUS_INACTIVE;
