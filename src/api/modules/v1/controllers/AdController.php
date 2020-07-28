@@ -111,10 +111,8 @@ class AdController extends ActiveController
 
     public function afterFindView(&$model)
     {
-        if ($model->user_id !== Yii::$app->user->id) {
-            /** @var $model ActiveRecord */
-            $model->updateCounters(['views' => 1]);
-        }
+        /** @var $model ActiveRecord */
+        $model->updateCounters(['views' => 1]);
     }
 
     public function actionPublish($id)
