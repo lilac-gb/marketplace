@@ -2,6 +2,7 @@
 namespace common\models;
 
 use common\components\ActiveRecord;
+use common\services\UserService;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Yii;
@@ -32,10 +33,14 @@ use zxbodya\yii2\imageAttachment\ImageAttachmentBehavior;
 class User extends ActiveRecord implements IdentityInterface
 {
     public $password;
+    public $passwordRepeat;
+    public $oldPassword;
 
     const SCENARIO_SIGN_UP = 'signup';
     const SCENARIO_LOGIN = 'login';
     const SCENARIO_CHANGE_PASSWORD = 'change-password';
+    const SCENARIO_UPDATE = 'user-update';
+    const SCENARIO_UPDATE_PASSWORD = 'password-update';
 
     const ROLE_ADMIN = "admin";
     const ROLE_GUEST = "guest";
@@ -98,6 +103,10 @@ class User extends ActiveRecord implements IdentityInterface
                 'username', 'last_name', 'first_name', 'confirmation_secret', 'role',
                 'email', 'auth_key', 'password'
             ], 'string'],
+            [
+                ['password', 'passwordOld'], 'required',
+                'on' => self::SCENARIO_UPDATE_PASSWORD, 'message' => '{attribute} обязательно',
+            ],
             [['created_at', 'updated_at'], 'integer'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [
@@ -117,6 +126,12 @@ class User extends ActiveRecord implements IdentityInterface
             self::SCENARIO_SIGN_UP => ['first_name', 'email'],
             self::SCENARIO_CHANGE_PASSWORD => ['password'],
             self::SCENARIO_LOGIN => ['email', 'password'],
+            self::SCENARIO_UPDATE => [
+                'first_name', 'last_name', 'email', 'username',
+                'activation_token', 'status',
+                'password', 'oldPassword',
+            ],
+            self::SCENARIO_UPDATE_PASSWORD => ['password', 'passwordOld'],
         ]);
 
         return $scenarios;
@@ -137,9 +152,43 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public function beforeValidate()
+    {
+        $parentValidationResult = parent::beforeValidate();
+
+        if ($parentValidationResult) {
+            if (!is_null($this->username)) {
+                $this->username = strtolower($this->username);
+            }
+
+            if (!$this->isNewRecord) {
+                if (preg_match('/[А-Яа-яЁё]/u', $this->username)) {
+                    $this->addError('username', 'Никнэйм не может содержать русские символы');
+
+                    return false;
+                }
+            }
+
+            if (is_numeric($this->username)) {
+                $this->addError('username', 'Никнэйм не может содержать последовательность цифр');
+
+                return false;
+            }
+
+            return true;
+        }
+
+        if ($parentValidationResult) {
+            return true;
+        }
+
+        return false;
+    }
+
+
     public function beforeSave($insert)
     {
-        $this->generateAuthKey();
+        parent::beforeSave($insert);
 
         if (!empty($this->password)) {
             $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
@@ -150,7 +199,29 @@ class User extends ActiveRecord implements IdentityInterface
             $this->status = self::STATUS_INACTIVE;
         }
 
-        return parent::beforeSave($this->isNewRecord);
+        if (!$this->isNewRecord) {
+            if ((!array_key_exists('email', $this->oldAttributes) && $this->email)
+                || (array_key_exists('email', $this->oldAttributes)
+                    && $this->oldAttributes['email'] !== $this->email)
+                && Yii::$app->id !== "backend"
+            ) {
+                $confirmationSecret = Yii::$app->security->generateRandomString();
+                $confirmationHash = base64_encode(Yii::$app->security->encryptByKey($this->email, $confirmationSecret));
+
+                UserService::sendChangeEmailConfirmation($this, $this->email, $confirmationHash);
+
+                $this->email = $this->oldAttributes['email'];
+                $this->confirmation_secret = $confirmationSecret;
+            }
+
+            if (!empty($this->password)) {
+                $this->setPassword($this->password);
+            }
+        }
+
+        if (empty($this->auth_key)) {
+            $this->generateAuthKey();
+        }
     }
 
     /**

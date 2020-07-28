@@ -3,7 +3,7 @@
     no-body
     class="filter-card w-100">
     <div class="header">Сортировка</div>
-    <div>
+    <div :class="containerClass">
       <slot></slot>
     </div>
   </b-card>
@@ -11,14 +11,17 @@
 
 <script>
 export default {
-  name: "CardFilter"
+  name: 'CardFilter',
+  props: {
+    containerClass: { type: String }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .filter-card {
   margin-bottom: 44px;
-  max-width: 0;
+  max-width: none !important;
   height: auto !important;
   border: 0;
 

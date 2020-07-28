@@ -36,7 +36,7 @@ class AdController extends \api\modules\v1\controllers\AdController
             'OPTIONS {id}' => 'options',
         ],
         'tokens' => [
-            '{id}' => '<id:\\d[\\d,]*>',
+            '{id}' => '<id:[a-z0-9-_]+>',
         ],
     ];
 }

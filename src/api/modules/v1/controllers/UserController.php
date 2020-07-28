@@ -1,4 +1,5 @@
 <?php
+
 namespace api\modules\v1\controllers;
 
 use api\components\actions\ImageAttachmentAction;
@@ -15,8 +16,8 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-
-class UserController extends ActiveController {
+class UserController extends ActiveController
+{
     public $modelClass = 'api\models\User';
 
     public $serializer = [
@@ -61,16 +62,59 @@ class UserController extends ActiveController {
     public function actionSave()
     {
         /** @var User $user */
+        /** @var User $pass */
         $user = Yii::$app->user->getIdentity();
         $postData = Yii::$app->request->post();
 
-        $user->load($postData);
-        $user->save();
+        $oldEmail = $user->email;
+
+        $user->scenario = User::SCENARIO_UPDATE;
+
+        if (isset($postData['oldPassword']) && isset($postData['password']) && !empty($postData['oldPassword']) && !empty($postData['password'])) {
+            $pass = $user;
+            $pass->scenario = User::SCENARIO_UPDATE_PASSWORD;
+
+            if ($pass->load(Yii::$app->request->post())) {
+                if (!Yii::$app->security->validatePassword($postData['password'], $user->password_hash)) {
+                    return [
+                        'statusCode' => 400,
+                        'errors' => [
+                            'Старый пароль неверный',
+                        ],
+                    ];
+                }
+
+                $user->password = $user->setPassword($postData['oldPassword']);
+            }
+        } else if ((isset($postData['oldPassword']) && !empty($postData['oldPassword']))
+            || (isset($postData['password']) && !empty($postData['password']))
+        ) {
+            return [
+                'statusCode' => 400,
+                'errors' => [
+                    'Оба поля обязательны для заполнения',
+                ],
+            ];
+        }
+
+        if ($user->load($postData) && $user->validate()) {
+            if ($user->email !== $oldEmail) {
+                return [
+                    'statusCode' => 200,
+                    'message' => [
+                        'Пожалуйста, активируйте Ваш новый email адрес через ссылку в письме!',
+                    ],
+                ];
+            }
+
+            $user->save(false);
+        }
 
         return $user;
     }
 
-    public function actionMe() {
+    public function actionMe()
+    {
         return Yii::$app->user->identity;
     }
 
@@ -166,6 +210,7 @@ class UserController extends ActiveController {
 
             if (Yii::$app->request->isAjax && isset($_POST['ajax'])) {
                 Yii::$app->response->format = 'json';
+
                 return ActiveForm::validate($model);
             }
 
@@ -256,12 +301,12 @@ class UserController extends ActiveController {
             throw new BadRequestHttpException('Неверный токен!');
         }
 
-        $password = Yii::$app->security->generateRandomString(8);
+        $userword = Yii::$app->security->generateRandomString(8);
 
         $user->updateAttributes([
             'status' => User::STATUS_ACTIVE,
             'role' => User::ROLE_USER,
-            'password_hash' => Yii::$app->security->generatePasswordHash($password),
+            'password_hash' => Yii::$app->security->generatePasswordHash($userword),
             'confirmation_secret' => '',
         ]);
 
