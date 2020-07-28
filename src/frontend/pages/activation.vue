@@ -1,37 +1,33 @@
-<template id="activate">
-  <h1>activation</h1>
+<template>
+  <b-container class="pt-5 pb-5 mt-4 h-100">
+    <div class="d-flex align-items-center justify-content-center w-100">
+      <h1>Подождите идет активация...</h1>
+    </div>
+  </b-container>
 </template>
 
 <script>
   import axios from 'axios';
-
-  let response;
   export default {
     name: 'Activation',
     layout: 'default',
-    async asyncData({query, store, redirect}) {
+    fetch({query, store, redirect}) {
       if (query.hash && query.id) {
-        try {
-          await axios.post(
-            `${process.env.api_url}/user/${query.id}/activation-email`,
-            {hash: query.hash},
-          ).then(response => this.$auth.loginWith('local', {
-            data: {token: response.data.token},
-          }).then(() => redirect('/')));
-          store.commit('updateMessage', 'Email успешно подтвержден!');
-          redirect('/cabinet');
-        } catch (e) {
-          let error = JSON.parse(e.request);
-          store.commit('updateMessage', (error.response.data.message || 'Произошла ошибка запроса!'));
-          redirect('/');
-        }
+        axios.post(`${process.env.api_url}/user/${query.id}/activation-email`, {hash: query.hash})
+          .then(response => {
+            if (response.data && response.data.token) {
+              store.$auth.setUserToken(response.data.token);
+              store.commit('updateMessage', 'Email успешно подтвержден! Временный пароль высдан Вам на email');
+              redirect('/cabinet');
+            }
+          })
+          .catch(error => {
+            if (error.response && error.response.data) {
+              store.commit('updateMessage', error.response.data.data.message);
+              redirect('/');
+            }
+          });
       }
     },
   };
 </script>
-
-<style lang="scss">
-  #activate {
-    height: 50vh;
-  }
-</style>

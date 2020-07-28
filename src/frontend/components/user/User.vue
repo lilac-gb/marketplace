@@ -10,7 +10,7 @@
       @click.prevent="dropdown = !dropdown"
     >
       <div class="user__btn-text">
-        {{ user.first_name + ' ' + user.last_name }}
+        {{ fullUserName }}
       </div>
     </a>
     <div v-show="dropdown" class="user__dropdown">
@@ -64,6 +64,11 @@ export default {
   methods: {
     logout() {
       this.$auth.logout();
+    },
+  },
+  computed: {
+    fullUserName() {
+      return `${this.user.first_name}${this.user.last_name ? ` ${this.user.last_name}` : ''}`;
     },
   },
 };

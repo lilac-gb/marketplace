@@ -169,7 +169,6 @@ class UserController extends ActiveController {
                 return ActiveForm::validate($model);
             }
 
-            //$model->setPassword($model->password);
             $model->generateEmailVerificationToken();
             $model->status = User::STATUS_EMAIL_NC;
             $model->role = User::ROLE_GUEST;
@@ -231,7 +230,7 @@ class UserController extends ActiveController {
 
         return [
             'statusCode' => 400,
-            'errors' => ['system' => 'Произошла ошибка, попробуйте позже!'],
+            'errors' => ['Произошла ошибка, попробуйте позже!'],
         ];
     }
 
@@ -244,8 +243,6 @@ class UserController extends ActiveController {
         }
 
         $hash = Yii::$app->request->post('hash');
-
-        // return str_replace(' ', '+', $hash);
 
         try {
             $confirmationHash = base64_decode(str_replace(' ', '+', $hash));
@@ -268,9 +265,11 @@ class UserController extends ActiveController {
             'confirmation_secret' => '',
         ]);
 
-        UserService::sendPassword($user, $password);
+        Yii::$app->user->login($user);
 
         Yii::$app->user->refreshToken();
+
+        UserService::sendPassword($user, $password);
 
         return Yii::$app->user->identity;
     }
@@ -286,7 +285,6 @@ class UserController extends ActiveController {
         if (!is_numeric($nickname)) {
             $nickname = ltrim($nickname, '@');
             $user = \api\models\User::find()
-                ->joinWith("details")
                 ->where(['username' => $nickname])->one();
 
             return $user;

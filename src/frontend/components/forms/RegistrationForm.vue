@@ -43,13 +43,13 @@
               <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                 {{ v.errors[0] }}
               </b-form-invalid-feedback>
-              <p class="pt-3">
+              <p class="pt-3 text-muted">
                 На этот email будет выслано письмо с активацией
               </p>
             </b-form-group>
           </ValidationProvider>
           <b-form-group>
-            <p class="error-message">{{ error }}</p>
+            <p class="error-message">{{ errors[0] }}</p>
           </b-form-group>
           <div class="d-flex">
             <b-button type="submit" variant="primary" class="background-purple">
@@ -74,34 +74,24 @@ export default {
     user: {
       email: '',
       first_name: '',
-      last_name: '',
     },
-    error: '',
+    errors: '',
     loading: false,
   }),
   methods: {
     ...mapActions(['setMessage']),
     async onSubmit() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.post(
-          `${process.env.api_url}/user/signup`,
-          {
-            headers: { Accept: 'application/json' },
-            data: this.user,
+      this.loading = true;
+      await this.$axios.post(`${process.env.api_url}/user/signup`, {data: this.user})
+        .then(() => {
+          this.setMessage(`На электронный адресс ${this.user.email} было выслано письмо с сылкой активации.`);
+          this.$router.push('/');
+        }).catch(error => {
+          if (error.response && error.response.data) {
+            this.loading = false;
+            this.errors = error.response.data.errors.email;
           }
-        );
-
-        if (response.data.success) {
-          this.setMessage(
-            `На электронный адресс ${this.user.email} было выслано письмо с активацией.`
-          );
-          await this.$router.push('/');
-        }
-      } catch (e) {
-        this.loading = false;
-        this.error = 'Что то пошло не так. Пожалуйста, повторите попытку позже';
-      }
+        });
     },
   },
 };

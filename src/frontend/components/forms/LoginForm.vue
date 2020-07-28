@@ -40,6 +40,9 @@
                 }"
               >
               </b-form-input>
+              <b-form-invalid-feedback :class="{ 'd-block': error }">
+                {{ error }}
+              </b-form-invalid-feedback>
               <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                 {{ v.errors[0] }}
               </b-form-invalid-feedback>
@@ -68,16 +71,16 @@ export default {
 
   methods: {
     async login() {
-      try {
-        await this.$auth.loginWith('local', {
-          data: {
-            email: this.email,
-            password: this.password,
-          },
-        });
-      } catch (e) {
-        this.error = e.response.data.password;
-      }
+      await this.$auth.loginWith('local', {
+        data: {
+          email: this.email,
+          password: this.password,
+        },
+      }).then(response => {
+        console.log(response)
+      }).catch(error => {
+        this.error = error.response.data.data.password
+      });
     },
   },
 };
