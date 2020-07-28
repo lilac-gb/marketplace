@@ -42,7 +42,7 @@ class SeederController extends \yii\console\Controller
         $this->seeder->table('news')->columns([
             'id',
             'user_id' => $this->generator->relation('users', 'id'),
-            'anons' => 'Аннонс', $this->faker->sentence(2),
+            'anons' => $this->faker->sentence(2),
             'name' => $this->faker->sentence(7),
             'description' => $this->faker->paragraph(100),
             'status' => 1,
