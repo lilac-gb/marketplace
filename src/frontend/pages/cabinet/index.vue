@@ -1,21 +1,10 @@
 <template>
   <b-container class="pt-3 pb-3">
-    <Breadcrumbs />
-    <b-row>
-      <b-col cols="4">
-        <CabinetNav />
-      </b-col>
-      <b-col>
-        <h1 class="text-center">Добро пожаловать, {{ fullUserName }}</h1>
-      </b-col>
-    </b-row>
+    <h1 class="text-center">Добро пожаловать, {{ fullUserName }}</h1>
   </b-container>
 </template>
 <script>
-import Breadcrumbs from '../../components/Breadcrumbs';
-import CabinetNav from '../../components/cabinet/CabinetNav';
 export default {
-  components: { CabinetNav, Breadcrumbs },
   middleware: ['auth'],
   async fetch() {
     try {

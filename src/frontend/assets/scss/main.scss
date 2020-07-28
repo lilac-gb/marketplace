@@ -12,7 +12,11 @@ ul {
   list-style: none;
 }
 
-h1, h2, h3, h4, ul, p {
+.__nuxt-error-page {
+  height: 100vh;
+}
+
+h1, h2, h3, h4, ul {
   margin: 0;
   padding: 0;
 }
@@ -20,4 +24,38 @@ h1, h2, h3, h4, ul, p {
 body {
   font-size: $font-size;
   font-family: Roboto Regular, sans-serif;
+  font-weight: 300;
+  line-height: 1.3em;
+  letter-spacing: 0.05em;
+  color: #1f1f1f;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.custom-control-label::before {
+  border-color: $purple;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: $purple;
+  background-color: $purple;
+}
+
+.custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {
+  background-color: $purple;
+}
+
+.custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
+  background-color: white;
+}
+
+.custom-control-input[disabled] ~ .custom-control-label, .custom-control-input:disabled ~ .custom-control-label {
+  color: black;
+}
+
+p, .p {
+  margin-bottom: 1rem;
 }
