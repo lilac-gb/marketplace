@@ -11,9 +11,26 @@ class User extends \common\models\User {
             'username',
             'first_name',
             'last_name',
-            'email',
             'created_at',
-            'role',
+            'images' => function () {
+                return [
+                    'avatar' => $this->getAvatar('i300x300') ?? '',
+                    'original' => $this->getAvatar('original') ?? '',
+                    'preview' => $this->getAvatar('preview') ?? '',
+                ];
+            },
+        ];
+    }
+
+    public function extraFields()
+    {
+        return [
+            'email' => function () {
+                return (\Yii::$app->user->id == $this->id) ? $this->email : null;
+            },
+            'role' => function () {
+                return !\Yii::$app->user->isGuest ? $this->role : null;
+            },
         ];
     }
 

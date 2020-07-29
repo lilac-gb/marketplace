@@ -2,6 +2,7 @@
 namespace common\models;
 
 use common\components\ActiveRecord;
+use common\components\ImageAttachmentBehavior;
 use common\services\UserService;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
@@ -9,7 +10,6 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
-use zxbodya\yii2\imageAttachment\ImageAttachmentBehavior;
 
 /**
  * User model

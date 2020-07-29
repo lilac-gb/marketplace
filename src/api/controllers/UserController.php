@@ -21,7 +21,7 @@ class UserController extends \api\modules\v1\controllers\UserController {
             'OPTIONS check-activate-key' => 'options',
             'OPTIONS save' => 'options',
             'OPTIONS change-password' => 'options',
-            'OPTIONS imgAttachApi/{id}' => 'options',
+            'OPTIONS imgAttachApi' => 'options',
 
             'GET {model}/{model_id}' => 'index',
             'POST {id}/confirm-email' => 'confirm-email',
@@ -33,7 +33,7 @@ class UserController extends \api\modules\v1\controllers\UserController {
             'POST check-activate-key' => 'check-activate-key',
             'POST save' => 'save',
             'POST change-password' => 'change-password',
-            'POST imgAttachApi/{id}' => 'imgAttachApi',
+            'POST imgAttachApi' => 'imgAttachApi',
         ],
         'tokens' => [
             '{id}' => '<id:\\d[\\d,]*>',
