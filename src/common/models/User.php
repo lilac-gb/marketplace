@@ -188,8 +188,6 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function beforeSave($insert)
     {
-        parent::beforeSave($insert);
-
         if (!empty($this->password)) {
             $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
         }
@@ -222,6 +220,8 @@ class User extends ActiveRecord implements IdentityInterface
         if (empty($this->auth_key)) {
             $this->generateAuthKey();
         }
+
+        return parent::beforeSave($insert);
     }
 
     /**
