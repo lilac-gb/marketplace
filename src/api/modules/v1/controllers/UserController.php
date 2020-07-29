@@ -301,12 +301,12 @@ class UserController extends ActiveController
             throw new BadRequestHttpException('Неверный токен!');
         }
 
-        $userword = Yii::$app->security->generateRandomString(8);
+        $password = Yii::$app->security->generateRandomString(8);
 
         $user->updateAttributes([
             'status' => User::STATUS_ACTIVE,
             'role' => User::ROLE_USER,
-            'password_hash' => Yii::$app->security->generatePasswordHash($userword),
+            'password_hash' => Yii::$app->security->generatePasswordHash($password),
             'confirmation_secret' => '',
         ]);
 
