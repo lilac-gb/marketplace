@@ -1,37 +1,57 @@
 <template>
-  <b-container id="publications" class="mt-4 mb-4 mp-container">
+  <b-container id="publications" class="mt-4 mb-4">
+    <breadcrumbs class="d-flex"/>
     <div class="d-flex flex-row justify-content-between w-100 mb-4">
       <b-form-input
-        v-model="searchText"
-        class="mp-input search-field"
-        placeholder="Введите название"
+          v-model="searchText"
+          class="mp-input search-field mr-2"
+          placeholder="Введите название"
       />
       <b-button
-        class="background-purple mp-button-purple"
-        @click="$fetch">ПОИСК</b-button>
+          class="background-purple mp-button-purple mr-2"
+          @click="$fetch"
+      >
+        ПОИСК
+      </b-button>
       <b-button
-        v-b-toggle.filter-collapse
-        class="background-purple mp-button-purple collapse-button">ФИЛЬТР</b-button>
+          v-b-toggle.filter-collapse
+          class="background-purple mp-button-purple collapse-button d-flex"
+      >
+        ФИЛЬТР
+      </b-button>
     </div>
     <b-collapse id="filter-collapse" class="mt-2">
       <filter-card containerClass="mt-3 d-flex flex-row justify-content-between align-items-center">
         <div class="d-flex flex-row align-items-center sorting-controls">
           <sorting-button
-            class="ml-0 mr-3"
-            text="По дате"
-            @changed="sortByDate"/>
+              class="ml-0 mr-3"
+              text="По дате"
+              @changed="sortByDate"
+          />
           <sorting-button text="По просмотрам" @changed="sortByViews" />
-          <b-form-select class="select-author" v-model="authorFilterValue" :options="authorOptions" @change="getPublications(publicationsApiParams)"></b-form-select>
+          <b-form-select
+              class="select-author"
+              v-model="authorFilterValue"
+              :options="authorOptions"
+              @change="getPublications(publicationsApiParams)"
+          />
         </div>
-        <b-button pill class="background-purple clear-filter" @click="clearFilter">Сбросить фильтр</b-button>
+        <b-button
+            pill
+            class="background-purple clear-filter"
+            @click="clearFilter"
+        >
+          Сбросить фильтр
+        </b-button>
       </filter-card>
     </b-collapse>
 
     <div class="publications-grid">
       <publication-card
-        v-for="publication in publications"
-        :key="publication.id"
-        :publication="publication"/>
+          v-for="publication in publications"
+          :key="publication.id"
+          :publication="publication"
+      />
     </div>
 
     <div class="mb-4 mt-4 d-flex justify-content-center">
@@ -58,6 +78,7 @@
 <script>
 import PublicationsCard from '@/components/publications/card';
 import CardFilter from '@/components/CardFilter';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import SortingButton from '@/components/SortingButton';
 import config from '@/config';
 import { NewsModel, SortDirection } from '@/shared/constants';
@@ -67,6 +88,7 @@ import { getFullName } from '@/shared/utils';
 export default {
   name: 'Publications',
   components: {
+    'breadcrumbs': Breadcrumbs,
     'publication-card': PublicationsCard,
     'filter-card': CardFilter,
     'sorting-button': SortingButton,
@@ -152,19 +174,40 @@ export default {
 #publications {
   .publications-grid {
     display: grid;
-    grid-template-columns: repeat(3, 380px);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: auto;
     grid-column-gap: 20px;
     grid-row-gap: 20px;
   }
 
-  .search-field {
-    width: 760px;
+  @media screen and (max-width: 786px) {
+    .publications-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
   }
 
-  .sorting-controls {
-    width: fit-content;
+  @media screen and (max-width: 900px) {
+    .publications-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
   }
+
+  @media screen and (max-width: 1200px) {
+    .publications-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  /*.search-field {
+    width: 760px;
+  }*/
+
+  /*.sorting-controls {
+    width: fit-content;
+  }*/
 
   .select-author {
     width: 476px;
@@ -173,7 +216,6 @@ export default {
 
   .clear-filter {
     width: 161px;
-    height: 31px;
   }
 }
 </style>

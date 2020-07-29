@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-2">
     <div class="wrapper">
       <b-alert
         :show="!!message"

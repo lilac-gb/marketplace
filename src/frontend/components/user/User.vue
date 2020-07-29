@@ -1,140 +1,144 @@
 <template>
-  <div class="user d-flex align-items-center position-relative">
-    <div class="user__photo">
-      <img src="~assets/pics/user/placeholder.png" alt="user_img" />
-    </div>
-    <a
-      href="#"
-      class="user__btn"
-      :class="{ active: dropdown }"
-      @click.prevent="dropdown = !dropdown"
-    >
-      <div class="user__btn-text">
+  <!-- Right aligned nav items -->
+  <b-nav-item-dropdown right no-caret>
+    <template v-slot:button-content>
+      <div class="d-flex align-items-center justify-content-center">
+        <img class="user-img" :src="user.images && user.images.preview" alt="user-img"/>
         {{ fullUserName }}
       </div>
-    </a>
-    <div v-show="dropdown" class="user__dropdown">
-      <ul class="user__dropdown-menu">
-        <li>
-          <b-link class="d-flex align-items-center pt-1 pb-2">
-            <img src="~assets/pics/icons/user.svg" alt="icon" />
-            <span>Мои данные</span>
-          </b-link>
-        </li>
-        <li>
-          <b-link class="d-flex align-items-center pt-1 pb-2">
-            <img src="~assets/pics/icons/announcement.svg" alt="icon" />
-            <span>Мои объявления</span>
-          </b-link>
-        </li>
-        <li>
-          <b-link class="d-flex align-items-center pt-1 pb-2">
-            <img src="~assets/pics/icons/pen.svg" alt="icon" />
-            <span>Мои публикации</span>
-          </b-link>
-        </li>
-        <li>
-          <b-link
-            class="d-flex align-items-center pt-1 pb-2"
-            @click.prevent="logout"
-          >
-            <img src="~assets/pics/icons/logout.svg" alt="icon" />
-            <span>Выход</span>
-          </b-link>
-        </li>
-      </ul>
-    </div>
-  </div>
+    </template>
+    <b-dropdown-item href="#">
+      <img src="~assets/pics/icons/user.svg" alt="icon"/>
+      <span>Мои данные</span>
+    </b-dropdown-item>
+    <b-dropdown-item href="#">
+      <img src="~assets/pics/icons/announcement.svg" alt="icon"/>
+      <span>Мои объявления</span>
+    </b-dropdown-item>
+    <b-dropdown-item href="#">
+      <img src="~assets/pics/icons/feather.svg" alt="icon"/>
+      <span>Мои публикации</span>
+    </b-dropdown-item>
+    <b-dropdown-item href="#">
+      <img src="~assets/pics/icons/factory.svg" alt="icon"/>
+      <span>Моя компания</span>
+    </b-dropdown-item>
+    <b-dropdown-item href="#" @click.prevent="logout">
+      <img src="~assets/pics/icons/logout.svg" alt="icon"/>
+      <span>Выход</span>
+    </b-dropdown-item>
+  </b-nav-item-dropdown>
 </template>
 
 <script>
-export default {
-  name: 'User',
-  async fetch() {
-    try {
-      this.user = await this.$auth.user;
-    } catch (e) {
-      console.log(e);
-    }
-  },
-  data: () => ({
-    dropdown: false,
-    user: {},
-  }),
-  methods: {
-    logout() {
-      this.$auth.logout();
+  export default {
+    name: 'User',
+    async fetch() {
+      try {
+        this.user = await this.$auth.user;
+      } catch (e) {
+        console.log(e);
+      }
     },
-  },
-  computed: {
-    fullUserName() {
-      return `${this.user.first_name}${this.user.last_name ? ` ${this.user.last_name}` : ''}`;
+    data: () => ({
+      user: {},
+    }),
+    methods: {
+      logout() {
+        this.$auth.logout();
+      },
     },
-  },
-};
+    computed: {
+      fullUserName() {
+        return `${this.user.first_name}${this.user.last_name ? ` ${this.user.last_name}` : ''}`;
+      },
+    },
+  };
 </script>
 
 <style scoped lang="scss">
-.user {
-  position: relative;
-  width: 217px;
-
-  & a {
-    color: $purple;
-  }
-
-  &__photo {
-    height: $user-photo-size;
-    width: $user-photo-size;
+  .user-img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
     border-radius: 50%;
-    overflow: hidden;
-    margin-right: 1rem;
+  }
 
-    & img {
-      height: 100%;
-      width: 100%;
+  .dropdown-menu {
+    .dropdown-item {
+      img {
+        margin-right: 5px;
+        width: 14px;
+        height: 14px;
+      }
     }
   }
 
-  &__btn {
-    width: 160px;
-    display: flex;
-    justify-content: space-between;
+  /*.user {
+    position: relative;
 
-    &-text {
-      width: 140px;
+    & a {
+      color: $purple;
+    }
+
+    &__photo {
+      height: $user-photo-size;
+      width: $user-photo-size;
+      border-radius: 50%;
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      margin-right: 1rem;
+
+      & img {
+        height: 100%;
+        width: 100%;
+      }
     }
 
-    &:after {
-      content: url('~assets/pics/icons/arrow.svg');
-      justify-self: flex-end;
-      width: 16px;
-      height: 15px;
-      transition: transform 0.3s;
+    &__btn {
+      display: flex;
+      justify-content: space-between;
+
+      &-text {
+        max-width: 160px;
+        margin-right: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &:after {
+        width: 10px;
+        height: 10px;
+        content: '';
+        position: relative;
+        top: 4px;
+        transform: rotate(45deg);
+        border-style: solid;
+        border-color: rgb(78, 41, 132);
+        border-image: initial;
+        border-width: 0 2px 2px 0;
+      }
+
+      &.active:after {
+        top: 7px;
+        transform: rotate(225deg);
+      }
     }
 
-    &.active:after {
-      transform: rotate(180deg);
-    }
-  }
+    &__dropdown {
+      position: absolute;
+      min-width: 210px;
+      right: 0;
+      top: 40px;
+      background: #fff;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+      z-index: 90;
+      padding: 18px;
 
-  &__dropdown {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 40px;
-    background: #fff;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    z-index: 90;
-    padding: 18px;
-
-    & img {
-      height: 17px;
-      margin-right: 15px;
+      & img {
+        height: 17px;
+        margin-right: 15px;
+      }
     }
-  }
-}
+  }*/
 </style>

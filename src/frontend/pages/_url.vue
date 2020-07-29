@@ -1,7 +1,7 @@
 <template>
   <section>
     <b-container>
-      <b-row class="mt-5 flex-column">
+      <b-row class="flex-column">
         <Breadcrumbs class="d-flex" />
         <b-col>
           <h1>{{ name }}</h1>
