@@ -32,7 +32,7 @@
                     placeholder="Введите имя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid && v.changed,
+                      'is-valid': v.valid && v.dirty,
                     }"
                   />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -58,7 +58,7 @@
                     placeholder="Введите фамилию"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid && v.changed,
+                      'is-valid': v.valid && v.dirty,
                     }"
                   />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -84,7 +84,7 @@
                     placeholder="Введите имя пользователя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid && v.changed,
+                      'is-valid': v.valid && v.dirty,
                     }"
                   />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -118,7 +118,7 @@
                     placeholder="Введите e-mail адрес"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid && v.changed,
+                      'is-valid': v.valid && v.dirty,
                     }"
                   />
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -133,7 +133,7 @@
             </div>
             <div class="d-flex flex-row w-100 justify-content-between">
               <div class="w-50">
-                <ValidationProvider v-slot="v" class="w-50">
+                <ValidationProvider v-slot="v" class="w-50" vid="changePass">
                   <b-form-group
                     id="input-group-5"
                     label-for="input-5"
@@ -147,7 +147,7 @@
                       placeholder="Введите старый пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
-                        'is-valid': v.valid && v.changed,
+                        'is-valid': v.valid && v.dirty,
                       }"
                     />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -174,7 +174,7 @@
                       placeholder="Введите новый пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
-                        'is-valid': v.valid && v.changed,
+                        'is-valid': v.valid && v.dirty,
                       }"
                     />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -200,7 +200,7 @@
                       placeholder="Повторите пароль"
                       :class="{
                         'is-invalid': v.invalid && (v.touched || v.changed),
-                        'is-valid': v.valid && v.changed,
+                        'is-valid': v.valid && v.dirty,
                       }"
                     />
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
@@ -262,6 +262,9 @@
           <pre class="m-0">{{ user }}</pre>
         </b-card>
       </b-col>
+      <b-col cols="3">
+        <Avatar />
+      </b-col>
     </b-row>
   </b-container>
 </template>
@@ -270,10 +273,13 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import config from '@/config/config';
+import { mapActions } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
+import Avatar from '@/components/cabinet/Avatar';
 export default {
   name: 'About',
   components: {
+    Avatar,
     CabinetNav,
     Breadcrumbs,
     ValidationObserver,
@@ -304,16 +310,29 @@ export default {
   }),
   computed: {},
   methods: {
+    ...mapActions(['setMessage']),
     async onSubmit() {
-      const response = await this.$axios.post(`${config.api_url}/user/save`, {
-        username: this.user.username,
-        first_name: this.user.first_name,
-        last_name: this.user.last_name,
-        email: this.user.email,
-        password: this.user.password,
-        oldPassword: this.user.oldPassword,
-      });
-      console.log(response);
+      this.loading = true;
+      await this.$axios
+        .post(`${config.api_url}/user/save`, {
+          username: this.user.username,
+          first_name: this.user.first_name,
+          last_name: this.user.last_name,
+          email: this.user.email,
+          password: this.user.password,
+          oldPassword: this.user.oldPassword,
+        })
+        .then((response) => {
+          this.setMessage(response.data.data.message[0]);
+          this.$router.push('/cabinet/about');
+        })
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            this.loading = false;
+            console.log(error.response);
+            this.errors = error.response;
+          }
+        });
     },
     onReset(evt) {
       evt.preventDefault();
