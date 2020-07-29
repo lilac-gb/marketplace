@@ -23,6 +23,7 @@ class AdController extends \api\modules\v1\controllers\AdController
             'OPTIONS {id}/publish' => 'options',
             'OPTIONS ads-sections' => 'options',
             'OPTIONS ads-types' => 'options',
+            'OPTIONS main-popular-ads' => 'options',
 
             'GET my' => 'my',
             'POST imgAttachApi/{id}' => 'imgAttachApi',
@@ -30,6 +31,7 @@ class AdController extends \api\modules\v1\controllers\AdController
             'POST {id}/publish' => 'publish',
 
             'GET ads-sections' => 'ads-sections',
+            'GET main-popular-ads' => 'main-popular-ads',
             'GET ads-types' => 'ads-types',
 
             'GET,HEAD {id}' => 'view',

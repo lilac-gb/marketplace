@@ -9,6 +9,8 @@ use common\models\Ad;
 use common\models\Page;
 use common\services\AdService;
 use Yii;
+use yii\caching\DbDependency;
+use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
@@ -33,6 +35,7 @@ class AdController extends ActiveController
             'publish',
             'ads-sections',
             'ads-types',
+            'main-popular-ads',
         ];
 
         return $behaviors;
@@ -128,6 +131,45 @@ class AdController extends ActiveController
         AdService::sendNotificationEmail($ad);
 
         return $ad->status;
+    }
+
+    public function actionMainPopularAds(): array
+    {
+        $gteTime = strtotime('-365 days');
+        $gteTime = mktime(0, 0, 0,
+            (int)date('M', $gteTime),
+            (int)date('d', $gteTime),
+            (int)date('Y', $gteTime)
+        );
+
+        $ads = Ad::find()
+            ->onCondition(['>=', 'ads.created_at', $gteTime])
+            ->select(['ads.*', 'ads.views AS sort_field'])
+            ->orderBy(['sort_field' => SORT_DESC])
+            ->where(['status' => Ad::STATUS_PUBLISHED])
+            ->limit(6)
+            ->all();
+
+        $result = [];
+
+        foreach ($ads as $ad) {
+            /** @var $ad \common\models\Ad */
+            $result[] = [
+                'id' => $ad->id,
+                'name' => $ad->name,
+                'section' => $ad->section->name,
+                'type' => $ad->type->name,
+                'price' => $ad->price,
+                'url' => $ad->getUrl(),
+                'preview' => $ad->getPreview(),
+                'views' => $ad->views,
+                'author' => $ad->user ? $ad->user->fullName : '',
+                'user_id' => $ad->user_id,
+                'created_at' => $ad->created_at,
+            ];
+        }
+
+        return $result;
     }
 
     /**

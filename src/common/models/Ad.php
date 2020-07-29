@@ -33,6 +33,8 @@ use zxbodya\yii2\galleryManager\GalleryBehavior;
  * @property integer $type_id
  * @property mixed   section
  * @property mixed   type
+ * @property mixed   price
+ * @property mixed   user
  */
 class Ad extends ActiveRecord
 {
