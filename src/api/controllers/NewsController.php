@@ -6,8 +6,10 @@ class NewsController extends \api\modules\v1\controllers\NewsController {
         'class' => 'api\components\UrlRule',
         'pluralize' => false,
         'controller' => ['news'],
-        'only' => ['index', 'view', 'options'],
         'extraPatterns' => [
+            'OPTIONS main-popular-news' => 'options',
+
+            'GET main-popular-news' => 'main-popular-news',
             'GET,HEAD {url}' => 'view',
             '{url}' => 'options',
         ],
