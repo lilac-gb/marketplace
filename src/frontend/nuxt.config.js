@@ -93,7 +93,7 @@ export default {
             propertyName: 'token',
           },
           user: {
-            url: `${config.api_url}/user/me`,
+            url: `${config.api_url}/user/me?expand=email`,
             method: 'get',
             propertyName: 'data',
           },

@@ -54,50 +54,9 @@ body {
 
 .custom-control-input[disabled] ~ .custom-control-label, .custom-control-input:disabled ~ .custom-control-label {
   color: black;
+  letter-spacing: 0;
 }
 
 p, .p {
   margin-bottom: 1rem;
-}
-
-.custom-control-label::before {
-  border-color: $purple;
-}
-
-.custom-control-input:checked ~ .custom-control-label::before {
-  border-color: $purple;
-  background-color: $purple;
-}
-
-.custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {
-  background-color: $purple;
-}
-
-.custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
-  background-color: white;
-}
-
-.custom-control-input[disabled] ~ .custom-control-label, .custom-control-input:disabled ~ .custom-control-label {
-  color: black;
-}
-
-.custom-control-label::before {
-  border-color: $purple;
-}
-
-.custom-control-input:checked ~ .custom-control-label::before {
-  border-color: $purple;
-  background-color: $purple;
-}
-
-.custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {
-  background-color: $purple;
-}
-
-.custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
-  background-color: white;
-}
-
-.custom-control-input[disabled] ~ .custom-control-label, .custom-control-input:disabled ~ .custom-control-label {
-  color: black;
 }

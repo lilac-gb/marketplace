@@ -23,9 +23,10 @@
     "dotenv": "^8.2.0",
     "nuxt": "^2.13.3",
     "nuxt-fontawesome": "^0.4.0",
-    "vue-avatar-cropper": "^1.0.6"
+    "vue-avatar-editor-improved": "^1.0.5"
   },
   "devDependencies": {
+    "@nuxt/types": "^2.13.3",
     "@nuxtjs/style-resources": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.1.0",

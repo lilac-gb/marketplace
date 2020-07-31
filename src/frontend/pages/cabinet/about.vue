@@ -93,7 +93,7 @@
                 </b-form-group>
               </ValidationProvider>
               <div class="w-50 pr-0 py-3 user-form-text">
-                Имя пользователя должено содержать только латинские буквы, оно
+                Имя пользователя должно содержать только латинские буквы, оно
                 будет использоваться для просмотра вашей карточки по адресу
                 /@nickname
               </div>
@@ -250,10 +250,10 @@
                 </b-form-checkbox>
               </div>
             </div>
-            <b-button type="submit" class="mr-3 my-3 background-purple">
+            <b-button type="submit" class="ml-2 mr-3 my-3 background-purple">
               Сохранить
             </b-button>
-            <b-button type="reset" class="mr-3 my-3 background-purple">
+            <b-button type="reset" class="mr-3 ml-3 my-3 background-purple">
               Сбросить
             </b-button>
           </b-form>
@@ -262,8 +262,8 @@
           <pre class="m-0">{{ user }}</pre>
         </b-card>
       </b-col>
-      <b-col cols="3">
-        <Avatar />
+      <b-col cols="3" class="mt-3">
+        <Avatar :user="user" />
       </b-col>
     </b-row>
   </b-container>
@@ -361,6 +361,7 @@ export default {
 .user-form-text {
   color: #999999;
   font-size: 11px;
+  letter-spacing: 0;
 }
 .user-about-checkbox {
   line-height: 1.5rem;
