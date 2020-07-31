@@ -11,19 +11,19 @@
         {{ fullUserName }}
       </div>
     </template>
-    <b-dropdown-item href="#">
+    <b-dropdown-item to="/cabinet/about">
       <img src="~assets/pics/icons/user.svg" alt="icon" />
       <span>Мои данные</span>
     </b-dropdown-item>
-    <b-dropdown-item href="#">
+    <b-dropdown-item to="/cabinet/ads">
       <img src="~assets/pics/icons/announcement.svg" alt="icon" />
       <span>Мои объявления</span>
     </b-dropdown-item>
-    <b-dropdown-item href="#">
+    <b-dropdown-item to="/cabinet/publications">
       <img src="~assets/pics/icons/feather.svg" alt="icon" />
       <span>Мои публикации</span>
     </b-dropdown-item>
-    <b-dropdown-item href="#">
+    <b-dropdown-item to="/cabinet/companies">
       <img src="~assets/pics/icons/factory.svg" alt="icon" />
       <span>Моя компания</span>
     </b-dropdown-item>

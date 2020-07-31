@@ -7,7 +7,7 @@
         to="/cabinet/about"
         class="cabinet-nav__item py-4"
       >
-        <img src="assets/pics/icons/user_prpl.svg" alt="icon" />
+        <img src="~assets/pics/icons/user_prpl.svg" alt="icon" />
         <span>О себе</span>
       </b-list-group-item>
       <b-list-group-item
@@ -16,7 +16,7 @@
         to="/cabinet/ads"
         class="cabinet-nav__item py-4"
       >
-        <img src="assets/pics/icons/announcement_prpl.svg" alt="icon" />
+        <img src="~assets/pics/icons/announcement_prpl.svg" alt="icon" />
         <span>Объявления</span>
       </b-list-group-item>
       <b-list-group-item
@@ -25,7 +25,7 @@
         to="/cabinet/publications"
         class="cabinet-nav__item py-4"
       >
-        <img src="assets/pics/icons/feather_prpl.svg" alt="icon" />
+        <img src="~assets/pics/icons/feather_prpl.svg" alt="icon" />
         <span>Публикации</span>
       </b-list-group-item>
       <b-list-group-item
@@ -34,7 +34,7 @@
         to="/cabinet/companies"
         class="cabinet-nav__item py-4"
       >
-        <img src="assets/pics/icons/factory 1_prpl.svg" alt="icon" />
+        <img src="~assets/pics/icons/factory 1_prpl.svg" alt="icon" />
         <span>Компания</span>
       </b-list-group-item>
     </b-list-group>
