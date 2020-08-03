@@ -24,7 +24,7 @@ class Ad extends \common\models\Ad
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['search',], 'string'],
+            ['search', 'string'],
         ]);
     }
 
@@ -89,8 +89,26 @@ class Ad extends \common\models\Ad
 
     public function search($params = null)
     {
-        $query = self::find()
-            ->addSelect('ads.*');
+        $query = Ad::find();
+
+        if (isset($params['search'])) {
+            $terms = explode(" ", $params['search']);
+
+            if (count($terms) > 1) {
+                $conditionName = ['and'];
+                $conditionDesc = ['and'];
+
+                foreach ($terms as $key => $value) {
+                    $conditionName[] = ['like', 'name', $value];
+                    $conditionDesc[] = ['like', 'description', $value];
+                }
+            } else {
+                $conditionName = ['like', 'name', $params];
+                $conditionDesc = ['like', 'description', $params];
+            }
+
+            $query->where($conditionName)->orWhere($conditionDesc);
+        }
 
         if (isset($params['filter'])) {
             $filter = json_decode($params['filter']);
@@ -98,18 +116,14 @@ class Ad extends \common\models\Ad
 
         $pageSize = isset($params['pageSize']) ? $params['pageSize'] : 12;
 
-        if (isset($params)) {
-            $this->load($params);
-        }
-
         if ($this->my) {
-            $query->andWhere(['ads.user_id' => Yii::$app->user->id])
-                ->andWhere(['<>', 'ads.status', self::STATUS_DELETED]);
+            $query->andWhere(['user_id' => Yii::$app->user->id])
+                ->andWhere(['<>', 'status', self::STATUS_DELETED]);
         } else {
-            $query->andWhere(['=', 'ads.status', self::STATUS_PUBLISHED]);
+            $query->andWhere(['=', 'status', self::STATUS_PUBLISHED]);
         }
-        $query->andFilterWhere(['ads.id' => $this->id]);
-        $query->andFilterWhere(['like', 'ads.name', $this->name]);
+        $query->andFilterWhere(['id' => $this->id]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         if (isset($filter)) {
 
@@ -126,24 +140,20 @@ class Ad extends \common\models\Ad
             }
 
             if (isset($filter->user_id) && $filter->user_id) {
-                $query->andFilterWhere(['ads.user_id' => $filter->user_id]);
+                $query->andFilterWhere(['user_id' => $filter->user_id]);
             }
 
             if (isset($filter->priceFrom) && $filter->priceFrom) {
-                $query->andFilterWhere(['>=', 'ads.price', $filter->priceFrom]);
+                $query->andFilterWhere(['>=', 'price', $filter->priceFrom]);
             }
 
             if (isset($filter->priceTo) && $filter->priceTo) {
-                $query->andFilterWhere(['<=', 'ads.price', $filter->priceTo]);
+                $query->andFilterWhere(['<=', 'price', $filter->priceTo]);
             }
 
         };
 
-        if (isset($params['user_id'])) {
-            $query->andWhere(['user_id' => $params['user_id']]);
-        }
-
-        $query->groupBy('ads.id');
+        $query->groupBy('id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
