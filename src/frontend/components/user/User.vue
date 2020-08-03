@@ -5,7 +5,7 @@
       <div class="d-flex align-items-center justify-content-center">
         <img
           class="user-img"
-          :src="user.images && user.images.preview"
+          :src="loggedInUser.images.preview"
           alt="user-img"
         />
         {{ fullUserName }}
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'User',
   async fetch() {
@@ -48,6 +49,7 @@ export default {
     user: {},
   }),
   computed: {
+    ...mapGetters(['loggedInUser']),
     fullUserName() {
       return `${this.user.first_name}${
         this.user.last_name ? ` ${this.user.last_name}` : ''
