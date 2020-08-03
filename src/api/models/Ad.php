@@ -188,10 +188,10 @@ class Ad extends \common\models\Ad
 
             $this->status = self::STATUS_NOT_PUBLISHED;
 
-            if (!is_null($this->time_end) && !is_numeric($this->time_end)) {
-                $this->time_end = strtotime($this->time_end);
-            } else if (!isset($this->time_end)) {
-                $this->time_end = null;
+            if (!is_null($this->ended_at) && !is_numeric($this->ended_at)) {
+                $this->ended_at = strtotime($this->ended_at);
+            } else if (!isset($this->ended_at)) {
+                $this->ended_at = null;
             }
 
             return true;
