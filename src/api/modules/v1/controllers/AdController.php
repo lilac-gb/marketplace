@@ -9,8 +9,6 @@ use common\models\Ad;
 use common\models\Page;
 use common\services\AdService;
 use Yii;
-use yii\caching\DbDependency;
-use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
