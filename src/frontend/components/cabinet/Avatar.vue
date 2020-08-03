@@ -30,46 +30,18 @@ export default {
     user: {},
   }),
   methods: {
-    saveClicked: async function saveClicked(img) {
-      let imageBlob = await new Promise((resolve) =>
-        img.toBlob(resolve, 'image/jpeg')
-      );
-      let formData = new FormData();
-      formData.append('image', imageBlob, 'image.jpeg');
-      let response = await fetch(
-        `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
-      let result = await response.json();
-      alert(result.message);
-      // await this.$axios
-      //   .post(
-      //     `${config.api_url}user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
-      //     {
-      //       image: image,
-      //     },
-      //     {
-      //       headers: {
-      //         'Content-Type': 'multipart/form-data',
-      //         'Access-Control-Allow-Origin': '*',
-      //       },
-      //     }
-      //   )
-      //   .then((response) => {
-      //     this.setMessage(response.data.data.message[0]);
-      //     this.$router.push('/cabinet/about');
-      //   })
-      //   .catch((error) => {
-      //     if (error.response && error.response.data) {
-      //       this.loading = false;
-      //       console.log(error.response);
-      //       this.errors = error.response;
-      //     }
-      //   });
-      // console.log(image);
+    saveClicked() {
+      const canvas = document.getElementById("avatarEditorCanvas");
+      console.log(canvas);
+      canvas.toBlob((blob) => {
+        let formData = new FormData();
+        formData.append('image', blob);
+        let response = this.$axios.post(
+          `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
+          formData
+        );
+        console.log(response)
+      })
     },
   },
 };

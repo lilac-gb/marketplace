@@ -5,7 +5,6 @@ namespace api\modules\v1\controllers;
 use api\components\actions\ImageAttachmentAction;
 use api\components\ActiveController;
 use common\components\ActiveForm;
-use common\models\forms\ChangePasswordForm;
 use common\models\forms\LoginForm;
 use common\models\User;
 use common\services\UserService;

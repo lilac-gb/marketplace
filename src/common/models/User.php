@@ -2,14 +2,13 @@
 namespace common\models;
 
 use common\components\ActiveRecord;
-use common\services\UserService;
+use common\components\ImageAttachmentBehavior;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
-use zxbodya\yii2\imageAttachment\ImageAttachmentBehavior;
 
 /**
  * User model
@@ -69,7 +68,7 @@ class User extends ActiveRecord implements IdentityInterface
             'avatarBehavior' => [
                 'class' => ImageAttachmentBehavior::class,
                 'type' => 'user',
-                'previewWidth' => 400,
+                'previewWidth' => 200,
                 'previewHeight' => 200,
                 'extension' => 'jpg',
                 'directory' => Yii::getAlias('@frontend') . '/uploads/users',
