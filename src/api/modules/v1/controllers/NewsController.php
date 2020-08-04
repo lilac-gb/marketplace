@@ -14,9 +14,9 @@ use zxbodya\yii2\galleryManager\GalleryManagerAction;
 
 class NewsController extends ActiveController
 {
-    public function behaviors()
+    public function actions()
     {
-        $behaviors = parent::behaviors();
+        $actions = parent::actions();
 
         $actions['galleryApi'] = [
             'class' => GalleryManagerAction::class,
@@ -30,6 +30,13 @@ class NewsController extends ActiveController
             'attribute' => 'status',
             'value' => News::STATUS_DELETED,
         ]);
+
+        return $actions;
+    }
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
 
         $behaviors['authenticator']['except'] = ['options'];
         $behaviors['authenticator']['optional'] = [
@@ -61,7 +68,6 @@ class NewsController extends ActiveController
         if ((
                 $action == 'update'
                 || $action == 'delete'
-                || $action == 'publish'
                 || $action == 'publish'
             ) && !$author) {
             throw new ForbiddenHttpException();
