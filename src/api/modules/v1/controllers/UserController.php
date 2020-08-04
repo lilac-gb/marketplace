@@ -47,6 +47,7 @@ class UserController extends ActiveController
             'login',
             'signup',
             'recovery',
+            'restore',
             'logout',
             'me',
             'check-activate-key', // POST token returns user
@@ -266,6 +267,7 @@ class UserController extends ActiveController
         $user->generatePasswordResetToken();
 
         if ($user->save(false, ['password_reset_token'])) {
+
             UserService::sendRestorePasswordEmail($user);
 
             return [
@@ -277,6 +279,46 @@ class UserController extends ActiveController
             'statusCode' => 400,
             'errors' => ['Произошла ошибка, попробуйте позже!'],
         ];
+    }
+
+    public function actionRestore()
+    {
+        $token = Yii::$app->request->post('token');
+
+        if (!$token) {
+            return [
+                'statusCode' => 400,
+                'errors' => ['Нет токена!'],
+            ];
+        }
+
+        $user = User::findOne(['password_reset_token' => $token]);
+
+        if (!$user) {
+            return [
+                'statusCode' => 400,
+                'errors' => ['Такого пользователя не существует!'],
+            ];
+        }
+
+        $password = Yii::$app->security->generateRandomString(8);
+
+        $user->setPassword($password);
+        $user->password_reset_token = '';
+
+        if ($user->save(false)) {
+            UserService::sendPassword($user, $password);
+
+            return [
+                'statusCode' => 200,
+            ];
+
+        } else {
+            return [
+                'statusCode' => 400,
+                'errors' => ['token' => 'Что-то пошло не так!'],
+            ];
+        }
     }
 
     public function actionActivationEmail($id)

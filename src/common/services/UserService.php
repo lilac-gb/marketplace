@@ -23,7 +23,7 @@ class UserService
     {
 
         $link = Yii::$app->params['domainFrontend']
-            . '/users/restore-password?token='
+            . '/restore-password?token='
             . $model->password_reset_token;
 
         return EmailService::sendWithView(
