@@ -56,7 +56,7 @@ class NewsController extends ActiveController
      * @param array                 $params
      * @throws ForbiddenHttpException|NotFoundHttpException
      */
-    public function checkAccess($action, $model = null, $params = [])
+    /*public function checkAccess($action, $model = null, $params = [])
     {
         parent::checkAccess($action, $model, $params);
 
@@ -76,7 +76,7 @@ class NewsController extends ActiveController
         if ($action == 'view' && !$publish && !$author && !$admin) {
             throw new NotFoundHttpException();
         }
-    }
+    }*/
 
     public function actionMy()
     {
@@ -114,7 +114,7 @@ class NewsController extends ActiveController
             throw new NotFoundHttpException();
         }
 
-        $this->checkAccess('publish', $news, $this->id);
+        // $this->checkAccess('publish', $news, $this->id);
         $news->updateAttributes(['status' => News::STATUS_MODERATION]);
         NewsService::sendNotificationEmail($news);
 
