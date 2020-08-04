@@ -5,7 +5,7 @@
         <b-navbar-brand :to="`/`">
           <img src="~assets/logo/header-logo.svg" alt="header__logo"/>
         </b-navbar-brand>
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-navbar-toggle target="nav-collapse"/>
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav v-for="link in menu" :key="link.id">
             <b-nav-item
