@@ -5,13 +5,13 @@
       class="avatar-img"
       alt="1"
       :src="loggedInUser.images.preview"
-      @click="avatarEditor = true"
     />
     <VueAvatarEditor
       style=""
-      :width="250"
-      :height="250"
-      :border="0"
+      :width="248"
+      :height="248"
+      :color="[206, 212, 218, 1]"
+      :border="1"
       class="avatar"
       @finished="saveClicked"
     />
@@ -42,15 +42,16 @@ export default {
   data: () => ({
     user: {},
     preview: '',
-    avatarEditor: false,
   }),
   computed: mapGetters(['loggedInUser']),
   methods: {
-    saveClicked: async function saveClicked() {
+    async saveClicked() {
       const canvas = document.getElementById('avatarEditorCanvas');
       canvas.toBlob(async (blob) => {
         let formData = new FormData();
         formData.append('image', blob);
+        //тут тоже пустой объект? или я слепой или не так смотрю
+        console.log(formData);
         await this.$axios.post(
           `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
           formData
@@ -58,23 +59,22 @@ export default {
         this.$auth.fetchUser();
       });
     },
-    deleteClicked: async function daleteClicked() {
-      const canvas = document.getElementById('avatarEditorCanvas');
-      console.log(canvas);
-      canvas.toBlob(async (blob) => {
-        let formData = new FormData();
-        formData.append('image', blob);
-        let response = await this.$axios.post(
-          `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
-          {
-            formData: {
-              remove: true,
-            },
-          }
-        );
-        this.$auth.fetchUser();
-        console.log(response);
-      });
+    async deleteClicked() {
+      let formData = new FormData();
+      formData.delete('image');
+      //TODO: разобраться почему не формируется formData объект в виде представленном в 68 строке
+      console.log(formData);
+      await this.$axios.post(
+        `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
+        {
+          remove: true,
+          key: 'image',
+        }
+      );
+      let canvas = document.getElementById('avatarEditorCanvas');
+      let ctx = canvas.getContext('2d');
+      ctx.clearRect(1, 1, canvas.width - 2, canvas.height - 2);
+      this.$auth.fetchUser();
     },
   },
 };

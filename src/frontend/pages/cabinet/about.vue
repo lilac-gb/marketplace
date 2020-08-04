@@ -329,7 +329,7 @@ export default {
         .catch((error) => {
           if (error.response && error.response.data) {
             this.loading = false;
-            console.log(error.response);
+            //console.log(error.response);
             this.errors = error.response;
           }
         });
