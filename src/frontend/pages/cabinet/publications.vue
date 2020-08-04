@@ -13,28 +13,53 @@
 </template>
 
 <script>
-import Breadcrumbs from '../../components/Breadcrumbs';
-import CabinetNav from '../../components/cabinet/CabinetNav';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import CabinetNav from '@/components/cabinet/CabinetNav';
+import publications from '@/mixins/publications';
+import users from '@/mixins/users';
+import { NewsModel, SortDirection } from '@/shared/constants';
+
 export default {
   name: 'Publications',
   components: { CabinetNav, Breadcrumbs },
+  mixins: [publications, users],
   middleware: ['auth'],
   async fetch() {
-    try {
-      this.user = await this.$auth.user;
-    } catch (e) {
-      console.log(e);
-    }
+    await Promise.all([
+      this.getPublications(this.publicationsApiParams, true),
+      this.getUsers(),
+    ]);
   },
-  data: () => ({
-    user: {},
-  }),
+  data() {
+    return {
+      publications: [],
+      users: [],
+      searchText: null,
+      authorFilterValue: null,
+      currentPage: 1,
+      pageCount: 1,
+      perPage: 12,
+      totalCount: null,
+      sortBy: NewsModel.CREATED_AT,
+      sortDesc: SortDirection.ASK,
+    };
+  },
   computed: {
-    fullUserName() {
-      return this.user.first_name + ' ' + this.user.last_name;
-    },
-  },
+    publicationsApiParams() {
+      let params = {
+        page: this.currentPage,
+        pageSize: this.perPage,
+        sortBy: this.sortBy,
+        sortDesc: this.sortDesc,
+      };
+      if (this.searchText) {
+        params['News[name]'] = this.searchText;
+      }
+      if (this.authorFilterValue) {
+        params['user_id'] = this.authorFilterValue;
+      }
+      return params;
+    }
+  }
 };
 </script>
-
-<style lang="scss" scoped></style>
