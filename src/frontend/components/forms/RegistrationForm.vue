@@ -51,11 +51,14 @@
           <b-form-group>
             <p class="error-message">{{ errors[0] }}</p>
           </b-form-group>
-          <div class="d-flex">
-            <b-button type="submit" variant="primary" class="background-purple">
+          <div class="d-flex justify-content-between align-items-center">
+            <b-button type="submit" variant="secondary" class="background-purple">
               Отправить письмо
             </b-button>
-            <Loader v-show="loading" class="ml-4" />
+            <Loader v-show="loading"/>
+            <b-link class="text-muted" :to="`/recovery`">
+              Забыли пароль?
+            </b-link>
           </div>
         </b-form>
       </ValidationObserver>

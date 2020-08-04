@@ -21,7 +21,7 @@
                   'is-invalid': v.invalid && (v.touched || v.changed),
                   'is-valid': v.valid,
                 }"
-              ></b-form-input>
+              />
               <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                 {{ v.errors[0] }}
               </b-form-invalid-feedback>
@@ -48,7 +48,10 @@
               </b-form-invalid-feedback>
             </b-form-group>
           </ValidationProvider>
-          <b-button type="submit" variant="primary">Войти</b-button>
+          <div class="d-flex justify-content-between align-items-center">
+            <b-button type="submit" variant="secondary" class="background-purple">Войти</b-button>
+            <b-link class="text-muted" :to="`/recovery`">Забыли пароль?</b-link>
+          </div>
         </b-form>
       </ValidationObserver>
     </b-col>

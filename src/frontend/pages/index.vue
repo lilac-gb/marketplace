@@ -4,7 +4,6 @@
       <b-container class="main-search">
         <b-input-group>
           <b-form-input
-              v-model="searchText"
               class="mp-input search-field mr-2"
               placeholder="Введите название продукта или компании"
           />
