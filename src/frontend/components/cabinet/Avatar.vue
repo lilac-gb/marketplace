@@ -66,6 +66,8 @@ export default {
       console.log(formData);
       await this.$axios.post(
         `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
+        //formData поидее должен формироваться нормальный объект с двумя полями как ниже, но увы
+        // в таком виде работает на "ура"
         {
           remove: true,
           key: 'image',
