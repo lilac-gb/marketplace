@@ -3,7 +3,7 @@
     <b-row class="align-items-stretch mb-4">
       <b-col md="8">
         <b-input
-          v-model.trim="value"
+          v-model.trim="search"
           placeholder="Поиск"
           class="mp-input w-100"
         ></b-input>
@@ -34,7 +34,7 @@
 export default {
   name: 'SearchForm',
   data: () => ({
-    value: '',
+    search: '',
   }),
 };
 </script>

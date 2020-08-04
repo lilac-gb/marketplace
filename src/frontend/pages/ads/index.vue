@@ -1,7 +1,7 @@
 <template>
   <b-container>
     <Breadcrumbs></Breadcrumbs>
-    <search-form>
+    <search-form @onSubmit="searchByName">
       <b-row>
         <b-col md="6">
           <b-form-select
@@ -12,7 +12,7 @@
         </b-col>
         <b-col md="6">
           <b-form-select
-            v-model="filter.type"
+            v-model="filter.type_id"
             :options="options.type"
             class="w-100"
           ></b-form-select>
@@ -30,11 +30,11 @@
         </b-col>
       </b-row>
       <b-row class="align-items-center">
-        <b-col md="3" class="d-flex justify-content-between">
+        <b-col md="4" class="d-flex justify-content-between">
           <sorting-button text="По дате" />
           <sorting-button text="По просмотрам" />
         </b-col>
-        <b-col md="6">
+        <b-col md="5">
           <b-row>
             <b-col md="6">
               <b-form-select
@@ -61,6 +61,9 @@
             :tooltip="'always'"
             :tooltip-formatter="toCurrency"
             :interval="0.1"
+            :height="1"
+            :dot-size="16"
+            @drag-end="searchByPrice"
           />
         </b-col>
       </b-row>
@@ -70,7 +73,7 @@
             v-for="item in options.sections"
             :key="item.name"
             class="background-purple ellipse-btn mr-3"
-            @click="getBySection(item.id)"
+            @click="searchBySection(item.id)"
           >
             {{ item.name }}
           </b-button>
@@ -100,17 +103,16 @@ import SortingButton from '@/components/SortingButton';
 import GoodCard from '@/components/cards/GoodCard';
 import VueSlider from 'vue-slider-component';
 import utils from '@/mixins/utils';
+import _ from 'lodash';
 
 const defaultFilter = Object.freeze({
   country: null,
   city: null,
   category: null,
-  type: null,
-  price: {
-    from: 0,
-    to: 100,
-  },
-  sections: [],
+  type_id: null,
+  // priceFrom: 0,
+  // priceTo: 100,
+  section_id: null,
 });
 
 export default {
@@ -125,13 +127,10 @@ export default {
   mixins: [utils],
   async fetch() {
     try {
-      const params = this.getFilterParams();
-
       const response = await this.$axios.$get(`${config.api_url}/ad`, {
-        data: {
-          options: params,
-        },
+        params: this.getFetchParams(),
       });
+      console.log(response);
       this.goods = [...response.data.models];
       this.pagination = { ...response.data._meta };
 
@@ -155,6 +154,7 @@ export default {
     slider: {
       value: [0, 100],
     },
+    search: '',
     goods: [],
     pagination: {},
   }),
@@ -164,38 +164,55 @@ export default {
   methods: {
     async getFilterOptions() {
       const response = await this.$axios(`${config.api_url}/ad/ads-sections`);
-      const adsSections = response.data.data.map((item) => ({
+      this.options.type = response.data.data.map((item) => ({
         value: item.value,
         text: item.name,
       }));
-      this.options.type.push(...adsSections);
     },
-    getSliderRange() {
-      const [from, to] = this.slider.value;
-      return { from, to };
+    searchByName(searchLine) {
+      this.search = searchLine.trim();
+      this.$fetch();
+    },
+    searchByPrice() {
+      const [priceFrom, priceTo] = this.slider.value;
+      this.filter = {
+        ...this.filter,
+        priceFrom,
+        priceTo,
+      };
+      this.$fetch();
     },
     resetFilter() {
       this.filter = { ...defaultFilter };
       this.slider.value = [0, 100];
-      console.log(this.filter);
     },
-    getFilterParams() {
-      const params = Object.keys(this.filter).reduce((result, key) => {
-        if (this.filter[key]) {
+    getFetchParams() {
+      const filter = Object.keys(this.filter).reduce((result, key) => {
+        if (this.filter[key] || typeof this.filter[key] === 'number') {
           result[key] = this.filter[key];
         }
         return result;
       }, {});
-      params.price = this.getSliderRange();
-      return params;
+
+      const params = {};
+
+      if (this.search) {
+        params.search = this.search;
+      }
+
+      if (!_.isEmpty(filter)) {
+        params.filter = filter;
+      }
+
+      if (!_.isEmpty(params)) {
+        return params;
+      }
     },
-    getBySection(sectionId) {
-      if (!this.filter.sections.includes(sectionId)) {
-        this.filter.sections.push(sectionId);
+    searchBySection(sectionId) {
+      if (this.filter.section_id === sectionId) {
+        this.filter.section_id = null;
       } else {
-        this.filter.sections = this.filter.sections.filter(
-          (s) => s !== sectionId
-        );
+        this.filter.section_id = sectionId;
       }
       this.$fetch();
     },

@@ -15,7 +15,7 @@
           :icon="['fas', 'adjust']"
           class="good-card__info-icon"
         />
-        {{ card.type }}
+        {{ card.sectionName.name }}
       </div>
       <div class="good-card__text-views good-card__text">
         <font-awesome-icon
@@ -45,26 +45,6 @@ export default {
       type: Object,
       required: true,
     },
-    // name: {
-    //   type: String,
-    //   required: true,
-    // },
-    // price: {
-    //   type: String,
-    //   required: true,
-    // },
-    // views: {
-    //   type: Number,
-    //   required: true,
-    // },
-    // type: {
-    //   type: String,
-    //   required: true,
-    // },
-    // preview: {
-    //   type: String,
-    //   default: 'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
-    // },
   },
   computed: {
     previewSrc() {
