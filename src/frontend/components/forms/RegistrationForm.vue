@@ -85,11 +85,15 @@ export default {
     ...mapActions(['setMessage']),
     async onSubmit() {
       this.loading = true;
-      await this.$axios.post(`${process.env.api_url}/user/signup`, {data: this.user})
+      await this.$axios
+        .post(`${process.env.api_url}/user/signup`, { data: this.user })
         .then(() => {
-          this.setMessage(`На электронный адресс ${this.user.email} было выслано письмо с сылкой активации.`);
+          this.setMessage(
+            `На электронный адресс ${this.user.email} было выслано письмо с сылкой активации.`
+          );
           this.$router.push('/');
-        }).catch(error => {
+        })
+        .catch((error) => {
           if (error.response && error.response.data) {
             this.loading = false;
             this.errors = error.response.data.errors.email;
