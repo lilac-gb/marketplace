@@ -258,9 +258,6 @@
             </b-button>
           </b-form>
         </ValidationObserver>
-        <b-card class="mt-3" header="Form Data Result">
-          <pre class="m-0">{{ user }}</pre>
-        </b-card>
       </b-col>
       <b-col cols="3" class="mt-3">
         <Avatar :user="user" />
