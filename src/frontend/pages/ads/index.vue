@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container class="pb-5">
     <Breadcrumbs></Breadcrumbs>
     <search-form @onSubmit="searchByName">
       <b-row>
@@ -19,10 +19,10 @@
         </b-col>
       </b-row>
       <b-row class="mt-4">
-        <b-col md="3" class="text-left">
+        <b-col md="4" class="text-left">
           <p class="filter-title">Сортировка</p>
         </b-col>
-        <b-col md="6" class="text-left">
+        <b-col md="5" class="text-left">
           <p class="filter-title">Региональность</p>
         </b-col>
         <b-col md="3" class="text-left">
@@ -92,6 +92,18 @@
         </b-col>
       </b-row>
     </section>
+
+    <b-row class="justify-content-center">
+      <b-pagination
+        v-model="pagination.currentPage"
+        class="mp-pagination"
+        :per-page="pagination.perPage"
+        :total-rows="pagination.totalCount"
+        first-number
+        last-number
+        size="lg"
+      ></b-pagination>
+    </b-row>
   </b-container>
 </template>
 
@@ -127,17 +139,10 @@ export default {
   mixins: [utils],
   async fetch() {
     try {
-      const response = await this.$axios.$get(`${config.api_url}/ad`, {
-        params: this.getFetchParams(),
-      });
-      console.log(response);
-      this.goods = [...response.data.models];
-      this.pagination = { ...response.data._meta };
-
-      const sections = await this.$axios.get(
-        `${config.api_url}/ad/ads-sections`
-      );
-      this.options.sections = [...sections.data.data];
+      await Promise.all([
+        this.getAds(),
+        this.getSections(),
+      ])
     } catch (e) {
       console.log(e);
     }
@@ -156,11 +161,12 @@ export default {
     },
     search: '',
     goods: [],
-    pagination: {},
+    pagination: {
+      currentPage: 1,
+      perPage: 12,
+      totalCount: null,
+    },
   }),
-  mounted() {
-    this.getFilterOptions();
-  },
   methods: {
     async getFilterOptions() {
       const response = await this.$axios(`${config.api_url}/ad/ads-sections`);
@@ -168,6 +174,19 @@ export default {
         value: item.value,
         text: item.name,
       }));
+    },
+    async getAds() {
+      const response = await this.$axios.$get(`${config.api_url}/ad`, {
+        params: this.getFetchParams(),
+      });
+      this.goods = [...response.data.models];
+      this.pagination.totalCount = response.data._meta.totalCount;
+    },
+    async getSections() {
+      const response = await this.$axios.$get(
+        `${config.api_url}/ad/ads-sections`
+      );
+      this.options.sections = [...response.data];
     },
     searchByName(searchLine) {
       this.search = searchLine.trim();
