@@ -1,114 +1,183 @@
 <template>
-  <div style="position: relative;">
-    <img
-      ref="avatar"
-      class="avatar-img"
-      alt="1"
-      :src="loggedInUser.images.preview"
-    />
-    <VueAvatarEditor
-      style=""
-      :width="248"
-      :height="248"
-      :color="[206, 212, 218, 1]"
-      :border="1"
-      class="avatar"
-      @finished="saveClicked"
-    />
-    <button
-      class="btn background-purple btn-secondary delete"
-      @click="deleteClicked"
+  <div>
+    <div
+        v-if="loggedInUser.images.preview"
+        class="d-flex flex-column align-items-center justify-content-center bordered"
     >
-      Удалить
-    </button>
+      <img
+          ref="avatar"
+          class="avatar-img"
+          alt="1"
+          :src="loggedInUser.images.preview"
+          v-if="loggedInUser.images.preview"
+      />
+      <button
+          class="btn background-purple btn-secondary mt-2"
+          @click="deleteClicked"
+      >
+        Удалить
+      </button>
+    </div>
+    <div
+        class="d-flex flex-column align-items-center justify-content-center bordered"
+        v-else
+    >
+      <div class="upload-photo-label" v-if="!view">Нажмите, чтобы загрузить фото</div>
+      <vue-avatar
+          :width="200"
+          :height="200"
+          :style="`opacity: ${view ? '1' : '0'}`"
+          :rotation="rotation"
+          :scale="scale"
+          :color="[0, 0, 0, 0]"
+          :border="0"
+          ref="vueavatar"
+          @select-file="onSelectFile($event)"
+      />
+      <br>
+      <label>
+        <small>Масштаб: {{scale}}x</small>
+        <br>
+        <input
+            type="range"
+            min="1"
+            max="3"
+            step="0.02"
+            v-model="scale"
+        />
+      </label>
+      <label>
+        <small>Повернуть: {{rotation}}°</small>
+        <br>
+        <input
+            type="range"
+            min="0"
+            max="360"
+            step="1"
+            v-model="rotation"
+        />
+      </label>
+      <br>
+      <button
+          class="btn background-purple btn-secondary mt-2"
+          v-on:click="saveClicked"
+      >
+        Загрузить
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
-import VueAvatarEditor from 'vue-avatar-editor-improved';
-import config from '@/config/config';
-import { mapGetters } from 'vuex';
-export default {
-  name: 'Avatar',
-  components: {
-    VueAvatarEditor: VueAvatarEditor,
-  },
-  middleware: ['auth'],
-  async fetch() {
-    this.user = await {
-      ...this.$auth.user,
-    };
-  },
-  data: () => ({
-    user: {},
-    preview: '',
-  }),
-  computed: mapGetters(['loggedInUser']),
-  methods: {
-    async saveClicked() {
-      const canvas = document.getElementById('avatarEditorCanvas');
-      canvas.toBlob(async (blob) => {
-        let formData = new FormData();
-        formData.append('image', blob);
+  import {VueAvatar} from 'vue-avatar-editor-improved';
+  import config from '@/config/config';
+  import {mapGetters} from 'vuex';
+
+  export default {
+    name: 'Avatar',
+    components: {
+      VueAvatar
+    },
+    middleware: ['auth'],
+    async fetch() {
+      this.user = await {
+        ...this.$auth.user,
+      };
+    },
+    data: () => ({
+      user: {},
+      view: false,
+      preview: '',
+      rotation: 0,
+      scale: 1
+    }),
+    computed: mapGetters(['loggedInUser']),
+    methods: {
+      onSelectFile(file) {
+        if (file[0]) {
+          this.view = true;
+        }
+      },
+      async saveClicked() {
+        const canvas = document.getElementById('avatarEditorCanvas');
+        canvas.toBlob(async (blob) => {
+          let formData = new FormData();
+          formData.append('image', blob);
+          await this.$axios.post(
+            `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
+            formData
+          );
+          this.$auth.fetchUser();
+        });
+      },
+      async deleteClicked() {
         await this.$axios.post(
           `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
-          formData
+          {
+            remove: true,
+            key: 'image',
+          }
         );
+        const canvas = document.createElement('canvas');
+        canvas.style.opacity = 0;
+        this.view = false;
+        let ctx = canvas.getContext('2d');
+        ctx.clearRect(1, 1, canvas.width - 2, canvas.height - 2);
         this.$auth.fetchUser();
-      });
+      },
     },
-    async deleteClicked() {
-      let formData = new FormData();
-      formData.delete('image');
-      await this.$axios.post(
-        `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
-        {
-          remove: true,
-          key: 'image',
-        }
-      );
-      let canvas = document.getElementById('avatarEditorCanvas');
-      let ctx = canvas.getContext('2d');
-      ctx.clearRect(1, 1, canvas.width - 2, canvas.height - 2);
-      this.$auth.fetchUser();
-    },
-  },
-};
+  };
 </script>
 
 <style lang="scss">
-.avatar-img {
-  height: 250px;
-  width: 250px;
-}
-.avatar {
-  position: absolute;
-  background: transparent;
-  top: 0;
-  button {
-    margin-left: 10px;
-    margin-top: 40px;
-    padding: 0.375rem 0.75rem;
-    background-color: $purple;
-    border-radius: 0.25rem;
-    border: 1px solid #6c757d;
-    color: $purple;
-    font-size: 0;
-    line-height: 1.5;
-    &:before {
-      content: 'Сохранить' !important;
-      color: $white;
+  .bordered {
+    border: 1px dashed #ddd;
+    padding: 10px;
+  }
+
+  .cursorPointer {
+    cursor: pointer;
+    border-radius: 100%;
+  }
+
+  .upload-photo-label {
+    position: relative;
+    color: #767676;
+    top: 70px;
+    text-align: center;
+  }
+
+  .avatar-img {
+    max-height: 200px;
+    max-width: 200px;
+    border-radius: 100%;
+    height: 100%;
+    width: 100%;
+  }
+
+  .avatar {
+    position: absolute;
+    background: transparent;
+    top: 0;
+    button {
+      margin-left: 10px;
+      margin-top: 40px;
+      padding: 0.375rem 0.75rem;
+      background-color: $purple;
+      border-radius: 0.25rem;
+      border: 1px solid #6c757d;
+      color: $purple;
+      font-size: 0;
+      line-height: 1.5;
+      &:before {
+        content: 'Сохранить' !important;
+        color: $white;
+        font-size: 1rem;
+      }
+    }
+    label {
       font-size: 1rem;
+      margin-left: 12%;
     }
   }
-  label {
-    font-size: 1rem;
-    margin-left: 12%;
-  }
-}
-.delete {
-  position: absolute;
-  margin-top: 190px;
-  margin-left: 60%;
-}
 </style>
