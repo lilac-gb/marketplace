@@ -50,8 +50,6 @@ export default {
       canvas.toBlob(async (blob) => {
         let formData = new FormData();
         formData.append('image', blob);
-        //тут тоже пустой объект? или я слепой или не так смотрю
-        console.log(formData);
         await this.$axios.post(
           `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
           formData
@@ -62,12 +60,8 @@ export default {
     async deleteClicked() {
       let formData = new FormData();
       formData.delete('image');
-      //TODO: разобраться почему не формируется formData объект в виде представленном в 68 строке
-      console.log(formData);
       await this.$axios.post(
         `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
-        //formData поидее должен формироваться нормальный объект с двумя полями как ниже, но увы
-        // в таком виде работает на "ура"
         {
           remove: true,
           key: 'image',
