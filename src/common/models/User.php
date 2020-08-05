@@ -3,7 +3,6 @@ namespace common\models;
 
 use common\components\ActiveRecord;
 use common\components\ImageAttachmentBehavior;
-use common\services\UserService;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Yii;
@@ -33,12 +32,10 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     public $password;
-    public $passwordRepeat;
     public $oldPassword;
 
     const SCENARIO_SIGN_UP = 'signup';
     const SCENARIO_LOGIN = 'login';
-    const SCENARIO_CHANGE_PASSWORD = 'change-password';
     const SCENARIO_UPDATE = 'user-update';
     const SCENARIO_UPDATE_PASSWORD = 'password-update';
 
@@ -71,7 +68,7 @@ class User extends ActiveRecord implements IdentityInterface
             'avatarBehavior' => [
                 'class' => ImageAttachmentBehavior::class,
                 'type' => 'user',
-                'previewWidth' => 400,
+                'previewWidth' => 200,
                 'previewHeight' => 200,
                 'extension' => 'jpg',
                 'directory' => Yii::getAlias('@frontend') . '/uploads/users',
@@ -104,7 +101,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'email', 'auth_key', 'password'
             ], 'string'],
             [
-                ['password', 'passwordOld'], 'required',
+                ['password', 'oldPassword'], 'required',
                 'on' => self::SCENARIO_UPDATE_PASSWORD, 'message' => '{attribute} обязательно',
             ],
             [['created_at', 'updated_at'], 'integer'],
@@ -123,15 +120,18 @@ class User extends ActiveRecord implements IdentityInterface
         $scenarios = parent::scenarios();
 
         $scenarios = array_merge($scenarios, [
-            self::SCENARIO_SIGN_UP => ['first_name', 'email'],
-            self::SCENARIO_CHANGE_PASSWORD => ['password'],
-            self::SCENARIO_LOGIN => ['email', 'password'],
+            self::SCENARIO_SIGN_UP => [
+                'first_name', 'email',
+            ],
+            self::SCENARIO_LOGIN => [
+                'email', 'password',
+            ],
             self::SCENARIO_UPDATE => [
-                'first_name', 'last_name', 'email', 'username',
-                'activation_token', 'status',
+                'first_name', 'last_name', 'email', 'username', 'password', 'oldPassword',
+            ],
+            self::SCENARIO_UPDATE_PASSWORD => [
                 'password', 'oldPassword',
             ],
-            self::SCENARIO_UPDATE_PASSWORD => ['password', 'passwordOld'],
         ]);
 
         return $scenarios;
@@ -192,33 +192,16 @@ class User extends ActiveRecord implements IdentityInterface
             $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
         }
 
-        //setting activation key
         if ($insert && !$this->password_hash) {
             $this->status = self::STATUS_INACTIVE;
         }
 
-        if (!$this->isNewRecord) {
-            if ((!array_key_exists('email', $this->oldAttributes) && $this->email)
-                || (array_key_exists('email', $this->oldAttributes)
-                    && $this->oldAttributes['email'] !== $this->email)
-                && Yii::$app->id !== "backend"
-            ) {
-                $confirmationSecret = Yii::$app->security->generateRandomString();
-                $confirmationHash = base64_encode(Yii::$app->security->encryptByKey($this->email, $confirmationSecret));
-
-                UserService::sendChangeEmailConfirmation($this, $this->email, $confirmationHash);
-
-                $this->email = $this->oldAttributes['email'];
-                $this->confirmation_secret = $confirmationSecret;
-            }
-
-            if (!empty($this->password)) {
-                $this->setPassword($this->password);
-            }
-        }
-
         if (empty($this->auth_key)) {
             $this->generateAuthKey();
+        }
+
+        if (empty($this->verification_token)) {
+            $this->generateEmailVerificationToken();
         }
 
         return parent::beforeSave($insert);

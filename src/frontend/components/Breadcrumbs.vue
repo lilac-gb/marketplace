@@ -27,8 +27,8 @@ export default {
     crumbs: function () {
       let pathArray = this.$route.path.split('/');
       pathArray.shift();
-      let breadcrumbs = pathArray.reduce((breadcrumbArray, path, idx) => {
-        const text = this.$route.matched[idx].meta.breadCrumb || path;
+      return pathArray.reduce((breadcrumbArray, path, idx) => {
+        const text = path || this.$route.matched[idx].meta.breadCrumb;
         breadcrumbArray.push({
           path: path,
           to: breadcrumbArray[idx - 1]
@@ -39,7 +39,6 @@ export default {
         });
         return breadcrumbArray;
       }, []);
-      return breadcrumbs;
     },
   },
 };
