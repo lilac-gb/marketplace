@@ -363,7 +363,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getAvatar($version = 'i300x300')
     {
-        $result = '/img/no-photo.jpg';
+        $result = null;
 
         if ($this->getBehavior('avatarBehavior')->hasImage()) {
             $result = $this->getBehavior('avatarBehavior')->getUrl($version);

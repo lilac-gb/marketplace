@@ -2,10 +2,10 @@
   <b-container class="py-3">
     <Breadcrumbs />
     <b-row>
-      <b-col cols="3">
+      <b-col lg="3" md="6" sm="6" xs="12">
         <CabinetNav />
       </b-col>
-      <b-col cols="6">
+      <b-col lg="6" md="6" sm="6" xs="12">
         <ValidationObserver v-slot="{ handleSubmit }">
           <b-form
             v-if="show"
@@ -258,11 +258,8 @@
             </b-button>
           </b-form>
         </ValidationObserver>
-        <b-card class="mt-3" header="Form Data Result">
-          <pre class="m-0">{{ user }}</pre>
-        </b-card>
       </b-col>
-      <b-col cols="3" class="mt-3">
+      <b-col lg="3" md="12" sm="12" xs="12" class="mt-3">
         <Avatar :user="user" />
       </b-col>
     </b-row>
@@ -329,7 +326,7 @@ export default {
         .catch((error) => {
           if (error.response && error.response.data) {
             this.loading = false;
-            console.log(error.response);
+            //console.log(error.response);
             this.errors = error.response;
           }
         });
