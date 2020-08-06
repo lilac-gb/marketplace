@@ -6,7 +6,12 @@
         <CabinetNav />
       </b-col>
       <b-col>
-        <div class="p-3 border bg-light">Тута публикации</div>
+        <div class="publication-rows">
+          <PublicationsRow
+            v-for="publication in publications"
+            key="publication.id"
+            :publication="publication"/>
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -15,18 +20,19 @@
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
+import PublicationsRow from '@/components/cabinet/publications/PublicationsRow';
 import publications from '@/mixins/publications';
 import users from '@/mixins/users';
 import { NewsModel, SortDirection } from '@/shared/constants';
 
 export default {
   name: 'Publications',
-  components: { CabinetNav, Breadcrumbs },
+  components: { CabinetNav, Breadcrumbs, PublicationsRow },
   mixins: [publications, users],
   middleware: ['auth'],
   async fetch() {
     await Promise.all([
-      this.getPublications(this.publicationsApiParams, true),
+      this.getMyPublications(this.publicationsApiParams, true),
       this.getUsers(),
     ]);
   },
@@ -63,3 +69,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.publication-rows {
+  display: grid;
+  grid-template-columns: auto;
+  row-gap: 1.5625rem;
+}
+</style>

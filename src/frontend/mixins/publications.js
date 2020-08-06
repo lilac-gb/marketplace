@@ -24,6 +24,24 @@ export default {
         this.metaTags = result.data._metaTags;
       }
     },
+    async getMyPublications(params, metatags = false) {
+      if (metatags) {
+        params['expand'] = '_metaTags';
+      }
+
+      let result = await this.$http.$get(
+        constructUrl(`${config.api_url}/news`, params)
+      );
+      this.publications = result.data.models;
+      this.currentPage = result.data._meta.currentPage;
+      this.pageCount = result.data._meta.pageCount;
+      this.perPage = result.data._meta.perPage;
+      this.totalCount = result.data._meta.totalCount;
+
+      if (metatags) {
+        this.metaTags = result.data._metaTags;
+      }
+    },
     async getPublication(id, metatags = false) {
       let params = {};
       if (metatags) {

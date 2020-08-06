@@ -17,6 +17,7 @@ class News extends \common\models\News
             'id',
             'url',
             'name',
+            'status',
             'user' => function () {
                 if (empty($this->user)) {
                     return null;
