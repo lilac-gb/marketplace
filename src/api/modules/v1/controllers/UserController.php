@@ -313,7 +313,7 @@ class UserController extends ActiveController
         $password = Yii::$app->security->generateRandomString(8);
 
         $user->setPassword($password);
-        $user->password_reset_token = '';
+        $user->password_reset_token = null;
 
         if ($user->save(false)) {
             UserService::sendPassword($user, $password);
