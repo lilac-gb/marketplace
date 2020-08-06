@@ -28,7 +28,6 @@
                   <b-form-input
                     id="input-1"
                     v-model="user.first_name"
-                    required
                     placeholder="Введите имя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -54,7 +53,6 @@
                   <b-form-input
                     id="input-2"
                     v-model="user.last_name"
-                    required
                     placeholder="Введите фамилию"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -80,7 +78,6 @@
                   <b-form-input
                     id="input-3"
                     v-model="user.username"
-                    required
                     placeholder="Введите имя пользователя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -114,7 +111,6 @@
                     id="input-4"
                     v-model="user.email"
                     type="email"
-                    required
                     placeholder="Введите e-mail адрес"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),

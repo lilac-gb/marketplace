@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate';
-import { required, email, max, confirmed } from 'vee-validate/dist/rules';
+import { required, email, confirmed } from 'vee-validate/dist/rules';
 
 extend('required', {
   ...required,
@@ -25,8 +25,11 @@ extend('min', {
 });
 
 extend('max', {
-  ...max,
-  message: 'Максимальное количество знаков 100',
+  validate(value, { length }) {
+    return value.length <= length;
+  },
+  params: ['length'],
+  message: 'Максимальное количествоо знаков {length}',
 });
 
 extend('name', (name) => {
