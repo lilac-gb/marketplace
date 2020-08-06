@@ -260,7 +260,7 @@ class UserController extends ActiveController
         if (!$email) {
             return [
                 'statusCode' => 400,
-                'errors' => ['email' => 'Пожалуйста, заполните email'],
+                'errors' => ['Пожалуйста, заполните email'],
             ];
         }
 
@@ -269,7 +269,7 @@ class UserController extends ActiveController
         if (!$user) {
             return [
                 'statusCode' => 400,
-                'errors' => ['email' => 'Такого пользователя не существует'],
+                'errors' => ['Такого пользователя не существует'],
             ];
         }
 
@@ -286,7 +286,7 @@ class UserController extends ActiveController
 
         return [
             'statusCode' => 400,
-            'errors' => ['system' => 'Произошла ошибка, попробуйте позже!'],
+            'errors' => ['Произошла ошибка, попробуйте позже!'],
         ];
     }
 
@@ -325,7 +325,7 @@ class UserController extends ActiveController
         } else {
             return [
                 'statusCode' => 400,
-                'errors' => ['token' => 'Что-то пошло не так!'],
+                'errors' => ['Что-то пошло не так!'],
             ];
         }
     }
