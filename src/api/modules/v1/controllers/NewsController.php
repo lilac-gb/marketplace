@@ -41,6 +41,7 @@ class NewsController extends ActiveController
         $behaviors['authenticator']['except'] = ['options'];
         $behaviors['authenticator']['optional'] = [
             'index',
+            'my',
             'publish',
             'galleryApi',
             'view',

@@ -12,18 +12,11 @@
           v-b-tooltip.hover
           :title="publishState.text"/>
       </a>
-      <a href="#" @click.prevent="deletePubl">
-        <i
-          class="fas fa-pencil-alt text-purple"
-          v-b-tooltip.hover
-          title="Редактировать"/>
+      <a href="#" @click.prevent="">
+        <i class="fas fa-pencil-alt text-purple"/>
       </a>
-      <a href="#" @click.prevent="deletePubl">
-        <b-icon
-          class="text-red"
-          icon="trash-fill"
-          v-b-tooltip.hover
-          title="Удалить"/>
+      <a href="#" @click.prevent="deletePublication">
+        <b-icon class="text-red" icon="trash-fill"/>
       </a>
     </div>
   </div>
@@ -49,7 +42,7 @@ export default {
         case(NewsStatuses.STATUS_NOT_PUBLISHED):
           return {
             color: 'text-gray',
-            icon: 'eye',
+            icon: 'eye-slash',
             text: 'Редактирование'
           };
         case(NewsStatuses.STATUS_PUBLISHED):
@@ -62,9 +55,7 @@ export default {
     }
   },
   methods: {
-    deletePubl() {
-
-    }
+    deletePublication() {}
   }
 }
 </script>

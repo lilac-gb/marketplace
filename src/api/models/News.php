@@ -94,8 +94,6 @@ class News extends \common\models\News
     {
         $query = self::find();
 
-        $query->andFilterWhere(['status' => self::STATUS_PUBLISHED]);
-
         if (isset($params)) {
             $this->load($params);
         }

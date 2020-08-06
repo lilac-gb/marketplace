@@ -2,6 +2,7 @@ import config from '@/config';
 import { constructUrl } from '@/shared/api';
 
 export default {
+  middleware: 'auth',
   data: () => ({
     metaTags: null,
   }),
@@ -29,9 +30,11 @@ export default {
         params['expand'] = '_metaTags';
       }
 
+      this.$http.setToken(this.$auth.getToken('local'));
       let result = await this.$http.$get(
-        constructUrl(`${config.api_url}/news`, params)
+        constructUrl(`${config.api_url}/news/my`, params)
       );
+      this.$http.setToken(false);
       this.publications = result.data.models;
       this.currentPage = result.data._meta.currentPage;
       this.pageCount = result.data._meta.pageCount;
@@ -53,7 +56,7 @@ export default {
       if (metatags) {
         this.metaTags = result.data._metaTags;
       }
-    }
+    },
   },
   head() {
     if (this.metaTags) {
