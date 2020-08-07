@@ -111,6 +111,10 @@ class News extends \common\models\News
             $query->andFilterWhere(['news.user_id' => $params['user_id']]);
         }
 
+        if (isset($params['status'])) {
+            $query->andFilterWhere(['news.status' => $params['status']]);
+        }
+
         if (isset($params['sortBy']) && isset($params['sortDesc'])) {
             $sortBy = $params['sortBy'];
             $sortDesc = $params['sortDesc'];

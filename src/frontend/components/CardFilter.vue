@@ -2,7 +2,7 @@
   <b-card
     no-body
     class="filter-card w-100">
-    <div class="header">Сортировка</div>
+    <div v-if="headerText" class="header">{{ headerText }}</div>
     <div :class="containerClass">
       <slot></slot>
     </div>
@@ -13,7 +13,8 @@
 export default {
   name: 'CardFilter',
   props: {
-    containerClass: { type: String }
+    containerClass: { type: String },
+    headerText: { type: String, default: 'Сортировка' }
   }
 }
 </script>
