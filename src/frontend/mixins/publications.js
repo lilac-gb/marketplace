@@ -2,7 +2,6 @@ import config from '@/config';
 import { constructUrl } from '@/shared/api';
 
 export default {
-  middleware: 'auth',
   data: () => ({
     metaTags: null,
   }),
