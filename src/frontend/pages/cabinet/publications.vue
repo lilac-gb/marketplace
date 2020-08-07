@@ -86,7 +86,6 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import PublicationsRow from '@/components/cabinet/publications/PublicationsRow';
 import publications from '@/mixins/publications';
-import users from '@/mixins/users';
 import { NewsModel, SortDirection } from '@/shared/constants';
 import CardFilter from '@/components/CardFilter';
 import SortingButton from '@/components/SortingButton';
@@ -107,7 +106,7 @@ const paginationSize = [
 export default {
   name: 'Publications',
   components: { CabinetNav, Breadcrumbs, PublicationsRow, CardFilter, SortingButton },
-  mixins: [publications, users],
+  mixins: [publications],
   middleware: ['auth'],
   async fetch() {
     await this.getMyPublications(this.publicationsApiParams, true);
