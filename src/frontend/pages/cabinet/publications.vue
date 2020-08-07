@@ -54,7 +54,8 @@
           <PublicationsRow
             v-for="publication in publications"
             key="publication.id"
-            :publication="publication"/>
+            :publication="publication"
+            @updated="$fetch"/>
         </div>
 
         <div class="mb-4 mt-4 d-flex justify-content-center">

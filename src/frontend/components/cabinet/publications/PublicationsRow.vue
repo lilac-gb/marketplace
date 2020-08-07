@@ -5,7 +5,7 @@
       :style="{ backgroundImage: `url(${publication.coverImages.preview})` }"></div>
     <div class="text d-flex align-items-center">{{ publication.name }}</div>
     <div class="info d-flex align-items-center justify-content-end">
-      <a href="#" @click.prevent="deletePubl">
+      <a href="#" @click.prevent="publicate">
         <b-icon
           :class="publishState.color"
           :icon="publishState.icon"
@@ -15,7 +15,7 @@
       <a href="#" @click.prevent="">
         <i class="fas fa-pencil-alt text-purple"/>
       </a>
-      <a href="#" @click.prevent="deletePublication">
+      <a href="#" @click.prevent="deleteP">
         <b-icon class="text-red" icon="trash-fill"/>
       </a>
     </div>
@@ -24,9 +24,11 @@
 
 <script>
 import { NewsStatuses } from '@/shared/constants';
+import publications from '@/mixins/publications';
 
 export default {
   name: 'PublicationsRow',
+  mixins: [publications],
   props: {
     publication: { type: Object, required: true }
   },
@@ -55,7 +57,16 @@ export default {
     }
   },
   methods: {
-    deletePublication() {}
+    publicate() {
+      if (this.publication.status === NewsStatuses.STATUS_NOT_PUBLISHED) {
+        this.publishPublication(this.publication.id);
+      }
+      this.$emit('updated');
+    },
+    deleteP() {
+      this.deletePublication(this.publication.id);
+      this.$emit('updated');
+    }
   }
 }
 </script>

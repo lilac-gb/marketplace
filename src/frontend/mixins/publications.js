@@ -57,6 +57,12 @@ export default {
         this.metaTags = result.data._metaTags;
       }
     },
+    async publishPublication(id) {
+      await this.$http.$post(`${config.api_url}/news/${id}/publish`);
+    },
+    async deletePublication(id) {
+      await this.$http.$post(`${config.api_url}/news/${id}/delete`);
+    },
   },
   head() {
     if (this.metaTags) {
