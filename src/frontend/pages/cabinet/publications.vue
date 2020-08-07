@@ -56,6 +56,25 @@
             key="publication.id"
             :publication="publication"/>
         </div>
+
+        <div class="mb-4 mt-4 d-flex justify-content-center">
+          <b-link
+            class="background-white text-purple mp-button-white mr-4 page-link"
+            @click="fetchMoreItems"
+          >
+            ЗАГРУЗИТЬ ЕЩЕ
+          </b-link>
+          <b-pagination
+            v-model="currentPage"
+            class="mp-pagination"
+            :per-page="perPage"
+            :total-rows="totalCount"
+            first-number
+            last-number
+            size="lg"
+            @input="$fetch"
+          />
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -129,6 +148,10 @@ export default {
     }
   },
   methods: {
+    fetchMoreItems() {
+      this.perPage += 12;
+      this.$fetch();
+    },
     sortByDate(direction) {
       this.sortBy = NewsModel.CREATED_AT;
       this.sortDesc = direction;
