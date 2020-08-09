@@ -39,6 +39,7 @@ class News extends \common\models\News
                 ];
             },
             'description',
+            'anons',
             'views',
             'created_at',
         ];

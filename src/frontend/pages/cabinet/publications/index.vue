@@ -17,7 +17,7 @@
                 @click="$fetch">
               Поиск
             </b-button>
-            <b-button class="background-purple mp-button-purple">
+            <b-button class="background-purple mp-button-purple" @click="create">
               Создать публикацю
             </b-button>
           </div>
@@ -162,6 +162,9 @@ export default {
       this.sortDesc = direction;
       this.$fetch();
     },
+    create() {
+      this.$router.push({name: 'cabinet-publications-publication_id', params: { publication_id: 'new' }});
+    }
   },
 };
 </script>

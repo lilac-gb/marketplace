@@ -57,10 +57,28 @@ export default {
       }
     },
     async publishPublication(id) {
+      this.$http.setToken(this.$auth.getToken('local'));
       await this.$http.$post(`${config.api_url}/news/${id}/publish`);
+      this.$http.setToken(false);
     },
     async deletePublication(id) {
-      await this.$http.$post(`${config.api_url}/news/${id}/delete`);
+      this.$http.setToken(this.$auth.getToken('local'));
+      await this.$http.$delete(`${config.api_url}/news/${id}`);
+      this.$http.setToken(false);
+    },
+    async createPublication(payload) {
+      this.$http.setToken(this.$auth.getToken('local'));
+      let result = await this.$http.$post(`${config.api_url}/news`, payload);
+      this.$http.setToken(false);
+
+      return result;
+    },
+    async updatePublication(id, payload) {
+      this.$http.setToken(this.$auth.getToken('local'));
+      let result = await this.$http.$put(`${config.api_url}/news/${id}`, payload);
+      this.$http.setToken(false);
+
+      return result;
     },
   },
   head() {
