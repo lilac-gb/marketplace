@@ -80,9 +80,9 @@ import PublicationsCard from '@/components/publications/card';
 import CardFilter from '@/components/CardFilter';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SortingButton from '@/components/SortingButton';
-import config from '@/config';
 import { NewsModel, SortDirection } from '@/shared/constants';
 import publications from '@/mixins/publications';
+import users from '@/mixins/users';
 import { getFullName } from '@/shared/utils';
 
 export default {
@@ -93,9 +93,7 @@ export default {
     'filter-card': CardFilter,
     'sorting-button': SortingButton,
   },
-  mixins: [
-    publications
-  ],
+  mixins: [publications, users],
   async fetch() {
     await Promise.all([
       this.getPublications(this.publicationsApiParams, true),
@@ -142,10 +140,6 @@ export default {
     }
   },
   methods: {
-    async getUsers() {
-      let result = await this.$http.$get(`${config.api_url}/user`);
-      this.users = result.data.models;
-    },
     fetchMoreItems() {
       this.perPage += 12;
       this.$fetch();

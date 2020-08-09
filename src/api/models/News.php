@@ -17,6 +17,7 @@ class News extends \common\models\News
             'id',
             'url',
             'name',
+            'status',
             'user' => function () {
                 if (empty($this->user)) {
                     return null;
@@ -93,8 +94,6 @@ class News extends \common\models\News
     {
         $query = self::find();
 
-        $query->andFilterWhere(['status' => self::STATUS_PUBLISHED]);
-
         if (isset($params)) {
             $this->load($params);
         }
@@ -110,6 +109,10 @@ class News extends \common\models\News
 
         if (isset($params['user_id'])) {
             $query->andFilterWhere(['news.user_id' => $params['user_id']]);
+        }
+
+        if (isset($params['status'])) {
+            $query->andFilterWhere(['news.status' => $params['status']]);
         }
 
         if (isset($params['sortBy']) && isset($params['sortDesc'])) {
