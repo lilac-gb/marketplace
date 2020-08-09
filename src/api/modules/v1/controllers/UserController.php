@@ -5,7 +5,6 @@ namespace api\modules\v1\controllers;
 use api\components\actions\ImageAttachmentAction;
 use api\components\ActiveController;
 use common\components\ActiveForm;
-use common\models\forms\ChangePasswordForm;
 use common\models\forms\LoginForm;
 use common\models\User;
 use common\services\UserService;
@@ -50,9 +49,9 @@ class UserController extends ActiveController
             'restore',
             'logout',
             'me',
-            'check-activate-key', // POST token returns user
-            'change-password',
+            'check-activate-key',
             'activation-email',
+            'confirm-email',
             'imgAttachApi',
             'save',
         ];
@@ -64,19 +63,21 @@ class UserController extends ActiveController
     {
         /** @var User $user */
         /** @var User $pass */
-        $user = Yii::$app->user->getIdentity();
+        $user = User::findOne(Yii::$app->user->id);
         $postData = Yii::$app->request->post();
-
         $oldEmail = $user->email;
-
         $user->scenario = User::SCENARIO_UPDATE;
 
-        if (isset($postData['oldPassword']) && isset($postData['password']) && !empty($postData['oldPassword']) && !empty($postData['password'])) {
+        if (isset($postData['oldPassword'])
+            && isset($postData['password'])
+            && !empty($postData['oldPassword'])
+            && !empty($postData['password'])
+        ) {
             $pass = $user;
             $pass->scenario = User::SCENARIO_UPDATE_PASSWORD;
 
-            if ($pass->load(Yii::$app->request->post())) {
-                if (!Yii::$app->security->validatePassword($postData['password'], $user->password_hash)) {
+            if ($pass->load(Yii::$app->request->post(), '')) {
+                if (!Yii::$app->security->validatePassword($postData['oldPassword'], $user->password_hash)) {
                     return [
                         'statusCode' => 400,
                         'errors' => [
@@ -85,7 +86,7 @@ class UserController extends ActiveController
                     ];
                 }
 
-                $user->password = $user->setPassword($postData['oldPassword']);
+                $user->setPassword($postData['password']);
             }
         } else if ((isset($postData['oldPassword']) && !empty($postData['oldPassword']))
             || (isset($postData['password']) && !empty($postData['password']))
@@ -93,13 +94,26 @@ class UserController extends ActiveController
             return [
                 'statusCode' => 400,
                 'errors' => [
-                    'Оба поля обязательны для заполнения',
+                    'Для смены пароля, оба поля обязательны для заполнения',
                 ],
             ];
         }
 
-        if ($user->load($postData) && $user->validate()) {
+        if ($user->load($postData, '') && $user->validate()) {
+
             if ($user->email !== $oldEmail) {
+                $confirmationSecret = Yii::$app->security->generateRandomString();
+                $encrypt = Yii::$app->security->encryptByKey($user->email, $confirmationSecret);
+                $confirmationHash = base64_encode($encrypt);
+
+                UserService::sendChangeEmailConfirmation($user, $user->email, $confirmationHash);
+
+                $user->updateAttributes([
+                    'email' => $oldEmail,
+                    'status' => User::STATUS_EMAIL_NC,
+                    'confirmation_secret' => $confirmationSecret,
+                ]);
+
                 return [
                     'statusCode' => 200,
                     'message' => [
@@ -108,10 +122,25 @@ class UserController extends ActiveController
                 ];
             }
 
-            $user->save(false);
+            if ($user->save(false)) {
+                return [
+                    'statusCode' => 200,
+                    'message' => [
+                        'Данные успешно сохранены!',
+                    ],
+                ];
+            }
+
+            return [
+                'statusCode' => 400,
+                'errors' => $user->errors,
+            ];
         }
 
-        return $user;
+        return [
+            'statusCode' => 400,
+            'errors' => $user->errors,
+        ];
     }
 
     public function actionMe()
@@ -137,7 +166,7 @@ class UserController extends ActiveController
             return Yii::$app->user->identity;
         }
 
-        return $loginForm;
+        return $loginForm->errors;
     }
 
     public function actionCheckActivateKey(): array
@@ -161,24 +190,6 @@ class UserController extends ActiveController
                 'valid' => true,
             ],
         ];
-    }
-
-    public function actionChangePassword()
-    {
-        $request = Yii::$app->request;
-        $changePasswordForm = new ChangePasswordForm();
-        $changePasswordForm->oldPassword = $request->post('oldPassword');
-        $changePasswordForm->newPassword = $request->post('newPassword');
-
-        if ($changePasswordForm->validate()) {
-            $changePasswordForm->changePassword();
-
-            Yii::$app->user->refreshToken();
-
-            return [];
-        }
-
-        return $changePasswordForm;
     }
 
     private function generateNickname($nik)
@@ -215,6 +226,7 @@ class UserController extends ActiveController
                 return ActiveForm::validate($model);
             }
 
+            //$model->setPassword($model->password);
             $model->generateEmailVerificationToken();
             $model->status = User::STATUS_EMAIL_NC;
             $model->role = User::ROLE_GUEST;
@@ -231,10 +243,7 @@ class UserController extends ActiveController
 
                 return ['redirect' => Url::to('/')];
             } else {
-                return [
-                    'statusCode' => 400,
-                    'errors' => $model->errors,
-                ];
+                return $model->errors;
             }
         }
 
@@ -251,7 +260,7 @@ class UserController extends ActiveController
         if (!$email) {
             return [
                 'statusCode' => 400,
-                'errors' => ['email' => 'Пожалуйста, заполните email'],
+                'errors' => ['Пожалуйста, заполните email'],
             ];
         }
 
@@ -260,7 +269,7 @@ class UserController extends ActiveController
         if (!$user) {
             return [
                 'statusCode' => 400,
-                'errors' => ['email' => 'Такого пользователя не существует'],
+                'errors' => ['Такого пользователя не существует'],
             ];
         }
 
@@ -304,7 +313,7 @@ class UserController extends ActiveController
         $password = Yii::$app->security->generateRandomString(8);
 
         $user->setPassword($password);
-        $user->password_reset_token = '';
+        $user->password_reset_token = null;
 
         if ($user->save(false)) {
             UserService::sendPassword($user, $password);
@@ -316,7 +325,7 @@ class UserController extends ActiveController
         } else {
             return [
                 'statusCode' => 400,
-                'errors' => ['token' => 'Что-то пошло не так!'],
+                'errors' => ['Что-то пошло не так!'],
             ];
         }
     }
@@ -361,6 +370,37 @@ class UserController extends ActiveController
         return Yii::$app->user->identity;
     }
 
+    public function actionConfirmEmail($id)
+    {
+        $user = User::findOne($id);
+
+        if (empty($user)) {
+            throw new NotFoundHttpException('Нет такого пользователя');
+        }
+
+        $hash = Yii::$app->request->post('hash');
+
+        try {
+            $confirmationHash = base64_decode(str_replace(' ', '+', $hash));
+
+            $email = Yii::$app->security->decryptByKey($confirmationHash, $user->confirmation_secret);
+
+            if (!$email) {
+                throw new ErrorException('Ошибка токена');
+            }
+        } catch (ErrorException $e) {
+            throw new BadRequestHttpException('Неверный токен!');
+        }
+
+        $user->updateAttributes([
+            'email' => $email,
+            'status' => User::STATUS_ACTIVE,
+            'confirmation_secret' => '',
+        ]);
+
+        return $user;
+    }
+
     public function actionLogout()
     {
         return Yii::$app->user->logout();
@@ -372,6 +412,7 @@ class UserController extends ActiveController
         if (!is_numeric($nickname)) {
             $nickname = ltrim($nickname, '@');
             $user = \api\models\User::find()
+                ->joinWith("details")
                 ->where(['username' => $nickname])->one();
 
             return $user;
