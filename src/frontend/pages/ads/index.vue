@@ -6,15 +6,16 @@
         <b-col md="6">
           <b-form-select
             v-model="filter.category"
-            :options="options.category"
+            :options="computedOptions('categories')"
             class="w-100"
           ></b-form-select>
         </b-col>
         <b-col md="6">
           <b-form-select
             v-model="filter.type_id"
-            :options="options.type"
+            :options="computedOptions('types')"
             class="w-100"
+            @change="$fetch()"
           ></b-form-select>
         </b-col>
       </b-row>
@@ -31,22 +32,22 @@
       </b-row>
       <b-row class="align-items-center">
         <b-col md="4" class="d-flex justify-content-between">
-          <sorting-button text="По дате" />
-          <sorting-button text="По просмотрам" />
+          <sorting-button text="По дате" @changed="sortByDate" />
+          <sorting-button text="По просмотрам" @changed="sortByViews" />
         </b-col>
         <b-col md="5">
           <b-row>
             <b-col md="6">
               <b-form-select
                 v-model="filter.country"
-                :options="options.country"
+                :options="computedOptions('country')"
                 class="w-100"
               ></b-form-select>
             </b-col>
             <b-col md="6">
               <b-form-select
                 v-model="filter.city"
-                :options="options.city"
+                :options="computedOptions('city')"
                 class="w-100"
                 :disabled="!filter.country"
               ></b-form-select>
@@ -55,7 +56,7 @@
         </b-col>
         <b-col md="3" class="pl-4 pr-4">
           <vue-slider
-            v-model="slider.value"
+            v-model="slider"
             :min-range="20"
             :max="100"
             :tooltip="'always'"
@@ -63,23 +64,24 @@
             :interval="0.1"
             :height="1"
             :dot-size="16"
-            @drag-end="searchByPrice"
+            @drag-end="setSlider()"
           />
         </b-col>
       </b-row>
       <b-row class="pt-4 pb-4">
         <b-col md="6" class="d-flex align-items-center justify-content-start">
           <b-button
-            v-for="item in options.sections"
+            v-for="item in computedOptions('sections')"
             :key="item.name"
             class="background-purple ellipse-btn mr-3"
+            :disabled="item.id === selectedSection"
             @click="searchBySection(item.id)"
           >
             {{ item.name }}
           </b-button>
         </b-col>
         <b-col md="6" class="d-flex align-items-center justify-content-end">
-          <b-button class="background-purple ellipse-btn" @click="resetFilter">
+          <b-button class="background-purple ellipse-btn" @click="reset()">
             Сбросить фильтр
           </b-button>
         </b-col>
@@ -115,17 +117,7 @@ import SortingButton from '@/components/SortingButton';
 import GoodCard from '@/components/cards/GoodCard';
 import VueSlider from 'vue-slider-component';
 import utils from '@/mixins/utils';
-import _ from 'lodash';
-
-const defaultFilter = Object.freeze({
-  country: null,
-  city: null,
-  category: null,
-  type_id: null,
-  // priceFrom: 0,
-  // priceTo: 100,
-  section_id: null,
-});
+import adsFilter from '@/mixins/adsFilter';
 
 export default {
   name: 'Ads',
@@ -136,29 +128,16 @@ export default {
     'good-card': GoodCard,
     'vue-slider': VueSlider,
   },
-  mixins: [utils],
+  mixins: [utils, adsFilter],
   async fetch() {
     try {
-      await Promise.all([
-        this.getAds(),
-        this.getSections(),
-      ])
+      await Promise.all([this.getAds(), this.getOptions()]);
+      console.log(this.goods);
     } catch (e) {
       console.log(e);
     }
   },
   data: () => ({
-    filter: { ...defaultFilter },
-    options: {
-      category: [{ value: null, text: 'Категории' }],
-      type: [{ value: null, text: 'Тип' }],
-      country: [{ value: null, text: 'Страна' }],
-      city: [{ value: null, text: 'Город' }],
-      sections: [],
-    },
-    slider: {
-      value: [0, 100],
-    },
     search: '',
     goods: [],
     pagination: {
@@ -169,71 +148,21 @@ export default {
   }),
   methods: {
     async getFilterOptions() {
-      const response = await this.$axios(`${config.api_url}/ad/ads-sections`);
-      this.options.type = response.data.data.map((item) => ({
+      const response = await this.$axios.$get(
+        `${config.api_url}/ad/ads-sections`
+      );
+      this.options.type = response.data.map((item) => ({
         value: item.value,
         text: item.name,
       }));
     },
     async getAds() {
+      console.log(this.getFetchParams());
       const response = await this.$axios.$get(`${config.api_url}/ad`, {
         params: this.getFetchParams(),
       });
       this.goods = [...response.data.models];
       this.pagination.totalCount = response.data._meta.totalCount;
-    },
-    async getSections() {
-      const response = await this.$axios.$get(
-        `${config.api_url}/ad/ads-sections`
-      );
-      this.options.sections = [...response.data];
-    },
-    searchByName(searchLine) {
-      this.search = searchLine.trim();
-      this.$fetch();
-    },
-    searchByPrice() {
-      const [priceFrom, priceTo] = this.slider.value;
-      this.filter = {
-        ...this.filter,
-        priceFrom,
-        priceTo,
-      };
-      this.$fetch();
-    },
-    resetFilter() {
-      this.filter = { ...defaultFilter };
-      this.slider.value = [0, 100];
-    },
-    getFetchParams() {
-      const filter = Object.keys(this.filter).reduce((result, key) => {
-        if (this.filter[key] || typeof this.filter[key] === 'number') {
-          result[key] = this.filter[key];
-        }
-        return result;
-      }, {});
-
-      const params = {};
-
-      if (this.search) {
-        params.search = this.search;
-      }
-
-      if (!_.isEmpty(filter)) {
-        params.filter = filter;
-      }
-
-      if (!_.isEmpty(params)) {
-        return params;
-      }
-    },
-    searchBySection(sectionId) {
-      if (this.filter.section_id === sectionId) {
-        this.filter.section_id = null;
-      } else {
-        this.filter.section_id = sectionId;
-      }
-      this.$fetch();
     },
   },
 };
