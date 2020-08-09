@@ -15,15 +15,22 @@
 .text-title {
   font-style: normal;
   font-weight: 100;
-  font-size: 36px;
-  line-height: 42px;
+  font-size: 2.25rem;
+  line-height: 2.625rem;
   letter-spacing: 0.06em;
 }
 
 .text-regular {
   font-style: normal;
   font-weight: 100;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 1rem;
+  line-height: 1.1875rem;
   letter-spacing: 0.06em;
+}
+
+.text-small {
+  font-style: normal;
+  font-weight: 100;
+  font-size: 0.8125rem;
+  line-height: 0.9375rem;
 }

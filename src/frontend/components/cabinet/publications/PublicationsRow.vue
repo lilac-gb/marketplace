@@ -12,7 +12,7 @@
           v-b-tooltip.hover
           :title="publishState.text"/>
       </a>
-      <a href="#" @click.prevent="">
+      <a href="#" @click.prevent="edit">
         <i class="fas fa-pencil-alt text-purple"/>
       </a>
       <a href="#" @click.prevent="deleteP">
@@ -66,6 +66,9 @@ export default {
     deleteP() {
       this.deletePublication(this.publication.id);
       this.$emit('updated');
+    },
+    edit() {
+      this.$router.push({name: 'cabinet-publications-publication_id', params: { publication_id: this.publication.url }});
     }
   }
 }
