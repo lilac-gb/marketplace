@@ -16,7 +16,7 @@
             <div class="d-flex flex-row flex-wrap">
               <ValidationProvider
                 v-slot="v"
-                rules="min:2|max:100"
+                rules="min:2|max:100|required"
                 class="w-100"
               >
                 <b-form-group
@@ -66,7 +66,7 @@
               </ValidationProvider>
               <ValidationProvider
                 v-slot="v"
-                rules="min:2|max:100"
+                rules="inn:10|required"
                 class="w-100"
               >
                 <b-form-group
@@ -78,6 +78,7 @@
                   <b-form-input
                     id="input-4"
                     v-model="company.inn"
+                    required
                     placeholder="ИНН"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -91,7 +92,7 @@
               </ValidationProvider>
               <ValidationProvider
                 v-slot="v"
-                rules="min:2|max:100"
+                rules="ogrn:13|required"
                 class="w-100"
               >
                 <b-form-group
@@ -114,11 +115,7 @@
                   </b-form-invalid-feedback>
                 </b-form-group>
               </ValidationProvider>
-              <ValidationProvider
-                v-slot="v"
-                rules="min:2|max:100"
-                class="w-100"
-              >
+              <ValidationProvider v-slot="v" rules="tel" class="w-100">
                 <b-form-group
                   id="input-group-6"
                   label-for="input-6"
@@ -128,6 +125,7 @@
                   <b-form-input
                     id="input-6"
                     v-model="company.tel"
+                    type="tel"
                     placeholder="Телефон"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -153,32 +151,8 @@
                   <b-form-input
                     id="input-7"
                     v-model="company.email"
+                    type="email"
                     placeholder="Email"
-                    :class="{
-                      'is-invalid': v.invalid && (v.touched || v.changed),
-                      'is-valid': v.valid && v.dirty,
-                    }"
-                  />
-                  <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
-                    {{ v.errors[0] }}
-                  </b-form-invalid-feedback>
-                </b-form-group>
-              </ValidationProvider>
-              <ValidationProvider
-                v-slot="v"
-                rules="min:2|max:100"
-                class="w-100"
-              >
-                <b-form-group
-                  id="input-group-8"
-                  label-for="input-8"
-                  description=""
-                  class="pr-3 pt-3"
-                >
-                  <b-form-input
-                    id="input-8"
-                    v-model="company.worktime"
-                    placeholder="Время работы"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
@@ -227,9 +201,6 @@ export default {
     try {
       this.user = await {
         ...this.$auth.user,
-        oldPassword: '',
-        password: '',
-        repeatPassword: '',
       };
     } catch (e) {
       console.log(e);

@@ -1,9 +1,19 @@
 import { extend } from 'vee-validate';
-import { required, email, confirmed } from 'vee-validate/dist/rules';
+import { required, email, confirmed, digits } from 'vee-validate/dist/rules';
 
 extend('required', {
   ...required,
   message: 'Это поле обязательно для заполнения',
+});
+
+extend('inn', {
+  ...digits,
+  message: 'ИНН должен содержать 10 цифр',
+});
+
+extend('ogrn', {
+  ...digits,
+  message: 'ОГРН должен содержать 13 цифр',
 });
 
 extend('confirmed', {
@@ -77,6 +87,16 @@ extend('atLeastULetter', (name) => {
 
   if (!regExp.test(name)) {
     return 'Пароль должен содержать хотябы одну заглавную букву';
+  }
+
+  return true;
+});
+
+extend('tel', (name) => {
+  const regExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/;
+
+  if (!regExp.test(name)) {
+    return 'Скорее всего телефон введен в неверном формате';
   }
 
   return true;
