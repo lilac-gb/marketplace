@@ -163,6 +163,46 @@
                   </b-form-invalid-feedback>
                 </b-form-group>
               </ValidationProvider>
+              <b-form-group
+                id="input-group-8"
+                label-for="input-8"
+                description=""
+                class="pr-3 pt-3 w-100"
+              >
+                <multiselect
+                  v-model="weekDay"
+                  placeholder="Выберите рабочие дни"
+                  select-label="Нажмите ввод для выбора"
+                  selected-label=""
+                  max-height="300"
+                  option-height="40"
+                  deselect-label="Нажмите ввод для удаления"
+                  label="day"
+                  track-by="dayNumber"
+                  :close-on-select="false"
+                  :options="weekDayOptions"
+                  :multiple="true"
+                  :taggable="true"
+                  @tag="addTag"
+                />
+                <!--                <pre class="language-json"><code>{{ weekDay }}</code></pre>-->
+              </b-form-group>
+              <b-form-group
+                id="input-group-9"
+                label-for="input-9"
+                description=""
+                class="pr-3 w-50"
+              >
+                <b-form-timepicker v-model="company.workFrom" locale="de" />
+              </b-form-group>
+              <b-form-group
+                id="input-group-10"
+                label-for="input-10"
+                description=""
+                class="pr-3 w-50"
+              >
+                <b-form-timepicker v-model="company.workTo" locale="de" />
+              </b-form-group>
             </div>
             <b-button type="submit" class="ml-2 mr-3 my-3 background-purple">
               Сохранить информацию
@@ -187,9 +227,11 @@ import config from '@/config/config';
 import { mapActions } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import Avatar from '@/components/cabinet/Avatar';
+import multiselect from 'vue-multiselect';
 export default {
   name: 'Companies',
   components: {
+    multiselect,
     Avatar,
     CabinetNav,
     Breadcrumbs,
@@ -207,6 +249,16 @@ export default {
     }
   },
   data: () => ({
+    weekDay: null,
+    weekDayOptions: [
+      { dayNumber: 1, day: 'ПН' },
+      { dayNumber: 2, day: 'ВТ' },
+      { dayNumber: 3, day: 'СР' },
+      { dayNumber: 4, day: 'ЧТ' },
+      { dayNumber: 5, day: 'ПТ' },
+      { dayNumber: 6, day: 'СБ' },
+      { dayNumber: 7, day: 'ВС' },
+    ],
     company: {},
     user: {},
     show: true,
@@ -214,6 +266,15 @@ export default {
   computed: {},
   methods: {
     ...mapActions(['setMessage']),
+    addTag(weekDay) {
+      const day = {
+        day: weekDay,
+        dayNumber:
+          weekDay.substring(0, 2) + Math.floor(Math.random() * 10000000),
+      };
+      this.options.push(day);
+      this.value.push(day);
+    },
     async onSubmit() {
       this.loading = true;
       await this.$axios
@@ -252,8 +313,8 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style lang="scss">
 .companies-form {
   font-size: 13px;
   input {
@@ -267,5 +328,105 @@ export default {
   color: #999999;
   font-size: 11px;
   letter-spacing: 0;
+}
+.multiselect {
+  font-size: 13px;
+  line-height: 1;
+  &__spinner {
+    &:before,
+    &:after {
+      border-color: $purple transparent transparent;
+    }
+  }
+}
+.multiselect__input::placeholder {
+  color: #35495e;
+}
+
+.multiselect__input:hover,
+.multiselect__single:hover {
+  border-color: $light-gray;
+}
+
+.multiselect__input:focus,
+.multiselect__single:focus {
+  border-color: $light-gray;
+}
+
+.multiselect__tags {
+  border: 1px solid $light-gray;
+  min-height: 34px;
+}
+
+.multiselect__tag {
+  background: $purple;
+}
+
+.multiselect__tag-icon:after {
+  color: #7a3fa5;
+}
+
+.multiselect__tag-icon:focus,
+.multiselect__tag-icon:hover {
+  background: #5e369a;
+}
+
+.multiselect__select:before {
+  color: #999;
+  top: 75%;
+  border-width: 15px 8px 0 8px;
+  border-color: $light-gray transparent transparent transparent;
+}
+
+.multiselect__placeholder {
+  color: #495057;
+  font-size: 13px;
+  font-weight: 200;
+  letter-spacing: 0;
+  padding-left: 2px;
+}
+
+.multiselect__content-wrapper {
+  border: 1px solid $light-gray;
+}
+
+.multiselect--above .multiselect__content-wrapper {
+  border-top: 1px solid $light-gray;
+}
+
+.multiselect__option--highlight {
+  background: $purple;
+}
+
+.multiselect__option--highlight:after {
+  background: $purple;
+}
+
+.multiselect__option--selected {
+  background: #f3f3f3;
+  color: #35495e;
+}
+
+.multiselect__option--selected:after {
+  color: silver;
+}
+
+.multiselect__option--selected.multiselect__option--highlight {
+  background: #ff6a6a;
+}
+
+.multiselect__option--selected.multiselect__option--highlight:after {
+  background: #ff6a6a;
+}
+
+.multiselect--disabled .multiselect__current,
+.multiselect--disabled .multiselect__select {
+  background: #ededed;
+  color: #a6a6a6;
+}
+
+.multiselect__option--disabled {
+  background: #ededed !important;
+  color: #a6a6a6 !important;
 }
 </style>
