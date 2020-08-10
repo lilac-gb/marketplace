@@ -62,7 +62,7 @@ export default {
     this.user = await this.$auth.user;
 
     if (this.isUpdate) {
-      await this.getPublication(this.$route.params.publication_id, true);
+      await this.updatePublication(this.$route.params.publication_id, true);
       this.name = this.publication.name;
       this.description = this.publication.description;
       this.anons = this.publication.anons;

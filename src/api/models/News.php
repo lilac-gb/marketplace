@@ -80,9 +80,9 @@ class News extends \common\models\News
     {
         if (!is_numeric($id) && !is_array($id)) {
             $condition = ['url' => $id];
+        } else if (is_numeric($id)) {
+            $condition = ['id' => $id];
         }
-
-        $condition['status'] = News::STATUS_PUBLISHED;
 
         $dependency = new DbDependency(['sql' => 'SELECT max(created_at) FROM news']);
 
@@ -109,11 +109,11 @@ class News extends \common\models\News
         $query->andFilterWhere(['like', 'LOWER(name)', $this->name]);
 
         if (isset($params['user_id'])) {
-            $query->andFilterWhere(['news.user_id' => $params['user_id']]);
+            $query->andFilterWhere(['user_id' => $params['user_id']]);
         }
 
         if (isset($params['status'])) {
-            $query->andFilterWhere(['news.status' => $params['status']]);
+            $query->andFilterWhere(['status' => $params['status']]);
         }
 
         if (isset($params['sortBy']) && isset($params['sortDesc'])) {
