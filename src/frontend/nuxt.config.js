@@ -52,7 +52,12 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    'bootstrap-vue/nuxt',
+    [
+      'bootstrap-vue/nuxt',
+      {
+        icons: true,
+      }
+    ],
     '@nuxt/http',
     '@nuxtjs/style-resources',
     '@nuxtjs/auth',

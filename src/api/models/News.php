@@ -17,6 +17,7 @@ class News extends \common\models\News
             'id',
             'url',
             'name',
+            'status',
             'user' => function () {
                 if (empty($this->user)) {
                     return null;
@@ -38,6 +39,7 @@ class News extends \common\models\News
                 ];
             },
             'description',
+            'anons',
             'views',
             'created_at',
         ];
@@ -78,9 +80,9 @@ class News extends \common\models\News
     {
         if (!is_numeric($id) && !is_array($id)) {
             $condition = ['url' => $id];
+        } else if (is_numeric($id)) {
+            $condition = ['id' => $id];
         }
-
-        $condition['status'] = News::STATUS_PUBLISHED;
 
         $dependency = new DbDependency(['sql' => 'SELECT max(created_at) FROM news']);
 
@@ -92,8 +94,6 @@ class News extends \common\models\News
     public function search($params = null)
     {
         $query = self::find();
-
-        $query->andFilterWhere(['status' => self::STATUS_PUBLISHED]);
 
         if (isset($params)) {
             $this->load($params);
@@ -109,7 +109,11 @@ class News extends \common\models\News
         $query->andFilterWhere(['like', 'LOWER(name)', $this->name]);
 
         if (isset($params['user_id'])) {
-            $query->andFilterWhere(['news.user_id' => $params['user_id']]);
+            $query->andFilterWhere(['user_id' => $params['user_id']]);
+        }
+
+        if (isset($params['status'])) {
+            $query->andFilterWhere(['status' => $params['status']]);
         }
 
         if (isset($params['sortBy']) && isset($params['sortDesc'])) {
