@@ -1,38 +1,39 @@
 <template>
   <b-card
-    :img-src="previewSrc"
-    img-alt="good-img"
+    :img-src="card.preview"
+    img-alt="advert-img"
     img-height="160"
     img-top
-    class="good-card h-100"
+    class="advert-card h-100"
   >
+    <div v-show="!card.preview" class="advert-card__placeholder"></div>
     <div class="d-flex flex-column justify-content-between h-100">
-      <div class="good-card__body">
-        <b-card-text class="good-card__name">
-          <b-link :to="`/ads/${card.id}`" class="text-dark">
+      <div class="advert-card__body">
+        <b-card-text class="advert-card__name">
+          <b-link :to="`${$route.path}/${card.id}`" class="text-dark">
             {{ card.name }}
           </b-link>
         </b-card-text>
-        <div class="good-card__info">
-          <div class="good-card__text-location good-card__text">
+        <div class="advert-card__info">
+          <div class="advert-card__text-location advert-card__text">
             <font-awesome-icon
               :icon="['fas', 'adjust']"
-              class="good-card__info-icon"
+              class="advert-card__info-icon"
             />
             {{ card.sectionName.name }}
           </div>
-          <div class="good-card__text-views good-card__text">
+          <div class="advert-card__text-views advert-card__text">
             <font-awesome-icon
               :icon="['fas', 'eye']"
-              class="good-card__info-icon"
+              class="advert-card__info-icon"
             />
             {{ card.views }}
           </div>
         </div>
       </div>
       <div class="d-flex justify-content-between align-items-center mt-3">
-        <p class="good-card__add-text">Добавить в корзину</p>
-        <b-button class="good-card__add-btn pl-3 pr-3">
+        <p class="advert-card__add-text">Добавить в корзину</p>
+        <b-button class="advert-card__add-btn pl-3 pr-3">
           {{ card.price }} &euro;
         </b-button>
       </div>
@@ -44,7 +45,7 @@
 import utils from '@/mixins/utils';
 
 export default {
-  name: 'GoodCard',
+  name: 'AdvertCard',
   mixins: [utils],
   props: {
     card: {
@@ -52,22 +53,18 @@ export default {
       required: true,
     },
   },
-  computed: {
-    previewSrc() {
-      return (
-        this.$props.card.preview ||
-        'https://balluff-ua.com/wp-content/themes/balluff/img/noImg.jpg'
-      );
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.good-card {
+.advert-card {
   font-size: 18px;
   font-family: 'Roboto Thin', sans-serif;
   color: $black;
+
+  &__placeholder {
+    height: 160px;
+  }
 
   & img {
     object-fit: cover;

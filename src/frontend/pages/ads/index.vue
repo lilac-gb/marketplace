@@ -93,7 +93,7 @@
     <section class="pt-5 pb-5">
       <b-row class="align-items-stretch">
         <b-col v-for="item in goods" :key="item.title" md="4" lg="4">
-          <good-card :card="item" />
+          <advert-card :card="item" />
         </b-col>
       </b-row>
     </section>
@@ -118,7 +118,7 @@ import config from '@/config/config';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SearchForm from '@/components/forms/SearchForm';
 import SortingButton from '@/components/SortingButton';
-import GoodCard from '@/components/cards/GoodCard';
+import AdvertCard from '@/components/cards/AdvertCard';
 import VueSlider from 'vue-slider-component';
 import utils from '@/mixins/utils';
 import adsFilter from '@/mixins/adsFilter';
@@ -129,7 +129,7 @@ export default {
     Breadcrumbs,
     'search-form': SearchForm,
     'sorting-button': SortingButton,
-    'good-card': GoodCard,
+    'advert-card': AdvertCard,
     'vue-slider': VueSlider,
   },
   mixins: [utils, adsFilter],
