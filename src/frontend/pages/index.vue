@@ -3,15 +3,25 @@
     <div class="main-img">
       <b-container>
         <div class="main-search position-relative">
-          <form class="searchForm" v-on:submit.prevent="submitSearch">
+          <h1 class="main-shadow text-light text-center mb-3 mt-n5">
+            Маркет<span class="text-purple main-light-shadow">Place</span>
+            услуг, медицинского оборудования и специализированных препаратов
+          </h1>
+          <form class="searchForm position-relative" v-on:submit.prevent="submitSearch">
             <input
                 class="form-control w-100"
                 type="text"
                 v-model="searchQuery"
-                placeholder="Введите искомую комбинацию"
+                placeholder="Введите название необходимого товара или публикации"
                 @keyup="submitSearch"
             >
-            <span v-show="searchQuery" class="removeInput" @click="removeSearchQuery">&times;</span>
+            <span
+                v-show="searchQuery"
+                class="removeInput"
+                @click="removeSearchQuery"
+            >
+              &times;
+            </span>
           </form>
           <ul class="searchResult" v-show="isResult">
             <li
@@ -125,6 +135,13 @@
 
 <style lang="scss" scoped>
   .main-page {
+    .main-shadow {
+      text-shadow: 0 0 10px #000;
+    }
+    .main-light-shadow {
+      text-shadow: 0 0 10px #FFF;
+      font-weight: bold;
+    }
     .publications-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -149,7 +166,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 50vh;
+      min-height: 60vh;
       .main-search {
         position: relative;
         z-index: 1;
@@ -170,9 +187,9 @@
         .removeInput {
           position: absolute;
           right: 8px;
-          top: 8px;
+          top: 16px;
           font-weight: 100;
-          font-size: 30px;
+          font-size: 45px;
           cursor: pointer;
         }
       }
@@ -183,7 +200,7 @@
         position: absolute;
         background-image: url('/images/bg.jpg');
         background-repeat: no-repeat;
-        min-height: 50vh;
+        min-height: 60vh;
         width: 100%;
         background-size: 100%;
         margin-bottom: 45px;
