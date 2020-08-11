@@ -163,15 +163,40 @@
                   </b-form-invalid-feedback>
                 </b-form-group>
               </ValidationProvider>
+              <ValidationProvider
+                v-slot="v"
+                rules="min:2|max:100|site"
+                class="w-100"
+              >
+                <b-form-group
+                  id="input-group-8"
+                  label-for="input-8"
+                  description=""
+                  class="pr-3 pt-3"
+                >
+                  <b-form-input
+                    id="input-8"
+                    v-model="company.site"
+                    placeholder="Сайт компании"
+                    :class="{
+                      'is-invalid': v.invalid && (v.touched || v.changed),
+                      'is-valid': v.valid && v.dirty,
+                    }"
+                  />
+                  <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
+                    {{ v.errors[0] }}
+                  </b-form-invalid-feedback>
+                </b-form-group>
+              </ValidationProvider>
               <b-form-group
-                id="input-group-8"
-                label-for="input-8"
+                id="input-group-9"
+                label-for="input-9"
                 description=""
                 class="pr-3 pt-3 w-100"
               >
                 <multiselect
                   v-model="company.weekDay"
-                  form="input-8"
+                  form="input-9"
                   placeholder="Выберите рабочие дни"
                   select-label="Нажмите ввод для выбора"
                   selected-label=""
@@ -191,30 +216,30 @@
                 ><code>{{ company.weekDay }}</code></pre>
               </b-form-group>
               <b-form-group
-                id="input-group-9"
-                label-for="input-9"
-                description=""
-                class="pr-3 w-50"
-              >
-                <b-form-timepicker
-                  v-model="company.workFrom"
-                  locale="de"
-                  form="input-9"
-                  label-no-time-selected="Начало работы"
-                  no-close-button
-                  class="time"
-                />
-              </b-form-group>
-              <b-form-group
                 id="input-group-10"
                 label-for="input-10"
                 description=""
                 class="pr-3 w-50"
               >
                 <b-form-timepicker
-                  v-model="company.workTo"
+                  v-model="company.workFrom"
                   locale="de"
                   form="input-10"
+                  label-no-time-selected="Начало работы"
+                  no-close-button
+                  class="time"
+                />
+              </b-form-group>
+              <b-form-group
+                id="input-group-11"
+                label-for="input-11"
+                description=""
+                class="pr-3 w-50"
+              >
+                <b-form-timepicker
+                  v-model="company.workTo"
+                  locale="de"
+                  form="input-11"
                   label-no-time-selected="Окончание работы"
                   no-close-button
                   class="time"
@@ -240,13 +265,14 @@
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
+import config from '@/config';
 import { mapActions } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import Avatar from '@/components/cabinet/Avatar';
 import multiselect from 'vue-multiselect';
 
 export default {
-  name: 'Companies',
+  name: 'New',
   components: {
     multiselect,
     Avatar,
@@ -303,32 +329,37 @@ export default {
       this.value.push(day);
     },
     async onSubmit() {
-      this.company.weekDay = this.company.weekDay
+      this.company.workingDays = this.company.weekDay
         .map((day) => day.dayNumber)
         .join(',');
-      console.log(this.company);
-      //console.log(this.company);
-      // this.loading = true;
-      // await this.$axios
-      //   .post(`${config.api_url}/user/save`, {
-      //     username: this.user.username,
-      //     first_name: this.user.first_name,
-      //     last_name: this.user.last_name,
-      //     email: this.user.email,
-      //     password: this.user.password,
-      //     oldPassword: this.user.oldPassword,
-      //   })
-      //   .then((response) => {
-      //     this.setMessage(response.data.data.message[0]);
-      //     this.$router.push('/cabinet/about');
-      //   })
-      //   .catch((error) => {
-      //     if (error.response && error.response.data) {
-      //       this.loading = false;
-      //       //console.log(error.response);
-      //       this.errors = error.response;
-      //     }
-      //   });
+      this.loading = true;
+      await this.$axios
+        .post(`${config.api_url}/company/create`, {
+          name: this.company.name,
+          description: this.company.description,
+          owner_id: this.user.id,
+          url: this.company.name.toLowerCase(),
+          site: this.company.site,
+          phone: this.company.tel,
+          email: this.company.email,
+          id_number: this.company.ogrn,
+          vat: this.company.inn,
+          working_days: this.company.workingDays,
+          time_from: this.company.workFrom,
+          time_to: this.company.workTo,
+        })
+        .then((response) => {
+          console.log(response);
+          this.setMessage(response.data.data.message[0]);
+          this.$router.push('/cabinet/companies');
+        })
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            this.loading = false;
+            //console.log(error.response);
+            this.errors = error.response;
+          }
+        });
     },
     onReset() {
       // Reset our form values
@@ -345,7 +376,9 @@ export default {
   },
 };
 </script>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style
+  src="@/node_modules/vue-multiselect/dist/vue-multiselect.min.css"
+></style>
 <style lang="scss">
 .companies-form {
   font-size: 13px;

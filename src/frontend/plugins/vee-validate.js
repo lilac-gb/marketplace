@@ -56,7 +56,7 @@ extend('username', (name) => {
   const regExp = /^[\sa-zA-Z0-9-]+$/;
   //TODO: добавить точку в регулярку, если Женя не добавил
   if (!regExp.test(name)) {
-    return 'Имя пользователя не может содержать кирилицу и символы кроме "-"';
+    return 'Имя пользователя не может содержать кирилицу и символы кроме "-" и "."';
   }
 
   return true;
@@ -97,6 +97,16 @@ extend('tel', (name) => {
 
   if (!regExp.test(name)) {
     return 'Скорее всего телефон введен в неверном формате';
+  }
+
+  return true;
+});
+
+extend('site', (name) => {
+  const regExp = /\b(https?:\/\/([0-9a-z]+(?:[\-\.][0-9a-z]+)+)(\/(?:\/\w+\/)*\w*)?(\?\w+\=[^\s\&\=]+(?:\&\w+\=[^\s\&\=]+)*)?(\#\S+)?)\b/;
+
+  if (!regExp.test(name)) {
+    return 'URL не корректен';
   }
 
   return true;
