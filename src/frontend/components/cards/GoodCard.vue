@@ -6,30 +6,36 @@
     img-top
     class="good-card h-100"
   >
-    <b-card-text class="good-card__name">
-      {{ card.name }}
-    </b-card-text>
-    <div class="good-card__info">
-      <div class="good-card__text-location good-card__text">
-        <font-awesome-icon
-          :icon="['fas', 'adjust']"
-          class="good-card__info-icon"
-        />
-        {{ card.sectionName.name }}
+    <div class="d-flex flex-column justify-content-between h-100">
+      <div class="good-card__body">
+        <b-card-text class="good-card__name">
+          <b-link :to="`/ads/${card.id}`" class="text-dark">
+            {{ card.name }}
+          </b-link>
+        </b-card-text>
+        <div class="good-card__info">
+          <div class="good-card__text-location good-card__text">
+            <font-awesome-icon
+              :icon="['fas', 'adjust']"
+              class="good-card__info-icon"
+            />
+            {{ card.sectionName.name }}
+          </div>
+          <div class="good-card__text-views good-card__text">
+            <font-awesome-icon
+              :icon="['fas', 'eye']"
+              class="good-card__info-icon"
+            />
+            {{ card.views }}
+          </div>
+        </div>
       </div>
-      <div class="good-card__text-views good-card__text">
-        <font-awesome-icon
-          :icon="['fas', 'eye']"
-          class="good-card__info-icon"
-        />
-        {{ card.views }}
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <p class="good-card__add-text">Добавить в корзину</p>
+        <b-button class="good-card__add-btn pl-3 pr-3">
+          {{ card.price }} &euro;
+        </b-button>
       </div>
-    </div>
-    <div class="d-flex justify-content-between align-items-center">
-      <p class="add-to-cart-text">Добавить в корзину</p>
-      <b-button class="background-purple pl-3 pr-3">
-        {{ toCurrency(card.price) }}
-      </b-button>
     </div>
   </b-card>
 </template>
@@ -50,7 +56,7 @@ export default {
     previewSrc() {
       return (
         this.$props.card.preview ||
-        'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg'
+        'https://balluff-ua.com/wp-content/themes/balluff/img/noImg.jpg'
       );
     },
   },
@@ -58,12 +64,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.add-to-cart-text {
-  font-size: 18px;
-  color: $dark-gray;
-  font-family: 'Roboto Thin', sans-serif;
-}
-
 .good-card {
   font-size: 18px;
   font-family: 'Roboto Thin', sans-serif;
@@ -102,6 +102,25 @@ export default {
     &-author,
     &-location {
       text-decoration: underline;
+    }
+  }
+
+  &__add-text {
+    font-size: 18px;
+    color: $dark-gray;
+    font-family: 'Roboto Thin', sans-serif;
+    margin: 0;
+  }
+
+  &__add-btn {
+    border: 1px solid $purple;
+    color: $purple;
+    background-color: white;
+    font-family: 'Roboto Regular', sans-serif;
+
+    &:hover {
+      color: white;
+      background-color: $purple;
     }
   }
 }

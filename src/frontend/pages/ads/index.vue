@@ -1,6 +1,6 @@
 <template>
   <b-container class="pb-5">
-    <Breadcrumbs></Breadcrumbs>
+    <Breadcrumbs class="mt-3"></Breadcrumbs>
     <search-form @onSubmit="searchByName">
       <b-row>
         <b-col md="6">
@@ -73,7 +73,7 @@
           <b-button
             v-for="item in computedOptions('sections')"
             :key="item.name"
-            class="background-purple ellipse-btn mr-3"
+            class="background-purple ellipse-btn btn-sm mr-3"
             :disabled="item.id === selectedSection"
             @click="searchBySection(item.id)"
           >
@@ -81,7 +81,10 @@
           </b-button>
         </b-col>
         <b-col md="6" class="d-flex align-items-center justify-content-end">
-          <b-button class="background-purple ellipse-btn" @click="reset()">
+          <b-button
+            class="background-purple ellipse-btn btn-sm"
+            @click="reset()"
+          >
             Сбросить фильтр
           </b-button>
         </b-col>
@@ -97,14 +100,15 @@
 
     <b-row class="justify-content-center">
       <b-pagination
-        v-model="pagination.currentPage"
+        v-model="currentPage"
         class="mp-pagination"
-        :per-page="pagination.perPage"
-        :total-rows="pagination.totalCount"
+        :per-page="perPage"
+        :total-rows="totalCount"
         first-number
         last-number
         size="lg"
-      ></b-pagination>
+        @input="$fetch"
+      />
     </b-row>
   </b-container>
 </template>
@@ -132,7 +136,6 @@ export default {
   async fetch() {
     try {
       await Promise.all([this.getAds(), this.getOptions()]);
-      console.log(this.goods);
     } catch (e) {
       console.log(e);
     }
@@ -140,30 +143,40 @@ export default {
   data: () => ({
     search: '',
     goods: [],
-    pagination: {
-      currentPage: 1,
-      perPage: 12,
-      totalCount: null,
-    },
+    currentPage: 1,
+    perPage: 12,
+    totalCount: null,
+    metaTags: null,
   }),
   methods: {
-    async getFilterOptions() {
-      const response = await this.$axios.$get(
-        `${config.api_url}/ad/ads-sections`
-      );
-      this.options.type = response.data.map((item) => ({
-        value: item.value,
-        text: item.name,
-      }));
-    },
     async getAds() {
-      console.log(this.getFetchParams());
-      const response = await this.$axios.$get(`${config.api_url}/ad`, {
-        params: this.getFetchParams(),
-      });
-      this.goods = [...response.data.models];
-      this.pagination.totalCount = response.data._meta.totalCount;
+      try {
+        const response = await this.$axios.$get(`${config.api_url}/ad`, {
+          params: this.getFetchParams(),
+        });
+        console.log(response);
+        this.goods = [...response.data.models];
+        this.totalCount = response.data._meta.totalCount;
+        this.perPage = response.data._meta.perPage;
+        this.currentPage = response.data._meta.currentPage;
+        this.metaTags = response.data._metaTags;
+      } catch (e) {
+        console.log(e);
+      }
     },
+  },
+  head() {
+    if (this.metaTags) {
+      return {
+        title: this.metaTags.title,
+        meta: [
+          {
+            description: this.metaTags.description,
+            keywords: this.metaTags.keywords,
+          },
+        ],
+      };
+    }
   },
 };
 </script>
@@ -174,5 +187,9 @@ export default {
   font-family: 'Roboto Thin', sans-serif;
   color: $gray;
   margin-bottom: 10px;
+}
+
+.ellipse-btn {
+  border-radius: 15px;
 }
 </style>

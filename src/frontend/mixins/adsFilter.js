@@ -25,10 +25,16 @@ export default {
         default: { name: 'Все', id: null },
         values: [],
       },
+      categories: {
+        default: { text: 'Категории', value: null },
+        values: [],
+      },
     },
     search: '',
     filter: {},
     slider: [0, 100],
+    sortBy: NewsModel.CREATED_AT,
+    sortDesc: SortDirection.ASK,
   }),
   computed: {
     selectedSection() {
@@ -45,10 +51,11 @@ export default {
       }
     },
     async getOptions() {
-      const sections = await this.$axios.$get(`${config.api_url}/ad/ads-sections`);
+      const sections = await this.$axios.$get(
+        `${config.api_url}/ad/ads-sections`
+      );
       const types = await this.$axios.$get(`${config.api_url}/ad/ads-types`);
 
-      console.log(types);
       this.options.sections.values = sections.data;
       this.options.types.values = types.data.map((option) => ({
         value: option.id,
@@ -64,6 +71,10 @@ export default {
       }, {});
 
       const params = {};
+      params.page = this.currentPage;
+      params.pageSize = this.perPage;
+      params.sortBy = this.sortBy;
+      params.sortDesc = this.sortDesc;
 
       if (this.search) {
         params.search = this.search;
@@ -83,9 +94,10 @@ export default {
         priceFrom: 0,
         priceTo: 100,
         section_id: null,
-        sortBy: NewsModel.CREATED_AT,
-        sortDesc: SortDirection.ASK,
       };
+      this.sortBy = NewsModel.CREATED_AT;
+      this.sortDesc = SortDirection.ASK;
+      this.slider = [0, 100];
       this.$fetch();
     },
     setSlider() {
@@ -105,13 +117,13 @@ export default {
       this.$fetch();
     },
     sortByDate(direction) {
-      this.filter.sortBy = NewsModel.CREATED_AT;
-      this.filter.sortDesc = direction;
+      this.sortBy = NewsModel.VIEWS;
+      this.sortDesc = direction;
       this.$fetch();
     },
     sortByViews(direction) {
-      this.filter.sortBy = NewsModel.VIEWS;
-      this.filter.sortDesc = direction;
+      this.sortBy = NewsModel.VIEWS;
+      this.sortDesc = direction;
       this.$fetch();
     },
   },

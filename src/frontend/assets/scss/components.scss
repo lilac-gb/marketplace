@@ -68,6 +68,10 @@
   .page-item {
     margin-right: 1.5rem;
 
+    &.active .page-link {
+      background: $purple;
+    }
+
     .page-link {
       border: 1px solid $purple;
       box-sizing: border-box;
