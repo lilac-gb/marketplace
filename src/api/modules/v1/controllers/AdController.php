@@ -155,13 +155,26 @@ class AdController extends ActiveController
             $result[] = [
                 'id' => $ad->id,
                 'name' => $ad->name,
-                'section' => $ad->section->name,
-                'type' => $ad->type->name,
+                'sectionName' => [
+                    'name' => $ad->section->name,
+                ],
+                'typeName' => [
+                    'name' => $ad->type->name,
+                ],
                 'price' => $ad->price,
-                'url' => $ad->getUrl(),
+                'url' => $ad->url,
                 'preview' => $ad->getPreview(),
                 'views' => $ad->views,
-                'author' => $ad->user ? $ad->user->fullName : '',
+                'section_id' => $ad->section_id,
+                'type_id' => $ad->type_id,
+                'author' => [
+                    'id' => $this->user ? $this->user->id : '',
+                    'name' => $this->user ? $this->user->fullName : '',
+                    'avatar' => $this->user ? $this->user->getAvatar() : '',
+                    'userUrl' => $this->user ? ($this->user->username
+                        ? '/@' . $this->user->username
+                        : '/users/' . $this->user->id) : '',
+                ],
                 'user_id' => $ad->user_id,
                 'created_at' => $ad->created_at,
             ];

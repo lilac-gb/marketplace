@@ -6,21 +6,21 @@
     />
     <div class="params d-flex align-items-center">
       <div class="params-item mr-2">
-        {{ ad.type }}
+        {{ ad.typeName.name }}
       </div>
       <div class="params-item">
-        {{ ad.section }}
+        {{ ad.sectionName.name }}
       </div>
     </div>
 
     <b-card-text class="px-4">
-      <router-link class="text-dark" :to="ad.url">
+      <router-link class="text-dark" :to="`/ads/${ad.url}`">
         {{ ad.name }}
       </router-link>
     </b-card-text>
     <div class="px-4 pb-4 text-muted">
       <div v-if="!!ad.author" class="icon user">
-        {{ ad.author }}
+        {{ ad.author.name }}
       </div>
       <div class="icon create-at">
         {{ timestampToDate(ad.created_at) }}
