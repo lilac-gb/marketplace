@@ -5,8 +5,8 @@
     img-height="160"
     img-top
     class="advert-card h-100"
+    :body-class="{ 'no-preview': !card.preview }"
   >
-    <div v-show="!card.preview" class="advert-card__placeholder"></div>
     <div class="d-flex flex-column justify-content-between h-100">
       <div class="advert-card__body">
         <b-card-text class="advert-card__name">
@@ -57,6 +57,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.no-preview {
+  padding-top: 180px;
+}
+
 .advert-card {
   font-size: 18px;
   font-family: 'Roboto Thin', sans-serif;
@@ -71,12 +75,8 @@ export default {
     width: 100%;
   }
 
-  & .card-body {
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
   &__name {
+    margin-top: 1rem;
     min-height: 3em;
     display: flex;
     align-items: center;
