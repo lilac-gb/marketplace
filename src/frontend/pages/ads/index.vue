@@ -154,7 +154,6 @@ export default {
         const response = await this.$axios.$get(`${config.api_url}/ad`, {
           params: this.getFetchParams(),
         });
-        console.log(response);
         this.goods = [...response.data.models];
         this.totalCount = response.data._meta.totalCount;
         this.perPage = response.data._meta.perPage;
