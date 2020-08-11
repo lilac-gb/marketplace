@@ -1,7 +1,8 @@
-import { timestampToDate } from '@/shared/utils';
+import { timestampToDate, toCurrency } from '@/shared/utils';
 
 export default {
   methods: {
-      timestampToDate
-  }
+    timestampToDate,
+    toCurrency,
+  },
 };
