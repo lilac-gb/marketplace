@@ -260,7 +260,7 @@ class UserController extends ActiveController
         if (!$email) {
             return [
                 'statusCode' => 400,
-                'errors' => ['email' => 'Пожалуйста, заполните email'],
+                'errors' => ['Пожалуйста, заполните email'],
             ];
         }
 
@@ -269,7 +269,7 @@ class UserController extends ActiveController
         if (!$user) {
             return [
                 'statusCode' => 400,
-                'errors' => ['email' => 'Такого пользователя не существует'],
+                'errors' => ['Такого пользователя не существует'],
             ];
         }
 
@@ -286,7 +286,7 @@ class UserController extends ActiveController
 
         return [
             'statusCode' => 400,
-            'errors' => ['system' => 'Произошла ошибка, попробуйте позже!'],
+            'errors' => ['Произошла ошибка, попробуйте позже!'],
         ];
     }
 
@@ -313,7 +313,7 @@ class UserController extends ActiveController
         $password = Yii::$app->security->generateRandomString(8);
 
         $user->setPassword($password);
-        $user->password_reset_token = '';
+        $user->password_reset_token = null;
 
         if ($user->save(false)) {
             UserService::sendPassword($user, $password);
@@ -325,7 +325,7 @@ class UserController extends ActiveController
         } else {
             return [
                 'statusCode' => 400,
-                'errors' => ['token' => 'Что-то пошло не так!'],
+                'errors' => ['Что-то пошло не так!'],
             ];
         }
     }
@@ -335,20 +335,21 @@ class UserController extends ActiveController
         $user = User::findOne($id);
 
         if (empty($user)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Такого пользователя не существует');
         }
 
         $hash = Yii::$app->request->post('hash');
 
         try {
-            $confirmationHash = base64_decode($hash);
+            $confirmationHash = base64_decode(str_replace(' ', '+', $hash));
+
             $email = Yii::$app->security->decryptByKey($confirmationHash, $user->confirmation_secret);
 
             if (!$email) {
-                throw new ErrorException();
+                throw new ErrorException('Ошибка токена');
             }
         } catch (ErrorException $e) {
-            throw new BadRequestHttpException();
+            throw new BadRequestHttpException('Неверный токен!');
         }
 
         $password = Yii::$app->security->generateRandomString(8);
@@ -360,9 +361,13 @@ class UserController extends ActiveController
             'confirmation_secret' => '',
         ]);
 
+        Yii::$app->user->login($user);
+
+        Yii::$app->user->refreshToken();
+
         UserService::sendPassword($user, $password);
 
-        return ['status' => 200];
+        return Yii::$app->user->identity;
     }
 
     public function actionConfirmEmail($id)

@@ -3,6 +3,8 @@
 use common\components\GridView;
 use common\models\Company;
 use common\models\User;
+use yii\bootstrap\Dropdown;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yii\helpers\Html;
 
@@ -66,8 +68,59 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '<div class="btn-group btn-group-xs pull-right">{update} {delete}</div>',
+                'template' => '<div class="btn-group btn-group-xs pull-right">{status} {update} {delete}</div>',
                 'buttons' => [
+                    'status' => function ($url, $model, $key) {
+                        /** @var Company $model */
+                        $result = $model->status($model->status);
+                        $result .= Dropdown::widget([
+                            'items' => [
+                                [
+                                    'label' => '<i title="Скрыто" class="glyphicon glyphicon-remove"></i>',
+                                    'url' => Url::to([
+                                        'set',
+                                        'id' => $model->id,
+                                        'attr' => 'status',
+                                        'val' => Company::STATUS_DELETED,
+                                    ]),
+
+                                ],
+                                [
+                                    'label' => '<i title="Скрыто" class="glyphicon glyphicon-pencil"></i>',
+                                    'url' => Url::to([
+                                        'set',
+                                        'id' => $model->id,
+                                        'attr' => 'status',
+                                        'val' => Company::STATUS_NOT_PUBLISHED,
+                                    ]),
+
+                                ],
+                                [
+                                    'label' => '<i title="Разместить" class="glyphicon glyphicon-ok"></i>',
+                                    'url' => Url::to([
+                                        'set',
+                                        'id' => $model->id,
+                                        'attr' => 'status',
+                                        'val' => Company::STATUS_PUBLISHED,
+                                    ]),
+
+                                ],
+                                [
+                                    'label' => '<i  title="Модерация" class="glyphicon glyphicon-eye-open"></i>',
+                                    'url' => Url::to([
+                                        'set',
+                                        'id' => $model->id,
+                                        'attr' => 'status',
+                                        'val' => Company::STATUS_MODERATION,
+                                    ]),
+
+                                ],
+                            ],
+                            'encodeLabels' => false,
+                        ]);
+
+                        return $result;
+                    },
                     'update' => function ($url, $model, $key) {
                         return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
                             'title' => Yii::t('yii', 'Update'),

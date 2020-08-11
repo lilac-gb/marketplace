@@ -8,9 +8,6 @@ use yii\bootstrap\Modal;
 use yii\web\Response;
 use Yii;
 
-/**
- * PageController implements the CRUD actions for Company model.
- */
 class CompanyController extends ActiveController
 {
     public $modelClass = 'common\models\Company';
@@ -22,7 +19,7 @@ class CompanyController extends ActiveController
 
         $behaviors['access']['rules'] = [
             [
-                'actions' => ['index', 'set', 'delete', 'update', 'list-companies'],
+                'actions' => ['index', 'set', 'delete', 'update', 'view', 'list-companies'],
                 'allow' => true,
                 'roles' => ['@'],
             ],
