@@ -76,6 +76,8 @@ class Ad extends \common\models\Ad
     {
         if (!is_numeric($id) && !is_array($id)) {
             $condition = ['url' => $id];
+        } else if (is_numeric($id)) {
+            $condition = ['id' => $id];
         }
 
         $condition['status'] = Ad::STATUS_PUBLISHED;

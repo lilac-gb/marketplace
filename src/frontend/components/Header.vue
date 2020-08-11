@@ -19,7 +19,7 @@
           <b-navbar-nav class="ml-auto">
             <MiniCart/>
             <User v-if="isAuthenticated"/>
-            <b-link v-else to="/login">Войти</b-link>
+            <b-link class="text-purple" v-else to="/login">Войти</b-link>
           </b-navbar-nav>
         </b-collapse>
       </b-container>

@@ -1,5 +1,6 @@
 export const state = () => ({
   message: '',
+  cart: [],
 });
 
 export const actions = {
@@ -12,6 +13,14 @@ export const actions = {
   clearMessage({ commit }) {
     commit('clearMessage');
   },
+
+  setCart({commit}, object) {
+    commit('updateCart', object);
+  },
+
+  clearCart({commit}) {
+    commit('clearCart');
+  },
 };
 
 export const mutations = {
@@ -21,6 +30,14 @@ export const mutations = {
 
   clearMessage(state) {
     state.message = '';
+  },
+
+  updateCart(state, object) {
+    state.cart = object;
+  },
+
+  clearCart(state) {
+    state.cart = [];
   },
 };
 
@@ -34,4 +51,6 @@ export const getters = {
   },
 
   message: (state) => state.message,
+
+  cart: (state) => state.cart,
 };
