@@ -1,16 +1,10 @@
 <template>
   <div>
     <div
-      v-if="loggedInUser.images.preview"
+      v-if="imgSrc"
       class="d-flex flex-column align-items-center justify-content-center bordered"
     >
-      <img
-        v-if="loggedInUser.images.preview"
-        ref="avatar"
-        class="avatar-img"
-        alt="1"
-        :src="loggedInUser.images.preview"
-      />
+      <img ref="avatar" class="avatar-img" alt="Avatar" :src="imgSrc" />
       <button
         class="btn background-purple btn-secondary mt-2"
         @click="deleteClicked"
@@ -69,6 +63,16 @@ export default {
     VueAvatar,
   },
   middleware: ['auth'],
+  props: {
+    entity: {
+      type: String,
+      required: true,
+    },
+    imgSrc: {
+      type: String,
+      default: null,
+    },
+  },
   async fetch() {
     this.user = await {
       ...this.$auth.user,
@@ -94,7 +98,9 @@ export default {
         let formData = new FormData();
         formData.append('image', blob);
         await this.$axios.post(
-          `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
+          this.$props.entity === 'user'
+            ? `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`
+            : `${config.api_url}/company/imgAttachApi?type=company&behavior=logoBehavior&id=${this.user.id}`,
           formData
         );
         this.$auth.fetchUser();
@@ -102,7 +108,9 @@ export default {
     },
     async deleteClicked() {
       await this.$axios.post(
-        `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`,
+        this.$props.entity === 'user'
+          ? `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`
+          : `${config.api_url}/company/imgAttachApi?type=company&behavior=logoBehavior&id=${this.user.id}`,
         {
           remove: true,
           key: 'image',

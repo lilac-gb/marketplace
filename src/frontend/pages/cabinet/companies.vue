@@ -170,12 +170,13 @@
                 class="pr-3 pt-3 w-100"
               >
                 <multiselect
-                  v-model="weekDay"
+                  v-model="company.weekDay"
+                  form="input-8"
                   placeholder="Выберите рабочие дни"
                   select-label="Нажмите ввод для выбора"
                   selected-label=""
-                  max-height="300"
-                  option-height="40"
+                  :max-height="300"
+                  :option-height="40"
                   deselect-label="Нажмите ввод для удаления"
                   label="day"
                   track-by="dayNumber"
@@ -185,7 +186,9 @@
                   :taggable="true"
                   @tag="addTag"
                 />
-                <!--                <pre class="language-json"><code>{{ weekDay }}</code></pre>-->
+                <pre
+                  class="language-json"
+                ><code>{{ company.weekDay }}</code></pre>
               </b-form-group>
               <b-form-group
                 id="input-group-9"
@@ -193,7 +196,14 @@
                 description=""
                 class="pr-3 w-50"
               >
-                <b-form-timepicker v-model="company.workFrom" locale="de" />
+                <b-form-timepicker
+                  v-model="company.workFrom"
+                  locale="de"
+                  form="input-9"
+                  label-no-time-selected="Начало работы"
+                  no-close-button
+                  class="time"
+                />
               </b-form-group>
               <b-form-group
                 id="input-group-10"
@@ -201,7 +211,14 @@
                 description=""
                 class="pr-3 w-50"
               >
-                <b-form-timepicker v-model="company.workTo" locale="de" />
+                <b-form-timepicker
+                  v-model="company.workTo"
+                  locale="de"
+                  form="input-10"
+                  label-no-time-selected="Окончание работы"
+                  no-close-button
+                  class="time"
+                />
               </b-form-group>
             </div>
             <b-button type="submit" class="ml-2 mr-3 my-3 background-purple">
@@ -214,7 +231,7 @@
         </ValidationObserver>
       </b-col>
       <b-col lg="3" md="12" sm="12" xs="12" class="mt-3">
-        <Avatar />
+        <Avatar entity="company" />
       </b-col>
     </b-row>
   </b-container>
@@ -223,11 +240,11 @@
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
-import config from '@/config/config';
 import { mapActions } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import Avatar from '@/components/cabinet/Avatar';
 import multiselect from 'vue-multiselect';
+
 export default {
   name: 'Companies',
   components: {
@@ -259,7 +276,17 @@ export default {
       { dayNumber: 6, day: 'СБ' },
       { dayNumber: 7, day: 'ВС' },
     ],
-    company: {},
+    company: {
+      name: '',
+      description: '',
+      inn: '',
+      ogrn: '',
+      tel: '',
+      email: '',
+      weekDay: '',
+      workFrom: '',
+      workTo: '',
+    },
     user: {},
     show: true,
   }),
@@ -276,27 +303,32 @@ export default {
       this.value.push(day);
     },
     async onSubmit() {
-      this.loading = true;
-      await this.$axios
-        .post(`${config.api_url}/user/save`, {
-          username: this.user.username,
-          first_name: this.user.first_name,
-          last_name: this.user.last_name,
-          email: this.user.email,
-          password: this.user.password,
-          oldPassword: this.user.oldPassword,
-        })
-        .then((response) => {
-          this.setMessage(response.data.data.message[0]);
-          this.$router.push('/cabinet/about');
-        })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            this.loading = false;
-            //console.log(error.response);
-            this.errors = error.response;
-          }
-        });
+      this.company.weekDay = this.company.weekDay
+        .map((day) => day.dayNumber)
+        .join(',');
+      console.log(this.company);
+      //console.log(this.company);
+      // this.loading = true;
+      // await this.$axios
+      //   .post(`${config.api_url}/user/save`, {
+      //     username: this.user.username,
+      //     first_name: this.user.first_name,
+      //     last_name: this.user.last_name,
+      //     email: this.user.email,
+      //     password: this.user.password,
+      //     oldPassword: this.user.oldPassword,
+      //   })
+      //   .then((response) => {
+      //     this.setMessage(response.data.data.message[0]);
+      //     this.$router.push('/cabinet/about');
+      //   })
+      //   .catch((error) => {
+      //     if (error.response && error.response.data) {
+      //       this.loading = false;
+      //       //console.log(error.response);
+      //       this.errors = error.response;
+      //     }
+      //   });
     },
     onReset() {
       // Reset our form values
@@ -338,9 +370,6 @@ export default {
       border-color: $purple transparent transparent;
     }
   }
-}
-.multiselect__input::placeholder {
-  color: #35495e;
 }
 
 .multiselect__input:hover,
@@ -386,6 +415,10 @@ export default {
   padding-left: 2px;
 }
 
+.multiselect__input::placeholder {
+  color: #495057;
+}
+
 .multiselect__content-wrapper {
   border: 1px solid $light-gray;
 }
@@ -412,11 +445,11 @@ export default {
 }
 
 .multiselect__option--selected.multiselect__option--highlight {
-  background: #ff6a6a;
+  background: $red;
 }
 
 .multiselect__option--selected.multiselect__option--highlight:after {
-  background: #ff6a6a;
+  background: $red;
 }
 
 .multiselect--disabled .multiselect__current,
@@ -428,5 +461,14 @@ export default {
 .multiselect__option--disabled {
   background: #ededed !important;
   color: #a6a6a6 !important;
+}
+
+.time {
+  font-size: 13px;
+  letter-spacing: 0;
+  color: #495057;
+  & .btn:hover {
+    color: $purple;
+  }
 }
 </style>
