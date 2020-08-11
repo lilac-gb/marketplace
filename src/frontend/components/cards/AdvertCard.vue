@@ -10,7 +10,10 @@
     <div class="d-flex flex-column justify-content-between h-100">
       <div class="advert-card__body">
         <b-card-text class="advert-card__name">
-          <b-link :to="`${$route.path}/${card.id}`" class="text-dark">
+          <b-link
+            :to="{ name: 'ads-id', params: { id: card.id } }"
+            class="text-dark"
+          >
             {{ card.name }}
           </b-link>
         </b-card-text>
