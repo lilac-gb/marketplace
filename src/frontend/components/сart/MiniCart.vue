@@ -1,12 +1,14 @@
 <template>
-  <div class="mini-cart d-flex align-items-center">
+  <div class="nav-item d-flex align-items-center">
     <b-link class="pr-3" @click="processModal">
-      <div class="loader">
-        <Loader v-show="loading"/>
+      <div class="position-relative">
+        <div class="loader">
+          <Loader v-show="loading"/>
+        </div>
+        <img src="~assets/pics/icons/cart.svg" alt="icon"/>
+        <div id="cart-count" class="counter">0</div>
+        <span>Корзина</span>
       </div>
-      <img src="~assets/pics/icons/cart.svg" alt="icon"/>
-      <span>Корзина</span>
-      <div id="cart-count" class="mini-cart__counter">0</div>
     </b-link>
     <b-modal
         id="cartModal"
@@ -37,11 +39,7 @@
           >
             Очистить заказ
           </b-button>
-          <b-button
-              variant="primary"
-              size="sm"
-              class="float-right"
-          >
+          <b-button class="float-right mp-btn mp-btn-sm mp-btn-transparent">
             Оформить заказ
           </b-button>
         </div>
@@ -184,17 +182,15 @@
       transform: rotate(360deg);
     }
   }
-  .mini-cart {
-    margin-right: 24px;
-    position: relative;
 
-    &__counter {
+  .nav-item {
+    .counter {
       background: $red;
       position: absolute;
       height: $counter-size;
       border-radius: 10px;
       padding: 0 4px;
-      top: 0;
+      top: -5px;
       left: 9px;
       line-height: $counter-size;
       text-align: center;
