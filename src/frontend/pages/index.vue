@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-n1 main-page">
+  <div class="mt-n2 main-page">
     <div class="main-img">
       <b-container>
         <div class="main-search position-relative">
