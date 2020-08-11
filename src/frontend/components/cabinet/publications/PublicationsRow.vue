@@ -64,11 +64,16 @@ export default {
       this.$emit('updated');
     },
     deleteP() {
-      this.deletePublication(this.publication.id);
+      this.deletePublication(this.publication.url || this.publication.id);
       this.$emit('updated');
     },
     edit() {
-      this.$router.push({name: 'cabinet-publications-publication_id', params: { publication_id: this.publication.url }});
+      this.$router.push({
+        name: 'cabinet-publications-publication_id',
+        params: {
+          publication_id: this.publication.url || this.publication.id,
+        },
+      });
     }
   }
 }

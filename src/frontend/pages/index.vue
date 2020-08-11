@@ -1,19 +1,42 @@
 <template>
   <div class="mt-n1 main-page">
     <div class="main-img">
-      <b-container class="main-search">
-        <b-input-group>
-          <b-form-input
-              class="mp-input search-field mr-2"
-              placeholder="Введите название продукта или компании"
-          />
-          <b-button
-              class="background-purple mp-button-purple mr-2"
-              @click="$fetch"
-          >
-            ПОИСК
-          </b-button>
-        </b-input-group>
+      <b-container>
+        <div class="main-search position-relative">
+          <h1 class="main-shadow text-light text-center mb-3 mt-n5">
+            Маркет<span class="text-purple main-light-shadow">Place</span>
+            услуг, медицинского оборудования и специализированных препаратов
+          </h1>
+          <form class="searchForm position-relative" v-on:submit.prevent="submitSearch">
+            <input
+                class="form-control w-100"
+                type="text"
+                v-model="searchQuery"
+                placeholder="Введите название необходимого товара или публикации"
+                @keyup="submitSearch"
+            >
+            <span
+                v-show="searchQuery"
+                class="removeInput"
+                @click="removeSearchQuery"
+            >
+              &times;
+            </span>
+          </form>
+          <ul class="searchResult" v-show="isResult">
+            <li
+                v-for="elem in results"
+                v-bind:key="elem.url"
+            >
+              <nuxt-link
+                  class="text-muted search-link"
+                  :to="elem.url"
+              >
+                {{ elem.name }}
+              </nuxt-link>
+            </li>
+          </ul>
+        </div>
       </b-container>
     </div>
     <b-container>
@@ -61,42 +84,64 @@
   import PublicationCard from '@/components/publications/card';
   import config from "@/config";
 
-export default {
-  name: 'Main',
-  components: {
-    'ad-card': AdCard,
-    'publication-card': PublicationCard,
-  },
-  data() {
-    return {
-      ads: [],
-      publications: [],
-    }
-  },
-  methods: {
-    async getAds() {
-      let result = await this.$http.$get(`${config.api_url}/ad/main-popular-ads`);
-      this.ads = result.data;
+  export default {
+    name: 'Main',
+    components: {
+      'ad-card': AdCard,
+      'publication-card': PublicationCard,
     },
-    async getPublications() {
-      let result = await this.$http.$get(`${config.api_url}/news/main-popular-news`);
-      this.publications = result.data;
-    }
-  },
-  async fetch() {
-    this.getAds();
-    this.getPublications();
-  },
-  head() {
-    return {
-      title: 'Medical MarketPlace',
-    };
-  },
-};
+    data() {
+      return {
+        ads: [],
+        inputValue: '',
+        publications: [],
+        results: [],
+        isResult: false,
+        searchQuery: '',
+      }
+    },
+    methods: {
+      removeSearchQuery() {
+        this.searchQuery = '';
+        this.isResult = false;
+      },
+      async submitSearch() {
+        let result = await this.$http.$post(`${config.api_url}/main-search`, {
+          query: this.searchQuery
+        });
+        this.results = result.data;
+        this.isResult = !!result && !!result.data.length;
+      },
+      async getAds() {
+        let result = await this.$http.$get(`${config.api_url}/ad/main-popular-ads`);
+        this.ads = result.data;
+      },
+      async getPublications() {
+        let result = await this.$http.$get(`${config.api_url}/news/main-popular-news`);
+        this.publications = result.data;
+      }
+    },
+    async fetch() {
+      this.getAds();
+      this.getPublications();
+    },
+    head() {
+      return {
+        title: 'Medical MarketPlace',
+      };
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
   .main-page {
+    .main-shadow {
+      text-shadow: 0 0 10px #000;
+    }
+    .main-light-shadow {
+      text-shadow: 0 0 10px #FFF;
+      font-weight: bold;
+    }
     .publications-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -121,10 +166,32 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 50vh;
+      min-height: 60vh;
       .main-search {
         position: relative;
         z-index: 1;
+        input {
+          padding: 25px 20px;
+        }
+        .searchResult {
+          background: #fff;
+          padding: 20px;
+          position: absolute;
+          width: 100%;
+          box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+          list-style: none;
+          li {
+            margin-bottom: 10px;
+          }
+        }
+        .removeInput {
+          position: absolute;
+          right: 8px;
+          top: 16px;
+          font-weight: 100;
+          font-size: 45px;
+          cursor: pointer;
+        }
       }
       &:before {
         content: '';
@@ -133,7 +200,7 @@ export default {
         position: absolute;
         background-image: url('/images/bg.jpg');
         background-repeat: no-repeat;
-        min-height: 50vh;
+        min-height: 60vh;
         width: 100%;
         background-size: 100%;
         margin-bottom: 45px;

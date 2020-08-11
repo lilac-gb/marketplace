@@ -3,7 +3,7 @@
 namespace api\components;
 
 header("Access-Control-Allow-Origin: *");
-header('Access-Control-Request-Method: POST, GET, OPTIONS');
+header('Access-Control-Request-Method: POST, GET, PUT, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 3600');
 
 use yii\filters\auth\CompositeAuth;

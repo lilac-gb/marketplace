@@ -19,6 +19,7 @@ return [
     'cache' => false,
     'rules' => array_merge($rules, [
         '/' => 'main/index',
+        '/main-search' => 'main/main-search',
         '/@<nickname>' => 'user/special-user',
     ]),
 ];

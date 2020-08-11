@@ -2,10 +2,19 @@
   <nav class="cabinet-nav">
     <b-list-group>
       <b-list-group-item
-        exact
-        active-class="active"
-        to="/cabinet/about"
-        class="cabinet-nav__item py-4"
+          exact
+          active-class="active"
+          to="/cabinet/orders"
+          class="cabinet-nav__item py-4"
+      >
+        <img src="~assets/pics/icons/cart.svg" alt="icon"/>
+        <span>Заказы</span>
+      </b-list-group-item>
+      <b-list-group-item
+          exact
+          active-class="active"
+          to="/cabinet/about"
+          class="cabinet-nav__item py-4"
       >
         <img src="~assets/pics/icons/user_prpl.svg" alt="icon" />
         <span>О себе</span>

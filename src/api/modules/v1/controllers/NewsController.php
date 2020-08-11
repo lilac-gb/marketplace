@@ -1,16 +1,17 @@
 <?php
 
 namespace api\modules\v1\controllers;
+
+use api\components\actions\GalleryManagerAction;
 use api\components\ActiveController;
 use common\components\ActiveRecord;
 use common\models\News;
 use common\models\Page;
-use common\models\User;
 use common\services\NewsService;
 use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use zxbodya\yii2\galleryManager\GalleryManagerAction;
+
 
 class NewsController extends ActiveController
 {
