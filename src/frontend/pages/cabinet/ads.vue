@@ -2,7 +2,7 @@
   <b-container class="pt-3 pb-3">
     <Breadcrumbs />
     <b-row>
-      <b-col cols="4">
+      <b-col lg="3" md="6" sm="6" xs="12">
         <CabinetNav />
       </b-col>
       <b-col>

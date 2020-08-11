@@ -48,6 +48,7 @@ export default {
       let params = {};
       if (metatags) {
         params['expand'] = '_metaTags';
+        params['expand'] = 'gallery';
       }
 
       let result = await this.$http.$get(constructUrl(`${config.api_url}/news/${id}`, params));
