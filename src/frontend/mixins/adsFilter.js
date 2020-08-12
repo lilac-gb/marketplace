@@ -32,7 +32,7 @@ export default {
     },
     search: '',
     filter: {},
-    slider: [0, 100],
+    slider: [0, 10000],
     sortBy: NewsModel.CREATED_AT,
     sortDesc: SortDirection.ASK,
   }),
@@ -92,12 +92,12 @@ export default {
         category: null,
         type_id: null,
         priceFrom: 0,
-        priceTo: 100,
+        priceTo: 10000,
         section_id: null,
       };
       this.sortBy = NewsModel.CREATED_AT;
       this.sortDesc = SortDirection.ASK;
-      this.slider = [0, 100];
+      this.slider = [0, 10000];
       this.$fetch();
     },
     setSlider() {

@@ -46,6 +46,12 @@
       </filter-card>
     </b-collapse>
 
+    <b-row v-if="loading" class="w-100">
+      <b-col class="d-flex align-items-center justify-content-center">
+        <Loader/>
+      </b-col>
+    </b-row>
+
     <div class="publications-grid">
       <publication-card
           v-for="publication in publications"
@@ -80,6 +86,7 @@ import PublicationsCard from '@/components/publications/card';
 import CardFilter from '@/components/CardFilter';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SortingButton from '@/components/SortingButton';
+import Loader from '@/components/Loader';
 import { NewsModel, SortDirection } from '@/shared/constants';
 import publications from '@/mixins/publications';
 import users from '@/mixins/users';
@@ -92,13 +99,16 @@ export default {
     'publication-card': PublicationsCard,
     'filter-card': CardFilter,
     'sorting-button': SortingButton,
+    Loader
   },
   mixins: [publications, users],
   async fetch() {
+    this.loading = true;
     await Promise.all([
       this.getPublications(this.publicationsApiParams, true),
       this.getUsers()
     ]);
+    this.loading = false;
   },
   data() {
     return {
@@ -112,6 +122,7 @@ export default {
       totalCount: null,
       sortBy: NewsModel.CREATED_AT,
       sortDesc: SortDirection.ASK,
+      loading: false,
     };
   },
   computed: {
