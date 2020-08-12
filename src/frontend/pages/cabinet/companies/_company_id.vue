@@ -76,11 +76,11 @@
                   class="pr-3 pt-3"
                 >
                   <b-form-input
-                    id="input-4"
-                    v-model="company.inn"
-                    required
-                    placeholder="ИНН"
-                    :class="{
+                      id="input-4"
+                      v-model="company.vat"
+                      required
+                      placeholder="ИНН"
+                      :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
@@ -102,10 +102,10 @@
                   class="pr-3 pt-3"
                 >
                   <b-form-input
-                    id="input-5"
-                    v-model="company.ogrn"
-                    placeholder="ОГРН"
-                    :class="{
+                      id="input-5"
+                      v-model="company.id_number"
+                      placeholder="ОГРН"
+                      :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
@@ -123,11 +123,11 @@
                   class="pr-3 pt-3"
                 >
                   <b-form-input
-                    id="input-6"
-                    v-model="company.tel"
-                    type="tel"
-                    placeholder="Телефон"
-                    :class="{
+                      id="input-6"
+                      v-model="company.phone"
+                      type="phone"
+                      placeholder="Телефон"
+                      :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
@@ -222,12 +222,12 @@
                 class="pr-3 w-50"
               >
                 <b-form-timepicker
-                  v-model="company.workFrom"
-                  locale="de"
-                  form="input-10"
-                  label-no-time-selected="Начало работы"
-                  no-close-button
-                  class="time"
+                    v-model="company.time_from"
+                    locale="de"
+                    form="input-10"
+                    label-no-time-selected="Начало работы"
+                    no-close-button
+                    class="time"
                 />
               </b-form-group>
               <b-form-group
@@ -237,16 +237,16 @@
                 class="pr-3 w-50"
               >
                 <b-form-timepicker
-                  v-model="company.workTo"
-                  locale="de"
-                  form="input-11"
-                  label-no-time-selected="Окончание работы"
-                  no-close-button
-                  class="time"
+                    v-model="company.time_to"
+                    locale="de"
+                    form="input-11"
+                    label-no-time-selected="Окончание работы"
+                    no-close-button
+                    class="time"
                 />
               </b-form-group>
             </div>
-            <b-button type="submit" class="ml-2 mr-3 my-3 background-purple">
+            <b-button @click="isUpdate ? update() : create()" class="ml-2 mr-3 my-3 background-purple">
               Сохранить информацию
             </b-button>
             <b-button type="reset" class="mr-3 ml-3 my-3 background-purple">
@@ -256,7 +256,16 @@
         </ValidationObserver>
       </b-col>
       <b-col lg="3" md="12" sm="12" xs="12" class="mt-3">
-        <Avatar entity="company" />
+        <Avatar
+            v-if="company.id"
+            :id="company.id"
+            entity="company"
+            :img-src="company.images.preview"
+            behavior="logoBehavior"
+        />
+        <div v-else="!company.id">
+          Фото можно сохранить только после создания компании
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -265,6 +274,7 @@
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
+import companies from '@/mixins/companies';
 import config from '@/config';
 import { mapActions } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
@@ -272,7 +282,7 @@ import Avatar from '@/components/cabinet/Avatar';
 import multiselect from 'vue-multiselect';
 
 export default {
-  name: 'New',
+  name: 'Edit',
   components: {
     multiselect,
     Avatar,
@@ -282,41 +292,58 @@ export default {
     ValidationProvider,
   },
   middleware: ['auth'],
-  async fetch() {
-    try {
-      this.user = await {
-        ...this.$auth.user,
-      };
-    } catch (e) {
-      console.log(e);
+  mixins: [companies],
+  data() {
+    return {
+      weekDay: null,
+      weekDayOptions: [
+        {dayNumber: 1, day: 'ПН'},
+        {dayNumber: 2, day: 'ВТ'},
+        {dayNumber: 3, day: 'СР'},
+        {dayNumber: 4, day: 'ЧТ'},
+        {dayNumber: 5, day: 'ПТ'},
+        {dayNumber: 6, day: 'СБ'},
+        {dayNumber: 7, day: 'ВС'},
+      ],
+      company: {
+        id: '',
+        name: '',
+        description: '',
+        vat: '',
+        id_number: '',
+        phone: '',
+        email: '',
+        weekDay: '',
+        time_from: '',
+        time_to: '',
+      },
+      user: {},
+      show: true,
     }
   },
-  data: () => ({
-    weekDay: null,
-    weekDayOptions: [
-      { dayNumber: 1, day: 'ПН' },
-      { dayNumber: 2, day: 'ВТ' },
-      { dayNumber: 3, day: 'СР' },
-      { dayNumber: 4, day: 'ЧТ' },
-      { dayNumber: 5, day: 'ПТ' },
-      { dayNumber: 6, day: 'СБ' },
-      { dayNumber: 7, day: 'ВС' },
-    ],
-    company: {
-      name: '',
-      description: '',
-      inn: '',
-      ogrn: '',
-      tel: '',
-      email: '',
-      weekDay: '',
-      workFrom: '',
-      workTo: '',
+  async fetch() {
+    this.user = await this.$auth.user;
+    if (this.isUpdate) {
+      await this.getCompany(this.$route.params.company_id, true);
+      console.log(this.company);
+      this.id = this.company.id;
+      this.name = this.company.name;
+      this.description = this.company.description;
+      this.vat = this.company.vat;
+      this.id_number = this.company.id_number;
+      this.phone = this.company.phone;
+      this.site = this.company.site;
+      this.email = this.company.email;
+      this.weekDay = this.company.working_days;
+      this.time_from = this.company.time_from;
+      this.time_to = this.company.time_to;
+    }
+  },
+  computed: {
+    isUpdate() {
+      return this.$route.params.company_id !== 'new';
     },
-    user: {},
-    show: true,
-  }),
-  computed: {},
+  },
   methods: {
     ...mapActions(['setMessage']),
     addTag(weekDay) {
@@ -328,38 +355,43 @@ export default {
       this.options.push(day);
       this.value.push(day);
     },
-    async onSubmit() {
-      this.company.workingDays = this.company.weekDay
-        .map((day) => day.dayNumber)
-        .join(',');
+    async create() {
       this.loading = true;
-      await this.$axios
-        .post(`${config.api_url}/company/create`, {
-          name: this.company.name,
-          description: this.company.description,
-          owner_id: this.user.id,
-          url: this.company.name.toLowerCase(),
-          site: this.company.site,
-          phone: this.company.tel,
-          email: this.company.email,
-          id_number: this.company.ogrn,
-          vat: this.company.inn,
-          working_days: this.company.workingDays,
-          time_from: this.company.workFrom,
-          time_to: this.company.workTo,
-        })
-        .then((response) => {
-          console.log(response);
-          this.setMessage(response.data.data.message[0]);
-          this.$router.push('/cabinet/companies');
-        })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            this.loading = false;
-            //console.log(error.response);
-            this.errors = error.response;
-          }
-        });
+      await this.createCompany({
+        name: this.company.name,
+        description: this.company.description,
+        owner_id: this.user.id,
+        site: this.company.site,
+        phone: this.company.phone,
+        email: this.company.email,
+        id_number: this.company.id_number,
+        vat: this.company.vat,
+        working_days: !!this.company.weekDay.length ? this.company.weekDay
+          .map((day) => day.dayNumber)
+          .join(',') : '',
+        time_from: this.company.time_from,
+        time_to: this.company.time_to,
+      });
+      this.loading = false;
+    },
+    async update() {
+      this.loading = true;
+      await this.updateCompany(this.$route.params.company_id, {
+        name: this.company.name,
+        description: this.company.description,
+        owner_id: this.user.id,
+        site: this.company.site,
+        phone: this.company.phone,
+        email: this.company.email,
+        id_number: this.company.id_number,
+        vat: this.company.vat,
+        working_days: !!this.company.weekDay.length ? this.company.weekDay
+          .map((day) => day.dayNumber)
+          .join(',') : '',
+        time_from: this.company.time_from,
+        time_to: this.company.time_to,
+      });
+      this.loading = false;
     },
     onReset() {
       // Reset our form values
@@ -397,7 +429,7 @@ export default {
 .multiselect {
   font-size: 13px;
   line-height: 1;
-  &__spinner {
+  &__spvater {
     &:before,
     &:after {
       border-color: $purple transparent transparent;

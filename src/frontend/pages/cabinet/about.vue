@@ -256,7 +256,12 @@
         </ValidationObserver>
       </b-col>
       <b-col lg="3" md="12" sm="12" xs="12" class="mt-3">
-        <Avatar :img-src="loggedInUser.images.preview" entity="user" />
+        <Avatar
+            :id="user.id"
+            :img-src="loggedInUser.images.preview"
+            entity="user"
+            behavior="avatarBehavior"
+        />
       </b-col>
     </b-row>
   </b-container>

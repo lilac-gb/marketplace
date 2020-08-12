@@ -7,12 +7,12 @@ use Yii;
 
 class ImageAttachmentAction extends ImageAction
 {
-    public function run($type, $behavior, $id = 0)
+    public function run($type, $behavior, $id)
     {
         if (Yii::$app->user->isGuest) {
             return false;
         }
 
-        return parent::run($type, $behavior, Yii::$app->user->id);
+        return parent::run($type, $behavior, $id);
     }
 }

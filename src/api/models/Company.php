@@ -10,21 +10,6 @@ class Company extends \common\models\Company
 {
     public $my = false;
 
-    public static function findOne($id)
-    {
-        if (!is_numeric($id) && !is_array($id)) {
-            $condition = ['url' => $id];
-        }
-
-        $condition['status'] = Company::STATUS_PUBLISHED;
-
-        $dependency = new DbDependency(['sql' => 'SELECT max(created_at) FROM news']);
-
-        return parent::getDb()->cache(function () use ($condition) {
-            return parent::findOne($condition);
-        }, 0, $dependency);
-    }
-
     public function fields()
     {
         return [
@@ -72,18 +57,33 @@ class Company extends \common\models\Company
         ];
     }
 
+    public static function findOne($id)
+    {
+        if (!is_numeric($id) && !is_array($id)) {
+            $condition = ['url' => $id];
+        } else if (is_numeric($id)) {
+            $condition = ['id' => $id];
+        }
+
+        $dependency = new DbDependency(['sql' => 'SELECT max(created_at) FROM companies']);
+
+        return parent::getDb()->cache(function () use ($condition) {
+            return parent::findOne($condition);
+        }, 0, $dependency);
+    }
+
     public function search($params = null)
     {
         $query = self::find();
 
-        $query->andFilterWhere(['status' => self::STATUS_PUBLISHED]);
+        //$query->andFilterWhere(['status' => self::STATUS_PUBLISHED]);
 
         if (isset($params)) {
             $this->load($params);
         }
 
         if ($this->my) {
-            $query->andWhere(['user_id' => Yii::$app->user->id])
+            $query->andWhere(['owner_id' => Yii::$app->user->id])
                 ->andWhere(['<>', 'status', self::STATUS_DELETED]);
         } else {
             $query->andWhere(['=', 'status', self::STATUS_PUBLISHED]);
@@ -91,15 +91,15 @@ class Company extends \common\models\Company
 
         $query->andFilterWhere(['like', 'LOWER(name)', $this->name]);
 
-        if (isset($params['user_id'])) {
-            $query->andFilterWhere(['news.user_id' => $params['user_id']]);
+        if (isset($params['owner_id'])) {
+            $query->andFilterWhere(['owner_id' => $params['owner_id']]);
         }
 
-        if (isset($params['sortBy']) && isset($params['sortDesc'])) {
+        /*if (isset($params['sortBy']) && isset($params['sortDesc'])) {
             $sortBy = $params['sortBy'];
             $sortDesc = $params['sortDesc'];
             $query->orderBy("{$sortBy} {$sortDesc}");
-        }
+        }*/
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -64,7 +64,15 @@ export default {
   },
   middleware: ['auth'],
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     entity: {
+      type: String,
+      required: true,
+    },
+    behavior: {
       type: String,
       required: true,
     },
@@ -98,9 +106,7 @@ export default {
         let formData = new FormData();
         formData.append('image', blob);
         await this.$axios.post(
-          this.$props.entity === 'user'
-            ? `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`
-            : `${config.api_url}/company/imgAttachApi?type=company&behavior=logoBehavior&id=${this.user.id}`,
+          `${config.api_url}/${this.$props.entity}/imgAttachApi?type=${this.$props.entity}&behavior=${this.$props.behavior}&id=${this.$props.id}`,
           formData
         );
         this.$auth.fetchUser();
@@ -108,9 +114,7 @@ export default {
     },
     async deleteClicked() {
       await this.$axios.post(
-        this.$props.entity === 'user'
-          ? `${config.api_url}/user/imgAttachApi?type=user&behavior=avatarBehavior&id=${this.user.id}`
-          : `${config.api_url}/company/imgAttachApi?type=company&behavior=logoBehavior&id=${this.user.id}`,
+        `${config.api_url}/${this.$props.entity}/imgAttachApi?type=${this.$props.entity}&behavior=${this.$props.behavior}&id=${this.$props.id}`,
         {
           remove: true,
           key: 'image',
