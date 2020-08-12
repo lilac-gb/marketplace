@@ -21,7 +21,7 @@ class CompanyController extends ActiveController
         $actions['imgAttachApi'] = [
             'class' => ImageAttachmentAction::class,
             'types' => [
-                'user' => Company::class,
+                'company' => Company::class,
             ],
         ];
 
@@ -41,6 +41,7 @@ class CompanyController extends ActiveController
         $behaviors['authenticator']['except'] = ['options'];
         $behaviors['authenticator']['optional'] = [
             'index',
+            'my',
             'publish',
             'imgAttachApi',
             'view',
@@ -51,7 +52,7 @@ class CompanyController extends ActiveController
 
     public function actionMy()
     {
-        /* @var $modelClass \api\models\News */
+        /* @var $modelClass \api\models\Company */
         $modelClass = new $this->modelClass();
         $modelClass->my = true;
 

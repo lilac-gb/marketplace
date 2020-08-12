@@ -28,7 +28,6 @@
                   <b-form-input
                     id="input-1"
                     v-model="user.first_name"
-                    required
                     placeholder="Введите имя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -54,7 +53,6 @@
                   <b-form-input
                     id="input-2"
                     v-model="user.last_name"
-                    required
                     placeholder="Введите фамилию"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -80,7 +78,6 @@
                   <b-form-input
                     id="input-3"
                     v-model="user.username"
-                    required
                     placeholder="Введите имя пользователя"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -114,7 +111,6 @@
                     id="input-4"
                     v-model="user.email"
                     type="email"
-                    required
                     placeholder="Введите e-mail адрес"
                     :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
@@ -260,7 +256,12 @@
         </ValidationObserver>
       </b-col>
       <b-col lg="3" md="12" sm="12" xs="12" class="mt-3">
-        <Avatar :user="user" />
+        <Avatar
+            :id="user.id"
+            :img-src="loggedInUser.images.preview"
+            entity="user"
+            behavior="avatarBehavior"
+        />
       </b-col>
     </b-row>
   </b-container>
@@ -270,7 +271,7 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import config from '@/config/config';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import Avatar from '@/components/cabinet/Avatar';
 export default {
@@ -291,6 +292,7 @@ export default {
         password: '',
         repeatPassword: '',
       };
+      console.log(this.user.images.preview);
     } catch (e) {
       console.log(e);
     }
@@ -305,7 +307,7 @@ export default {
       oneDigAndSpec: /^(?=.*[0-9])(?=.*[!@#$%^&*])/,
     },
   }),
-  computed: {},
+  computed: mapGetters(['loggedInUser']),
   methods: {
     ...mapActions(['setMessage']),
     async onSubmit() {

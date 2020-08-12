@@ -1,9 +1,19 @@
 import { extend } from 'vee-validate';
-import { required, email, max, confirmed } from 'vee-validate/dist/rules';
+import { required, email, confirmed, digits } from 'vee-validate/dist/rules';
 
 extend('required', {
   ...required,
   message: 'Это поле обязательно для заполнения',
+});
+
+extend('inn', {
+  ...digits,
+  message: 'ИНН должен содержать 10 цифр',
+});
+
+extend('ogrn', {
+  ...digits,
+  message: 'ОГРН должен содержать 13 цифр',
 });
 
 extend('confirmed', {
@@ -25,8 +35,11 @@ extend('min', {
 });
 
 extend('max', {
-  ...max,
-  message: 'Максимальное количество знаков 100',
+  validate(value, { length }) {
+    return value.length <= length;
+  },
+  params: ['length'],
+  message: 'Максимальное количествоо знаков {length}',
 });
 
 extend('name', (name) => {
@@ -41,9 +54,9 @@ extend('name', (name) => {
 
 extend('username', (name) => {
   const regExp = /^[\sa-zA-Z0-9-]+$/;
-
+  //TODO: добавить точку в регулярку, если Женя не добавил
   if (!regExp.test(name)) {
-    return 'Имя пользователя не может содержать кирилицу и символы кроме "-"';
+    return 'Имя пользователя не может содержать кирилицу и символы кроме "-" и "."';
   }
 
   return true;
@@ -74,6 +87,26 @@ extend('atLeastULetter', (name) => {
 
   if (!regExp.test(name)) {
     return 'Пароль должен содержать хотябы одну заглавную букву';
+  }
+
+  return true;
+});
+
+extend('tel', (name) => {
+  const regExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/;
+
+  if (!regExp.test(name)) {
+    return 'Скорее всего телефон введен в неверном формате';
+  }
+
+  return true;
+});
+
+extend('site', (name) => {
+  const regExp = /\b(https?:\/\/([0-9a-z]+(?:[\-\.][0-9a-z]+)+)(\/(?:\/\w+\/)*\w*)?(\?\w+\=[^\s\&\=]+(?:\&\w+\=[^\s\&\=]+)*)?(\#\S+)?)\b/;
+
+  if (!regExp.test(name)) {
+    return 'URL не корректен';
   }
 
   return true;

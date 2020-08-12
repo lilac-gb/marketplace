@@ -8,6 +8,7 @@ use common\components\ActiveRecord;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use v0lume\yii2\metaTags\MetaTagBehavior;
+use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
@@ -112,9 +113,15 @@ class Company extends ActiveRecord
             [
                 'class' => TimestampBehavior::class,
             ],
+            [
+                'class' => SluggableBehavior::class,
+                'attribute' => 'name',
+                'slugAttribute' => 'url',
+                'uniqueSlugGenerator' => '-',
+            ],
             'logoBehavior' => [
                 'class' => ImageAttachmentBehavior::class,
-                'type' => 'user',
+                'type' => 'company',
                 'previewWidth' => 200,
                 'previewHeight' => 200,
                 'extension' => 'jpg',
