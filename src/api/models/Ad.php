@@ -45,6 +45,13 @@ class Ad extends \common\models\Ad
             },
             'price',
             'description',
+            'coverImages' => function ($model) {
+                /** @var $model Ad */
+                return [
+                    'preview' => $model->getPreview(),
+                    'i1200x500' => $model->getGalleryCover(),
+                ];
+            },
             'life_time',
             'created_at',
             'ended_at',
