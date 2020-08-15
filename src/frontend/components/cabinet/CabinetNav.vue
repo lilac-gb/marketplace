@@ -5,7 +5,7 @@
           exact
           active-class="active"
           to="/cabinet/orders"
-          class="cabinet-nav__item py-4"
+          class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
       >
         <img src="~assets/pics/icons/cart.svg" alt="icon"/>
         <span>Заказы</span>
@@ -14,7 +14,7 @@
           exact
           active-class="active"
           to="/cabinet/about"
-          class="cabinet-nav__item py-4"
+          class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
       >
         <img src="~assets/pics/icons/user_prpl.svg" alt="icon" />
         <span>О себе</span>
@@ -23,7 +23,7 @@
         exact
         active-class="active"
         to="/cabinet/ads"
-        class="cabinet-nav__item py-4"
+        class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
       >
         <img src="~assets/pics/icons/announcement_prpl.svg" alt="icon" />
         <span>Объявления</span>
@@ -32,7 +32,7 @@
         exact
         active-class="active"
         to="/cabinet/publications"
-        class="cabinet-nav__item py-4"
+        class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
       >
         <img src="~assets/pics/icons/feather_prpl.svg" alt="icon" />
         <span>Публикации</span>
@@ -41,7 +41,7 @@
         exact
         active-class="active"
         to="/cabinet/companies"
-        class="cabinet-nav__item py-4"
+        class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
       >
         <img src="~assets/pics/icons/factory 1_prpl.svg" alt="icon" />
         <span>Компания</span>
@@ -63,6 +63,13 @@ img {
 .cabinet-nav {
   &__item {
     border: none;
+    img {
+      padding: 0;
+      margin-bottom: 10px;
+    }
+    span{
+      font-size: 80%;
+    }
     &.active {
       color: #cb0e0e !important;
       background-color: #f8f9fa !important;

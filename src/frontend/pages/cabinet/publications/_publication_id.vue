@@ -1,15 +1,16 @@
 <template>
   <b-container class="cabinet-publications-edit mt-4 mb-4">
-    <Breadcrumbs />
+    <Breadcrumbs :items="breadcrumbs"/>
     <b-row>
-      <b-col cols="3">
+      <b-col lg="2" md="2" sm="3" xs="4">
         <CabinetNav />
       </b-col>
-      <b-col>
-        <div class="gallery">
+      <b-col lg="10" md="10" sm="9" xs="8">
+         <div class="gallery">
           <div
-              v-for="image in gallery"
-              :key="image.id"
+            v-if="gallery"
+            v-for="image in gallery"
+            :key="image.id"
           >
             <img class="gallery-image" :src="image.preview"/>
           </div>
@@ -17,7 +18,7 @@
         <vue2Dropzone
             ref="myVueDropzone"
             id="dropzone"
-            v-if="!!id && id"
+            v-if="isUpdate && dropzoneOptions.url"
             :useCustomSlot="true"
             :options="dropzoneOptions"
         >
@@ -28,7 +29,7 @@
             <b-icon icon="image" class="mt-3 pic"></b-icon>
           </div>
         </vue2Dropzone>
-        <div v-if="!id" class="text-center w-100 p-10 dropzone-custom-content">
+        <div v-if="!isUpdate" class="text-center w-100 p-10 dropzone-custom-content">
           <div class="dropzone-custom-title text-small">
             Фото загружается после сохранения материала
           </div>
@@ -38,13 +39,13 @@
             v-model="name"
             class="text-small mt-4"
             placeholder="Введите название"
-        />
+        ></b-form-input>
         <b-form-textarea
             v-model="anons"
             class="text-small mt-4"
             placeholder="Введите короткое описание"
             rows="3"
-        />
+        ></b-form-textarea>
         <VueEditor
             v-model="description"
             placeholder="Веедите полный текст публикации, добавляя ссылки и форматируя текст"
@@ -70,7 +71,7 @@ import publications from '@/mixins/publications';
 import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 import { VueEditor } from "vue2-editor";
-import { NewsStatuses } from '@/shared/constants';
+import { ModelStatuses } from '@/shared/constants';
 import config from '@/config/config';
 
 export default {
@@ -96,6 +97,8 @@ export default {
       name: '',
       description: '',
       anons: '',
+      breadcrumbs: [],
+      gallery: [],
     };
   },
   async fetch() {
@@ -109,10 +112,16 @@ export default {
       this.gallery = this.publication.gallery;
       this.dropzoneOptions.url = this.uploadUrl;
     }
+  
+    this.breadcrumbs = [
+      { label: 'Кабинет', url: '/cabinet' },
+      { label: 'Объявления', url: '/cabinet/publications'},
+      { label: `${this.isUpdate ? 'Обновление публикации' : 'Создание публикации' }`, url: null }
+    ];
   },
   computed: {
     isUpdate() {
-      return this.$route.params.publication_id.toLowerCase() !== 'new';
+      return this.$route.params.publication_id !== 'new';
     },
     uploadUrl() {
       return `${config.api_url}/news/galleryApi?type=news&behaviorName=galleryBehavior&galleryId=${this.id}&action=frontendUpload`;
@@ -123,7 +132,7 @@ export default {
       await this.createPublication({
         name: this.name,
         description: this.description,
-        status: NewsStatuses.STATUS_NOT_PUBLISHED,
+        status: ModelStatuses.STATUS_NOT_PUBLISHED,
         anons: this.anons,
         user_id: this.user.id,
       });

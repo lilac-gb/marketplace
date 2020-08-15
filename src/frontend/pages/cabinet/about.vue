@@ -1,11 +1,11 @@
 <template>
   <b-container class="py-3">
-    <Breadcrumbs />
+    <Breadcrumbs :items="breadcrumbs" />
     <b-row>
-      <b-col lg="3" md="6" sm="6" xs="12">
+      <b-col lg="2" md="2" sm="3" xs="4">
         <CabinetNav />
       </b-col>
-      <b-col lg="6" md="6" sm="6" xs="12">
+      <b-col lg="7" md="7" sm="6" xs="12">
         <ValidationObserver v-slot="{ handleSubmit }">
           <b-form
             v-if="show"
@@ -33,7 +33,7 @@
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
-                  />
+                  ></b-form-input>
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -58,7 +58,7 @@
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
-                  />
+                  ></b-form-input>
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -83,7 +83,7 @@
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
-                  />
+                  ></b-form-input>
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -116,7 +116,7 @@
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
-                  />
+                  ></b-form-input>
                   <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                     {{ v.errors[0] }}
                   </b-form-invalid-feedback>
@@ -145,7 +145,7 @@
                         'is-invalid': v.invalid && (v.touched || v.changed),
                         'is-valid': v.valid && v.dirty,
                       }"
-                    />
+                    ></b-form-input>
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                       {{ v.errors[0] }}
                     </b-form-invalid-feedback>
@@ -172,7 +172,7 @@
                         'is-invalid': v.invalid && (v.touched || v.changed),
                         'is-valid': v.valid && v.dirty,
                       }"
-                    />
+                    ></b-form-input>
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                       {{ v.errors[0] }}
                     </b-form-invalid-feedback>
@@ -198,7 +198,7 @@
                         'is-invalid': v.invalid && (v.touched || v.changed),
                         'is-valid': v.valid && v.dirty,
                       }"
-                    />
+                    ></b-form-input>
                     <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
                       {{ v.errors[0] }}
                     </b-form-invalid-feedback>
@@ -255,12 +255,12 @@
           </b-form>
         </ValidationObserver>
       </b-col>
-      <b-col lg="3" md="12" sm="12" xs="12" class="mt-3">
+      <b-col lg="3" md="3" sm="3" xs="12" class="mt-3">
         <Avatar
-            :id="user.id"
-            :img-src="loggedInUser.images.preview"
-            entity="user"
-            behavior="avatarBehavior"
+          :id="user.id"
+          :img-src="loggedInUser.images.preview"
+          entity="user"
+          behavior="avatarBehavior"
         />
       </b-col>
     </b-row>
@@ -274,6 +274,7 @@ import config from '@/config/config';
 import { mapActions, mapGetters } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import Avatar from '@/components/cabinet/Avatar';
+
 export default {
   name: 'About',
   components: {
@@ -296,6 +297,11 @@ export default {
     } catch (e) {
       console.log(e);
     }
+    
+    this.breadcrumbs = [
+      { label: 'Кабинет', url: '/cabinet' },
+      { label: 'Моя информация', url: null },
+    ];
   },
   data: () => ({
     user: {},
@@ -306,32 +312,30 @@ export default {
       oneUp: /^(?=.*[A-ZА-Я])/,
       oneDigAndSpec: /^(?=.*[0-9])(?=.*[!@#$%^&*])/,
     },
+    breadcrumbs: [],
   }),
   computed: mapGetters(['loggedInUser']),
   methods: {
     ...mapActions(['setMessage']),
     async onSubmit() {
       this.loading = true;
-      await this.$axios
-        .post(`${config.api_url}/user/save`, {
-          username: this.user.username,
-          first_name: this.user.first_name,
-          last_name: this.user.last_name,
-          email: this.user.email,
-          password: this.user.password,
-          oldPassword: this.user.oldPassword,
-        })
-        .then((response) => {
-          this.setMessage(response.data.data.message[0]);
-          this.$router.push('/cabinet/about');
-        })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            this.loading = false;
-            //console.log(error.response);
-            this.errors = error.response;
-          }
-        });
+      await this.$axios.post(`${config.api_url}/user/save`, {
+        username: this.user.username,
+        first_name: this.user.first_name,
+        last_name: this.user.last_name,
+        email: this.user.email,
+        password: this.user.password,
+        oldPassword: this.user.oldPassword,
+      }).then((response) => {
+        this.setMessage(response.data.data.message[0]);
+        this.$router.push('/cabinet/about');
+      }).catch((error) => {
+        if (error.response && error.response.data) {
+          this.loading = false;
+          //console.log(error.response);
+          this.errors = error.response;
+        }
+      });
     },
     onReset(evt) {
       evt.preventDefault();
@@ -357,11 +361,13 @@ export default {
     font-size: 13px;
   }
 }
+
 .user-form-text {
   color: #999999;
   font-size: 11px;
   letter-spacing: 0;
 }
+
 .user-about-checkbox {
   line-height: 1.5rem;
   letter-spacing: 0;

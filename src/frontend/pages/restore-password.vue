@@ -1,8 +1,6 @@
 <template>
-  <b-container class="pt-5 pb-5 mt-4 h-100">
-    <div class="d-flex align-items-center justify-content-center w-100">
+  <b-container class="vh-100 d-flex align-items-center justify-content-center">
       <h1>Подождите идет проверка...</h1>
-    </div>
   </b-container>
 </template>
 
@@ -12,11 +10,11 @@
   export default {
     name: 'Restore',
     layout: 'default',
-    fetch({query, store, redirect}) {
+    fetch({ query, store, redirect }) {
       if (query.token) {
-        axios.post(`${process.env.api_url}/user/receive-password`, {token: query.token})
+        axios.post(`${process.env.api_url}/user/receive-password`, { token: query.token })
           .then((response) => {
-            console.log(response)
+            console.log(response);
             if (response.data) {
               store.commit('updateMessage', 'Ваш новый пароль выслан Вам на email!');
               redirect('/');

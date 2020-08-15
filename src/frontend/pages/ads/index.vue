@@ -1,177 +1,190 @@
 <template>
-  <b-container class="pb-5">
-    <Breadcrumbs class="mt-3"></Breadcrumbs>
-    <search-form @onSubmit="searchByName">
-      <!-- <b-row>
-         <b-col md="6">
-           <b-form-select
-             v-model="filter.category"
-             :options="computedOptions('categories')"
-             class="w-100"
-           ></b-form-select>
-         </b-col>
-         <b-col md="6">
-           <b-form-select
-             v-model="filter.type_id"
-             :options="computedOptions('types')"
-             class="w-100"
-             @change="$fetch()"
-           ></b-form-select>
-         </b-col>
-       </b-row>-->
-      <b-row class="mt-4">
-        <b-col md="4" class="text-left">
-          <p class="filter-title">Сортировка</p>
+  <section id="ads">
+    <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
+    <b-container class="mt-4 mb-4">
+      <Breadcrumbs :items="breadcrumbs" class="d-flex" />
+      <b-row class="mb-4">
+        <b-col lg="8" md="6">
+          <b-form-input
+            v-model="searchText"
+            class="search-field mr-2"
+            placeholder="Введите название"
+          ></b-form-input>
         </b-col>
-        <!--<b-col md="5" class="text-left">
-          <p class="filter-title">Региональность</p>
-        </b-col>-->
-        <b-col md="3" class="text-left offset-5">
-          <p class="filter-title">Стоимость</p>
+        <b-col lg="2" md="3">
+          <b-button
+            class="mp-btn mp-btn-purple w-100"
+            @click="$fetch"
+          >
+          ПОИСК
+        </b-button>
+        </b-col>
+        <b-col lg="2" md="3">
+          <b-button
+            class="mp-btn mp-btn-purple collapse-button d-flex align-items-center justify-content-center w-100"
+            v-b-toggle.filter-collapse
+          >
+          ФИЛЬТР
+        </b-button>
         </b-col>
       </b-row>
-      <b-row class="align-items-center">
-        <b-col md="4" class="d-flex justify-content-between">
-          <sorting-button text="По дате" @changed="sortByDate" />
-          <sorting-button text="По просмотрам" @changed="sortByViews" />
-        </b-col>
-        <!--<b-col md="5">
+      <b-collapse id="filter-collapse" class="mt-2">
+        <div class="mt-3">
           <b-row>
-            <b-col md="6">
-              <b-form-select
-                v-model="filter.country"
-                :options="computedOptions('country')"
-                class="w-100"
-              ></b-form-select>
+            <b-col lg="4">
+              <SortingButton
+                text="По просмотрам"
+                @changed="sortByViews"
+              />
             </b-col>
-            <b-col md="6">
-              <b-form-select
-                v-model="filter.city"
-                :options="computedOptions('city')"
-                class="w-100"
-                :disabled="!filter.country"
-              ></b-form-select>
+            <b-col lg="4">
+              <SortingButton
+                text="По дате"
+                @changed="sortByDate"
+              />
+            </b-col>
+            <b-col lg="4">
+              <VueSlider
+                class="slider"
+                v-model="slider"
+                :min-range="10"
+                :max="10000"
+                :tooltip="'always'"
+                :tooltip-formatter="toCurrency"
+                :interval="0.1"
+                :height="1"
+                :dot-size="16"
+                @drag-end="setSlider()"
+              />
             </b-col>
           </b-row>
-        </b-col>-->
-        <b-col md="3" class="pl-4 pr-4 offset-5">
-          <vue-slider
-              v-model="slider"
-              :min-range="10"
-              :max="10000"
-              :tooltip="'always'"
-              :tooltip-formatter="toCurrency"
-              :interval="0.1"
-              :height="1"
-              :dot-size="16"
-              @drag-end="setSlider()"
-          />
-        </b-col>
-      </b-row>
-      <b-row class="pt-4 pb-4">
-        <!-- <b-col md="6" class="d-flex align-items-center justify-content-start">
-           <b-button
-             v-for="item in computedOptions('sections')"
-             :key="item.name"
-             class="background-purple ellipse-btn btn-sm mr-3"
-             :disabled="item.id === selectedSection"
-             @click="searchBySection(item.id)"
-           >
-             {{ item.name }}
-           </b-button>
-         </b-col>-->
-        <b-col md="6" class="d-flex offset-6 align-items-center justify-content-end">
-          <b-button
-            class="background-purple ellipse-btn btn-sm"
-            @click="reset()"
-          >
-            Сбросить фильтр
-          </b-button>
-        </b-col>
-      </b-row>
-    </search-form>
-    <section class="pt-5 pb-5">
-      <b-row class="align-items-stretch">
-        <b-col v-for="item in goods" :key="item.title" md="4" lg="4" class="mb-4">
-          <advert-card :ad="item"/>
-        </b-col>
-        <b-col v-if="loading" class="d-flex align-items-center justify-content-center">
-          <Loader/>
-        </b-col>
-      </b-row>
-    </section>
+          
+          <b-row>
+            <b-col lg="3">
+              <b-form-select
+                v-model="filter.section_id"
+                :options="sections"
+                class="w-100"
+                @change="$fetch"
+              ></b-form-select>
+            </b-col>
+            <b-col lg="3">
+              <b-form-select
+                v-model="filter.type_id"
+                :options="types"
+                class="w-100"
+                @change="$fetch"
+              ></b-form-select>
+            </b-col>
+            <b-col lg="4">
+              <b-form-select
+                class="select-author"
+                v-model="filter.user_id"
+                :options="authorOptions"
+                @change="$fetch"
+              ></b-form-select>
+            </b-col>
+            <b-col lg="2">
+              <b-button
+                pill
+                class="background-purple clear-filter"
+                @click="reset"
+              >
+                Сбросить фильтр
+              </b-button>
+            </b-col>
+          </b-row>
 
-    <b-row class="justify-content-center">
-      <b-pagination
-        v-model="currentPage"
-        class="mp-pagination"
-        :per-page="perPage"
-        :total-rows="totalCount"
-        first-number
-        last-number
-        size="lg"
-        @input="$fetch"
-      />
-    </b-row>
-  </b-container>
+        </div>
+      </b-collapse>
+      
+      <div class="pt-5 pb-5">
+        <b-row class="align-items-stretch">
+          <b-col v-for="item in ads" :key="item.title" md="4" lg="4" class="mb-4">
+            <Card :ad="item" />
+          </b-col>
+        </b-row>
+      </div>
+
+      <div
+        v-if="!!searchText && !ads.length && !loading"
+        class="text-muted mb-4 mt-4 d-flex justify-content-center"
+      >
+        Ничего не найдено, попробуйте изменить запрос
+      </div>
+      
+      <div
+        v-if="!searchText && !ads.length && !loading"
+        class="text-muted mb-4 mt-4 d-flex justify-content-center"
+      >
+        Ничего не найдено, попробуйте изменить фильтрацию
+      </div>
+      
+      <div v-if="ads.length > perPage" class="mb-4 mt-4 d-flex justify-content-center">
+        <b-link
+          class="background-white text-purple mp-button-white mr-4 page-link"
+          @click="fetchMoreItems"
+        >
+          ЗАГРУЗИТЬ ЕЩЕ
+        </b-link>
+        <b-pagination
+          v-model="currentPage"
+          class="mp-pagination"
+          :per-page="perPage"
+          :total-rows="totalCount"
+          first-number
+          last-number
+          size="lg"
+          @input="$fetch"
+        ></b-pagination>
+      </div>
+    </b-container>
+  </section>
 </template>
 
 <script>
-import config from '@/config/config';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import SearchForm from '@/components/forms/SearchForm';
 import SortingButton from '@/components/SortingButton';
 import Loader from '@/components/Loader';
 import Card from '@/components/ads/card';
 import VueSlider from 'vue-slider-component';
+import { ModelParams, SortDirection } from '@/shared/constants';
+import users from '@/mixins/users';
 import utils from '@/mixins/utils';
+import ads from '@/mixins/ads';
 import adsFilter from '@/mixins/adsFilter';
 
 export default {
   name: 'Ads',
   components: {
     Breadcrumbs,
-    'search-form': SearchForm,
-    'sorting-button': SortingButton,
-    'advert-card': Card,
-    'vue-slider': VueSlider,
-    Loader
+    SortingButton,
+    Card,
+    VueSlider,
+    Loader,
   },
-  mixins: [utils, adsFilter],
+  mixins: [utils, ads, users, adsFilter],
   async fetch() {
-    try {
-      await Promise.all([this.getAds(), this.getOptions()]);
-    } catch (e) {
-      console.log(e);
-    }
+    this.loading = true;
+    await Promise.all([
+      this.getAds(this.getFetchParams, true),
+      this.getUsers(),
+      this.getSections(),
+      this.getTypes(),
+    ]);
+    this.loading = false;
+    this.breadcrumbs = [
+      { label: 'Объявления', url: null },
+    ];
   },
   data: () => ({
-    search: '',
-    goods: [],
-    currentPage: 1,
-    perPage: 12,
-    totalCount: null,
-    metaTags: null,
+    ads: [],
+    users: [],
     loading: false,
+    breadcrumbs: [],
   }),
-  methods: {
-    async getAds() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.$get(`${config.api_url}/ad`, {
-          params: this.getFetchParams(),
-        });
-        this.goods = [...response.data.models];
-        this.totalCount = response.data._meta.totalCount;
-        this.perPage = response.data._meta.perPage;
-        this.currentPage = response.data._meta.currentPage;
-        this.metaTags = response.data._metaTags;
-        this.loading = false;
-      } catch (e) {
-        console.log(e);
-      }
-    },
-  },
   head() {
     if (this.metaTags) {
       return {
@@ -189,14 +202,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.filter-title {
-  font-size: 13px;
-  font-family: 'Roboto Thin', sans-serif;
-  color: $gray;
-  margin-bottom: 10px;
-}
+  .slider {
+    max-width: 90%;
+    bottom: -22px;
+    position: relative;
+  }
 
-.ellipse-btn {
-  border-radius: 15px;
-}
+  .filter-title {
+    font-size: 13px;
+    font-family: 'Roboto Thin', sans-serif;
+    color: $gray;
+    margin-bottom: 10px;
+  }
+
+  .ellipse-btn {
+    border-radius: 15px;
+  }
 </style>

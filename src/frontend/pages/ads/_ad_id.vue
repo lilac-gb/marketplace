@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <b-container id="ad" class="mb-4">
+  <section id="ad-page">
+    <b-container :class="classes">
       <div v-if="ad">
         <div
             class="w-100 item-img"
-            v-if="ad.coverImages"
+            v-if="ad.coverImages && ad.coverImages.i1200x500"
             :style="{ backgroundImage: `url(${ad.coverImages.i1200x500})` }"
         />
+        <Breadcrumbs :items="breadcrumbs" class="d-flex" />
         <div class="mb-5 text-title">
           {{ ad.name }}
         </div>
@@ -45,19 +46,26 @@
         </div>
       </div>
     </b-container>
-  </div>
+  </section>
 </template>
 
 <script>
   import utils from '@/mixins/utils';
   import ads from '@/mixins/ads';
   import {mapActions} from 'vuex';
+  import Breadcrumbs from '@/components/Breadcrumbs';
 
   export default {
     name: 'Ad',
+    components: { Breadcrumbs },
     mixins: [utils, ads],
     async fetch() {
       await this.getAd(this.$route.params.ad_id, true);
+      this.classes = this.ad.coverImages && this.ad.coverImages.i1200x500 ? 'mb-4 mt-n1' : 'mt-4 mb-4';
+      this.breadcrumbs = [
+        { label: 'Объявления', url: '/ads' },
+        { label: this.ad ? this.ad.name : 'Объявление', url: null }
+      ];
     },
     data() {
       return {
@@ -67,6 +75,8 @@
         pageCount: 1,
         perPage: 4,
         totalCount: null,
+        breadcrumbs: [],
+        classes: 'mb-4 mt-n1',
       };
     },
     mounted() {

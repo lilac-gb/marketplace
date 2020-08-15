@@ -2,10 +2,10 @@
   <b-container class="py-3">
     <Breadcrumbs />
     <b-row>
-      <b-col lg="3" md="6" sm="6" xs="12">
+      <b-col lg="2" md="3" sm="3" xs="12">
         <CabinetNav />
       </b-col>
-      <b-col lg="6" md="6" sm="6" xs="12">
+      <b-col lg="7" md="5" sm="5" xs="12">
         <ValidationObserver v-slot="{ handleSubmit }">
           <b-form
             v-if="show"
@@ -255,7 +255,7 @@
           </b-form>
         </ValidationObserver>
       </b-col>
-      <b-col lg="3" md="12" sm="12" xs="12" class="mt-3">
+      <b-col lg="3" md="4" sm="4" xs="12" class="mt-3">
         <Avatar
             v-if="company.id"
             :id="company.id"

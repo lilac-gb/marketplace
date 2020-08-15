@@ -3,6 +3,8 @@ import {constructUrl} from '@/shared/api';
 
 export default {
   data: () => ({
+    types: [],
+    sections: [],
     metaTags: null,
   }),
   methods: {
@@ -14,6 +16,7 @@ export default {
       let result = await this.$http.$get(
         constructUrl(`${config.api_url}/ad`, params)
       );
+
       this.ads = result.data.models;
       this.currentPage = result.data._meta.currentPage;
       this.pageCount = result.data._meta.pageCount;
@@ -44,15 +47,19 @@ export default {
         this.metaTags = result.data._metaTags;
       }
     },
-    async getAd(id, metatags = false) {
+    async getAd(id, metatags = false, gallery = false) {
       let params = {};
       if (metatags) {
         params['expand'] = '_metaTags';
+      }
+
+      if (gallery) {
         params['expand'] = 'gallery';
       }
 
       let result = await this.$http.$get(constructUrl(`${config.api_url}/ad/${id}`, params));
       this.ad = result.data;
+
       if (metatags) {
         this.metaTags = result.data._metaTags;
       }
@@ -78,6 +85,34 @@ export default {
       let result = await this.$http.$put(`${config.api_url}/ad/${id}/update`, payload);
       this.$http.setToken(false);
       return result;
+    },
+    async getSections() {
+      const sections = await this.$axios.$get(
+        `${config.api_url}/ad/ads-sections`
+      );
+
+      let result = [{ text: 'Направление', value: null }];
+
+      sections.data.map((option) => result.push({
+        value: option.id,
+        text: option.name,
+      }));
+
+      this.sections = result;
+    },
+    async getTypes() {
+      const types = await this.$axios.$get(
+        `${config.api_url}/ad/ads-types`
+      );
+
+      let result = [{ text: 'Тип', value: null,  }];
+
+      types.data.map((option) => result.push({
+        value: option.id,
+        text: option.name,
+      }));
+
+      this.types = result;
     },
   },
   head() {

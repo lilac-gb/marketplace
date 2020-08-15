@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <b-container id="publication" class="mb-4">
+  <section id="publication-page">
+    <b-container class="mb-4">
       <div v-if="publication">
         <div
             class="w-100 item-img"
             v-if="publication.coverImages.i1200x500"
             :style="{ backgroundImage: `url(${publication.coverImages.i1200x500})` }"
         />
+        <Breadcrumbs :items="breadcrumbs" class="d-flex"/>
         <div class="mb-5 text-title">{{ publication.name }}</div>
         <div class="d-flex flex-row">
           <div class="card-details mr-4">
@@ -56,19 +57,21 @@
         </b-link>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
   import publications from '@/mixins/publications';
   import utils from '@/mixins/utils';
-  import {NewsModel, SortDirection} from '@/shared/constants';
+  import {ModelParams, SortDirection} from '@/shared/constants';
   import PublicationsCard from '@/components/publications/card';
+  import Breadcrumbs from '@/components/Breadcrumbs';
 
   export default {
     name: 'Publication',
     components: {
       'publication-card': PublicationsCard,
+      Breadcrumbs,
     },
     mixins: [
       publications,
@@ -79,6 +82,10 @@
         this.getPublication(this.$route.params.publication_id, true),
         this.getPublications(this.publicationsApiParams)
       ]);
+      this.breadcrumbs = [
+        { label: 'Публикации', url: '/publications' },
+        { label: this.publication ? this.publication.name : 'Публикация', url: null }
+      ];
     },
     data() {
       return {
@@ -88,8 +95,9 @@
         pageCount: 1,
         perPage: 4,
         totalCount: null,
-        sortBy: NewsModel.CREATED_AT,
-        sortDesc: SortDirection.ASK
+        sortBy: ModelParams.CREATED_AT,
+        sortDesc: SortDirection.ASK,
+        breadcrumbs: [],
       };
     },
     computed: {

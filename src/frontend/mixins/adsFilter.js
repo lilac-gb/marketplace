@@ -1,66 +1,30 @@
 import config from '@/config/config';
 import _ from 'lodash';
-import { NewsModel, SortDirection } from '@/shared/constants';
+import { ModelParams, SortDirection } from '@/shared/constants';
+import { getFullName } from '@/shared/utils';
 
 export default {
   data: () => ({
-    options: {
-      types: {
-        default: { value: null, text: 'Тип' },
-        values: [],
-      },
-      country: {
-        default: { value: null, text: 'Страна' },
-        values: [],
-      },
-      city: {
-        default: { value: null, text: 'Город' },
-        values: [],
-      },
-      category: {
-        default: { value: null, text: 'Категории' },
-        values: [],
-      },
-      sections: {
-        default: { name: 'Все', id: null },
-        values: [],
-      },
-      categories: {
-        default: { text: 'Категории', value: null },
-        values: [],
-      },
-    },
-    search: '',
+    currentPage: 1,
+    perPage: 12,
+    totalCount: null,
+    searchText: '',
     filter: {},
     slider: [0, 10000],
-    sortBy: NewsModel.CREATED_AT,
-    sortDesc: SortDirection.ASK,
+    sortBy: ModelParams.CREATED_AT,
+    sortDesc: SortDirection.DESC,
   }),
   computed: {
-    selectedSection() {
-      return this.filter.section_id;
-    },
-  },
-  methods: {
-    computedOptions(optionName) {
-      const option = this.options[optionName];
-      if (option) {
-        return option.default
-          ? [option.default, ...option.values]
-          : [...option.values];
-      }
-    },
-    async getOptions() {
-      const sections = await this.$axios.$get(
-        `${config.api_url}/ad/ads-sections`
-      );
-      const types = await this.$axios.$get(`${config.api_url}/ad/ads-types`);
+    authorOptions() {
 
-      this.options.sections.values = sections.data;
-      this.options.types.values = types.data.map((option) => ({
-        value: option.id,
-        text: option.name,
+      let result = [{ text: 'Все', value: null }];
+
+      this.users.map((user) => result.push({
+        value: user.id,
+        text: getFullName(user),
       }));
+
+      return result;
     },
     getFetchParams() {
       const filter = Object.keys(this.filter).reduce((result, key) => {
@@ -76,28 +40,35 @@ export default {
       params.sortBy = this.sortBy;
       params.sortDesc = this.sortDesc;
 
-      if (this.search) {
-        params.search = this.search;
+      if (this.searchText) {
+        params.search = this.searchText;
       }
 
+      console.log(filter);
+
       if (!_.isEmpty(filter)) {
-        params.filter = filter;
+        params.filter = Object.keys(filter).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(filter[key])).join('&');
       }
       return params;
     },
+  },
+  methods: {
     reset() {
+      this.searchText = '';
       this.filter = {
-        country: null,
-        city: null,
-        category: null,
         type_id: null,
         priceFrom: 0,
         priceTo: 10000,
         section_id: null,
+        user_id: null,
       };
-      this.sortBy = NewsModel.CREATED_AT;
+      this.sortBy = ModelParams.CREATED_AT;
       this.sortDesc = SortDirection.ASK;
       this.slider = [0, 10000];
+      this.$fetch();
+    },
+    fetchMoreItems() {
+      this.perPage += 12;
       this.$fetch();
     },
     setSlider() {
@@ -117,12 +88,12 @@ export default {
       this.$fetch();
     },
     sortByDate(direction) {
-      this.sortBy = NewsModel.VIEWS;
+      this.sortBy = ModelParams.VIEWS;
       this.sortDesc = direction;
       this.$fetch();
     },
     sortByViews(direction) {
-      this.sortBy = NewsModel.VIEWS;
+      this.sortBy = ModelParams.VIEWS;
       this.sortDesc = direction;
       this.$fetch();
     },

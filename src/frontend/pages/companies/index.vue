@@ -1,5 +1,5 @@
 <template>
-  <section id="publications">
+  <section id="companies">
     <div v-if="loading" class="main-loader">
       <Loader />
     </div>
@@ -49,8 +49,8 @@
               class="select-author"
               v-model="authorFilterValue"
               :options="authorOptions"
-              @change="getPublications(publicationsApiParams)"
-            />
+              @change="getCompanies(companiesApiParams)"
+            ></b-form-select>
             </b-col>
           <b-col lg="3" class="d-flex justify-content-end align-items-center">
             <b-button
@@ -64,29 +64,29 @@
         </b-row>
       </b-collapse>
       
-      <div class="publications-grid">
-        <PublicationsCard
-          v-for="publication in publications"
-          :key="publication.id"
-          :publication="publication"
+      <div class="companies-grid">
+        <CompaniesCard
+          v-for="company in companies"
+          :key="company.id"
+          :company="company"
         />
       </div>
-
+      
       <div
-        v-if="!!searchText && !publications.length && !loading"
+        v-if="!!searchText && !companies.length && !loading"
         class="text-muted mb-4 mt-4 d-flex justify-content-center"
       >
         Ничего не найдено, попробуйте изменить запрос
       </div>
       
       <div
-        v-if="!searchText && !publications.length && !loading"
+        v-if="!searchText && !companies.length && !loading"
         class="text-muted mb-4 mt-4 d-flex justify-content-center"
       >
         Ничего не найдено, попробуйте изменить фильтрацию
       </div>
       
-      <div v-if="publications.length > perPage" class="mb-4 mt-4 d-flex justify-content-center">
+      <div v-if="companies.length > perPage" class="mb-4 mt-4 d-flex justify-content-center">
         <b-link
           class="background-white text-purple mp-button-white mr-4 page-link"
           @click="fetchMoreItems"
@@ -102,45 +102,47 @@
           last-number
           size="lg"
           @input="$fetch"
-        />
+        ></b-pagination>
       </div>
     </b-container>
   </section>
 </template>
 
 <script>
-import PublicationsCard from '@/components/publications/card';
+import CompaniesCard from '@/components/companies/card';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import SortingButton from '@/components/SortingButton';
 import Loader from '@/components/Loader';
 import { ModelParams, SortDirection } from '@/shared/constants';
-import publications from '@/mixins/publications';
+import SortingButton from '@/components/SortingButton';
+import companies from '@/mixins/companies';
 import users from '@/mixins/users';
 import { getFullName } from '@/shared/utils';
 
 export default {
-  name: 'Publications',
+  name: 'companies',
   components: {
     Breadcrumbs,
-    PublicationsCard,
+    CompaniesCard,
     SortingButton,
     Loader,
   },
-  mixins: [publications, users],
+  mixins: [companies, users],
   async fetch() {
     this.loading = true;
     await Promise.all([
-      this.getPublications(this.publicationsApiParams, true),
+      this.getCompanies(this.companiesApiParams, true),
       this.getUsers(),
     ]);
     this.breadcrumbs = [
-      { label: 'Публикации', url: null },
+      { label: 'Компании', url: null },
     ];
     this.loading = false;
+    
+    console.log(this.companies);
   },
   data() {
     return {
-      publications: [],
+      companies: [],
       users: [],
       searchText: null,
       authorFilterValue: null,
@@ -160,11 +162,11 @@ export default {
       this.users.map((user) => result.push({
         value: user.id,
         text: getFullName(user),
-      }))
+      }));
       
       return result;
     },
-    publicationsApiParams() {
+    companiesApiParams() {
       let params = {
         page: this.currentPage,
         pageSize: this.perPage,
@@ -172,10 +174,10 @@ export default {
         sortDesc: this.sortDesc,
       };
       if (this.searchText) {
-        params['News[name]'] = this.searchText;
+        params['Company[name]'] = this.searchText;
       }
       if (this.authorFilterValue) {
-        params['user_id'] = this.authorFilterValue;
+        params['owner_id'] = this.authorFilterValue;
       }
       return params;
     },
@@ -199,15 +201,15 @@ export default {
       this.sortBy = ModelParams.CREATED_AT;
       this.sortDesc = SortDirection.ASK;
       this.authorFilterValue = null;
-      await this.getPublications(this.publicationsApiParams);
+      await this.getCompanies(this.companiesApiParams);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-#publications {
-  .publications-grid {
+#companies {
+  .companies-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: auto;
@@ -216,21 +218,21 @@ export default {
   }
   
   @media screen and (max-width: 786px) {
-    .publications-grid {
+    .companies-grid {
       display: grid;
       grid-template-columns: 1fr;
     }
   }
   
   @media screen and (max-width: 900px) {
-    .publications-grid {
+    .companies-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
     }
   }
   
   @media screen and (max-width: 1200px) {
-    .publications-grid {
+    .companies-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
     }

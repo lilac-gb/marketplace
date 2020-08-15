@@ -1,7 +1,6 @@
 <template>
-  <b-row class="justify-content-center">
-    <b-col lg="6" md="9" sm="12">
-      <div class="d-flex align-content-center justify-content-between">
+  <div class="forms">
+  <div class="d-flex align-content-center justify-content-between">
         <h2 class="mb-3">Войти</h2>
         <h2>или</h2>
         <b-link :to="`/registration`">
@@ -54,8 +53,7 @@
           </div>
         </b-form>
       </ValidationObserver>
-    </b-col>
-  </b-row>
+</div>
 </template>
 
 <script>
@@ -71,7 +69,7 @@ export default {
       error: null,
     };
   },
-
+  
   methods: {
     async login() {
       await this.$auth.loginWith('local', {
@@ -80,9 +78,9 @@ export default {
           password: this.password,
         },
       }).then(response => {
-        console.log(response)
+        console.log(response);
       }).catch(error => {
-        this.error = error.response.data.data.password
+        this.error = error.response.data.data.password;
       });
     },
   },

@@ -2,7 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
-use api\components\actions\ImageAttachmentAction;
+use api\components\actions\GalleryManagerAction;
 use api\components\ActiveController;
 use common\components\ActiveRecord;
 use common\models\Ad;
@@ -14,22 +14,13 @@ use yii\web\NotFoundHttpException;
 
 class AdController extends ActiveController
 {
-    public $modelClass = 'api\models\Ad';
-
-    public $serializer = [
-        'class' => 'api\components\Serializer',
-        'collectionEnvelope' => 'models',
-        'metaTagsEnvelope' => '_metaTags',
-        'metaTagsProvider' => 'metaTagsProvider',
-    ];
-
     public function behaviors()
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator']['except'] = ['index', 'options'];
         $behaviors['authenticator']['optional'] = [
             'view',
-            'imgAttachApi',
+            'galleryApi',
             'publish',
             'ads-sections',
             'ads-types',
@@ -49,10 +40,10 @@ class AdController extends ActiveController
             'value' => Ad::STATUS_DELETED,
         ]);
 
-        $actions['imgAttachApi'] = [
-            'class' => ImageAttachmentAction::class,
+        $actions['galleryApi'] = [
+            'class' => GalleryManagerAction::class,
             'types' => [
-                'publication' => Ad::class,
+                'ad' => Ad::class,
             ],
         ];
 
@@ -189,7 +180,7 @@ class AdController extends ActiveController
      * @param array               $params
      * @throws ForbiddenHttpException
      */
-    public function checkAccess($action, $model = null, $params = [])
+    /*public function checkAccess($action, $model = null, $params = [])
     {
         parent::checkAccess($action, $model, $params);
         if (($action == 'update' ||
@@ -207,5 +198,5 @@ class AdController extends ActiveController
             && ($model->user_id != Yii::$app->user->id || $model->role != 'admin')) {
             throw new NotFoundHttpException();
         }
-    }
+    }*/
 }

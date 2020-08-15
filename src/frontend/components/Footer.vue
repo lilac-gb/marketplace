@@ -3,14 +3,14 @@
     <b-container>
       <b-row>
         <b-col md="9">
-          <p class="footer__text">
+          <p class="footer-text">
             Curabitur aliquet quam id dui posuere blandit. Mauris blandit
             aliquet elit, eget tincidunt nibh pulvinar a. Nulla quis lorem ut
             libero malesuada feugiat. Vivamus magna justo, lacinia eget
             consectetur sed, convallis at tellus. Cras ultricies ligula sed
             magna dictum porta.
           </p>
-          <nav class="footer__nav">
+          <nav class="footer-nav">
             <b-row>
               <b-col v-for="section in menu" :key="section.order" md="4">
                 <h4>{{ section.label }}</h4>
@@ -27,27 +27,27 @@
         </b-col>
 
         <b-col md="3">
-          <div class="footer__right">
-            <p class="footer__email">feedback@site.com</p>
-            <p class="footer__tel">+343 943 98 945 966</p>
-            <div class="footer__logo">
+          <div class="footer-right">
+            <p class="footer-email">feedback@site.com</p>
+            <p class="footer-tel">+343 943 98 945 966</p>
+            <div class="footer-logo">
               <img src="~assets/logo/footer-logo.svg" alt="footer-logo"/>
             </div>
             <b-row class="d-flex justify-content-center">
-              <a href="#" class="footer__social-link">
+              <a href="#" class="footer-social-link">
                 <font-awesome-icon :icon="['fab', 'facebook-square']"/>
               </a>
-              <a href="#" class="footer__social-link">
+              <a href="#" class="footer-social-link">
                 <font-awesome-icon :icon="['fab', 'twitter-square']"/>
               </a>
-              <a href="#" class="footer__social-link">
+              <a href="#" class="footer-social-link">
                 <font-awesome-icon :icon="['fab', 'instagram-square']"/>
               </a>
             </b-row>
           </div>
         </b-col>
       </b-row>
-      <div class="footer__bottom">
+      <div class="footer-bottom">
         <b-row class="p-1 justify-content-between">
           <span>&copy; SiteBrand, 2020</span>
           <span>Все права защищены</span>
@@ -79,19 +79,20 @@
 
 <style lang="scss" scoped>
   .footer {
+    flex-shrink: 0;
     min-height: $footer-height;
     background-color: $purple;
     margin-top: -$footer-height;
     color: #ffffff;
     padding: 30px 0;
     font-family: 'Roboto Thin', sans-serif;
-
-    &__right {
+    
+    &-right {
       text-align: center;
     }
 
-    &__tel,
-    &__email {
+    &-tel,
+    &-email {
       font-size: 18px;
     }
 
@@ -100,9 +101,9 @@
       font-size: 16px;
     }
 
-    &__logo {
-      width: 85px;
-      height: 85px;
+    &-logo {
+      width: 52px;
+      height: 52px;
       margin: 20px auto;
 
       & img {
@@ -111,7 +112,7 @@
       }
     }
 
-    &__text {
+    &-text {
       margin-bottom: 42px;
       font-size: 18px;
     }
@@ -129,12 +130,27 @@
       }
     }
 
-    &__bottom {
+    &-bottom {
       margin-top: 40px;
     }
   }
 
-  a.footer__social-link {
+  @media screen and (max-width: 786px) {
+    h4 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      text-decoration: underline;
+      &:after{
+        display: none !important;
+      }
+    }
+    .footer-nav {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+  }
+
+  a.footer-social-link {
     display: block;
     font-size: 35px;
     margin-right: 1rem;

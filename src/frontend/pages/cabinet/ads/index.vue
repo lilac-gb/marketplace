@@ -1,5 +1,5 @@
 <template>
-  <b-container class="cabinet-publications mt-4 mb-4 wh-100">
+  <b-container class="cabinet-ads mt-4 mb-4">
     <Breadcrumbs />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
@@ -20,52 +20,47 @@
               Поиск
             </b-button>
             <b-button class="background-purple mp-button-purple" @click="create">
-              Создать публикацю
+              Создать обявление
             </b-button>
           </div>
-          
-            <div class="d-flex flex-row align-items-center justify-content-between mb-4">
-              <div class="d-flex">
-                <SortingButton
-                  class="ml-0 mr-3"
-                  text="По дате"
-                  @changed="sortByDate"
-                />
-              <SortingButton text="По просмотрам" @changed="sortByViews" />
+          <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+            <div class="d-flex">
+              <SortingButton
+                class="ml-0 mr-3"
+                text="По дате"
+                @changed="sortByDate"
+              /><SortingButton text="По просмотрам" @changed="sortByViews" />
             
-              </div>
-              <div class="d-flex justify-content-end">
-                 <b-form-select
-                   class="status-select mr-2"
-                   v-model="status"
-                   :options="ModelStatusesNames"
-                   @change="$fetch"
-                 >
-                <template v-slot:first>
-                  <b-form-select-option :value="null">Все</b-form-select-option>
-                </template>
-              </b-form-select>
-              <b-form-select
-                class="size-select"
-                v-model="perPage"
-                :options="paginationSize"
-                @change="$fetch"
-              ></b-form-select>
-              </div>
             </div>
-         
+            <div class="d-flex justify-content-end">
+              <b-form-select
+                class="status-select mr-2"
+                v-model="status"
+                :options="ModelStatusesNames"
+                @change="$fetch"
+              ><template v-slot:first>
+                <b-form-select-option :value="null">Все</b-form-select-option>
+              </template></b-form-select><b-form-select
+              class="size-select"
+              v-model="perPage"
+              :options="paginationSize"
+              @change="$fetch"
+            ></b-form-select>
+            </div>
+          </div>
         </div>
 
-        <div class="publication-rows">
-          <PublicationsRow
-            v-for="publication in publications"
-            key="publication.id"
-            :publication="publication"
+        <div class="ad-rows">
+          <AdsRow
+            v-for="ad in ads"
+            key="ad.id"
+            :ad="ad"
             @updated="$fetch"
           />
         </div>
+
         <div v-if="!totalCount" class="mb-4 mt-4 d-flex justify-content-center text-muted">
-          У Вас пока нет публикаций, начните создавать
+          У Вас пока нет объявлений, начните создавать
         </div>
         <div v-if="totalCount > perPage" class="mb-4 mt-4 d-flex justify-content-center">
           <b-link
@@ -93,8 +88,8 @@
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CabinetNav from '@/components/cabinet/CabinetNav';
-import PublicationsRow from '@/components/cabinet/publications/PublicationsRow';
-import publications from '@/mixins/publications';
+import AdsRow from '@/components/cabinet/ads/AdsRow';
+import ads from '@/mixins/ads';
 import { ModelParams, SortDirection } from '@/shared/constants';
 import SortingButton from '@/components/SortingButton';
 
@@ -112,18 +107,18 @@ const paginationSize = [
 ];
 
 export default {
-  name: 'Publications',
-  components: { CabinetNav, Breadcrumbs, PublicationsRow, SortingButton },
-  mixins: [publications],
+  name: 'Ads',
+  components: { CabinetNav, Breadcrumbs, AdsRow, SortingButton },
+  mixins: [ads],
   middleware: ['auth'],
   async fetch() {
-    await this.getMyPublications(this.publicationsApiParams, true);
+    await this.getMyAds(this.adsApiParams, true);
   },
   data() {
     return {
       ModelStatusesNames,
       paginationSize,
-      publications: [],
+      ads: [],
       searchText: null,
       authorFilterValue: null,
       status: null,
@@ -136,7 +131,7 @@ export default {
     };
   },
   computed: {
-    publicationsApiParams() {
+    adsApiParams() {
       let params = {
         page: this.currentPage,
         pageSize: this.perPage,
@@ -171,14 +166,14 @@ export default {
       this.$fetch();
     },
     create() {
-      this.$router.push({ name: 'cabinet-publications-publication_id', params: { publication_id: 'new' } });
+      this.$router.push({ name: 'cabinet-ads-ad_id', params: { ad_id: 'new' } });
     },
   },
 };
 </script>
 
 <style lang="scss">
-.cabinet-publications {
+.cabinet-ads {
   .filter {
     input,
     button,
@@ -187,23 +182,23 @@ export default {
       line-height: 0.9375rem;
       height: 2.125rem;
     }
-  
+    
     button {
       white-space: nowrap;
       padding: 0 27px 0 27px;
       min-width: 10.375rem;
     }
-  
+    
     .status-select {
       width: 11rem;
     }
-  
+    
     .size-select {
       width: 6rem;
     }
   }
   
-  .publication-rows {
+  .ad-rows {
     display: grid;
     grid-template-columns: auto;
     row-gap: 1.5625rem;

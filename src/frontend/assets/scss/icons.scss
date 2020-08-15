@@ -3,7 +3,7 @@
   flex-direction: row;
   align-items: center;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 21px;
   margin-bottom: 13px;
 
@@ -12,30 +12,26 @@
   }
 
   &.icon::before {
+
     content: '';
-    display:block;
+    display: block;
     background-repeat: no-repeat;
     margin-right: 14px;
+    height: 16px;
+    width: 16px;
+    background-size: 15px 15px;
+
   }
 
   &.user::before {
-    height: 20px;
-    width: 20px;
-    background-size: 20px 20px;
     background-image: url('~assets/pics/icons/user.svg');
   }
 
   &.create-at::before {
-    height: 20px;
-    width: 20px;
-    background-size: 20px 20px;
     background-image: url('~assets/pics/icons/clock.svg');
   }
 
   &.views::before {
-    height: 20px;
-    width: 20px;
-    background-size: 20px 20px;
     background-image: url('~assets/pics/icons/eye.svg');
   }
 }

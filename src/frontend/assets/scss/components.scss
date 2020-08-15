@@ -7,7 +7,7 @@
 }
 
 .mp-button-purple {
-  padding: 12px 45px 12px 45px;
+  padding: 12px 0 12px 0;
   font-size: $font-size;
   line-height: 19px;
 }
@@ -36,6 +36,17 @@
 
 .mp-btn-sm {
   padding: .275rem .55rem;
+}
+
+.mp-btn-purple {
+  color: #fff;
+  background: $purple;
+  text-decoration: none;
+  &:hover, &.active {
+    color: #fff;
+    border-color: $purple;
+    background: darken($purple, 5);
+  }
 }
 
 .mp-btn-transparent {

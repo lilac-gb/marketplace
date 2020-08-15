@@ -1,7 +1,6 @@
 <template>
-  <b-row class="justify-content-center">
-    <b-col lg="6" md="9" sm="12">
-      <div class="d-flex align-content-center justify-content-between">
+  <div class="forms mt-n5">
+    <div class="d-flex align-content-center justify-content-between">
         <h2 class="mb-3">Регистрация</h2>
         <h2>или</h2>
         <b-link :to="`/login`">
@@ -62,8 +61,7 @@
           </div>
         </b-form>
       </ValidationObserver>
-    </b-col>
-  </b-row>
+  </div>
 </template>
 
 <script>

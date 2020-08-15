@@ -1,5 +1,8 @@
 <template>
-  <div class="mt-n2 main-page">
+  <section id="main-page" class="mt-n2">
+    <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
     <div class="main-img">
       <b-container>
         <div class="main-search position-relative">
@@ -9,28 +12,28 @@
           </h1>
           <form class="searchForm position-relative" v-on:submit.prevent="submitSearch">
             <input
-                class="form-control w-100"
-                type="text"
-                v-model="searchQuery"
-                placeholder="Введите название необходимого товара или публикации"
-                @keyup="submitSearch"
+              class="form-control w-100"
+              type="text"
+              v-model="searchQuery"
+              placeholder="Введите название необходимого товара или публикации"
+              @keyup="submitSearch"
             >
             <span
-                v-show="searchQuery"
-                class="removeInput"
-                @click="removeSearchQuery"
+              v-show="searchQuery"
+              class="removeInput"
+              @click="removeSearchQuery"
             >
               &times;
             </span>
           </form>
           <ul class="searchResult" v-show="isResult">
             <li
-                v-for="elem in results"
-                v-bind:key="elem.url"
+              v-for="elem in results"
+              v-bind:key="elem.url"
             >
               <nuxt-link
-                  class="text-muted search-link"
-                  :to="elem.url"
+                class="text-muted search-link"
+                :to="elem.url"
               >
                 {{ elem.name }}
               </nuxt-link>
@@ -40,7 +43,7 @@
       </b-container>
     </div>
     <b-container>
-      <div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+      <div class="d-flex justify-content-between align-items-center mt-5 mb-5 main-h2">
         <h2 class="text-uppercase">
           Популярные предложения
         </h2>
@@ -50,15 +53,15 @@
       </div>
       <div class="container mt-3 mb-3">
         <b-row class="offer-grid">
-          <ad-card
-              v-for="p in ads"
-              :key="p.id"
-              :ad="p"
+          <AdCard
+            v-for="ad in ads"
+            :key="ad.id"
+            :ad="ad"
           />
         </b-row>
       </div>
 
-      <div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+      <div class="d-flex justify-content-between align-items-center mt-5 mb-5 main-h2">
         <h2 class="text-uppercase">
           Популярные публикации
         </h2>
@@ -68,28 +71,26 @@
       </div>
       <div class="container mt-3 mb-3">
         <b-row class="publications-grid">
-          <publication-card
-              v-for="publication in publications"
-              :key="publication.id"
-              :publication="publication"
+          <PublicationCard
+            v-for="publication in publications"
+            :key="publication.id"
+            :publication="publication"
           />
         </b-row>
       </div>
     </b-container>
-  </div>
+  </section>
 </template>
 
 <script>
   import AdCard from '@/components/ads/card';
   import PublicationCard from '@/components/publications/card';
-  import config from "@/config";
+  import Loader from '@/components/Loader';
+  import config from '@/config';
 
   export default {
     name: 'Main',
-    components: {
-      'ad-card': AdCard,
-      'publication-card': PublicationCard,
-    },
+    components: { Loader, AdCard, PublicationCard },
     data() {
       return {
         ads: [],
@@ -97,8 +98,9 @@
         publications: [],
         results: [],
         isResult: false,
+        loading: false,
         searchQuery: '',
-      }
+      };
     },
     methods: {
       removeSearchQuery() {
@@ -107,7 +109,7 @@
       },
       async submitSearch() {
         let result = await this.$http.$post(`${config.api_url}/main-search`, {
-          query: this.searchQuery
+          query: this.searchQuery,
         });
         this.results = result.data;
         this.isResult = !!result && !!result.data.length;
@@ -119,11 +121,15 @@
       async getPublications() {
         let result = await this.$http.$get(`${config.api_url}/news/main-popular-news`);
         this.publications = result.data;
-      }
+      },
     },
     async fetch() {
-      this.getAds();
-      this.getPublications();
+      this.loading = true;
+      await Promise.all([
+        this.getAds(),
+        this.getPublications(),
+      ]);
+      this.loading = false;
     },
     head() {
       return {
@@ -134,7 +140,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .main-page {
+  #main-page {
     .main-shadow {
       text-shadow: 0 0 10px #000;
     }
@@ -142,6 +148,7 @@
       text-shadow: 0 0 10px #FFF;
       font-weight: bold;
     }
+    
     .publications-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -149,7 +156,7 @@
       grid-column-gap: 20px;
       grid-row-gap: 20px;
     }
-
+  
     .offer-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -157,7 +164,7 @@
       grid-column-gap: 20px;
       grid-row-gap: 20px;
     }
-
+    
     .main-page {
       min-height: 100vh;
     }
@@ -219,37 +226,54 @@
         background: rgba(0, 0, 0, 0.47);
       }
     }
-
-    @media screen and (max-width: 786px) {
-      .publications-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-      .offer-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media screen and (max-width: 900px) {
-      .publications-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
-      .offer-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
+  
     @media screen and (max-width: 1200px) {
       .publications-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
       }
       .offer-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  
+    @media screen and (max-width: 900px) {
+      .publications-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .offer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  
+    @media screen and (max-width: 800px) {
+      .main-img{
+        min-height: 100vh;
+        &:before {
+          min-height: 100vh;
+          background-size: cover;
+          background-position: left;
+        }
+      }
+      .main-h2 {
+        flex-direction: column;
+        h2{
+          font-size: 18px;
+        }
+        .h3 {
+          margin-top: 10px;
+          font-size: 14px;
+        }
+      }
+      .main-search {
+        h1 {
+          font-size: 20px;
+        }
+      }
+      .publications-grid {
+        grid-template-columns: 1fr;
+      }
+      .offer-grid {
+        grid-template-columns: 1fr;
       }
     }
   }

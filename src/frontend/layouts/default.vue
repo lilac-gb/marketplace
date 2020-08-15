@@ -2,11 +2,12 @@
   <div class="mt-2">
     <div class="wrapper">
       <b-alert
-        :show="!!message"
+        :show="!!message && dismissCountDown"
         dismissible
         class="custom-alert position-fixed fixed-top mt-3 ml-5 mr-5"
         fade
         @dismissed="clearMessage"
+        @dismiss-count-down="countDownChanged(3)"
       >
         {{ message }}
       </b-alert>
@@ -26,7 +27,15 @@ import Header from '@/components/Header';
 export default {
   components: { Footer, Header },
   computed: mapGetters(['message']),
-  methods: mapActions(['clearMessage']),
+  data: () => ({
+    dismissCountDown: 5,
+  }),
+  methods: {
+    ...mapActions(['clearMessage']),
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
+  }
 };
 </script>
 

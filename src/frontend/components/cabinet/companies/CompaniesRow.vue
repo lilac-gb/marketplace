@@ -1,8 +1,11 @@
 <template>
   <div class="company-row w-100 d-flex flex-row">
-    <div
-        class="picture"
-        :style="{ backgroundImage: `url(${company.images.preview})` }"></div>
+    <div class="image-cover">
+      <img
+          class="picture"
+          :src="company.images.preview"
+      />
+    </div>
     <div class="text d-flex align-items-center">{{ company.name }}</div>
     <div class="info d-flex align-items-center justify-content-end">
       <a href="#" @click.prevent="publicate">
@@ -13,17 +16,17 @@
             :title="publishState.text"/>
       </a>
       <a href="#" @click.prevent="edit">
-        <i class="fas fa-pencil-alt text-purple"/>
+        <i class="fas fa-pencil-alt text-muted"/>
       </a>
       <a href="#" @click.prevent="deleteP">
-        <b-icon class="text-red" icon="trash-fill"/>
+        <b-icon class="text-muted" icon="trash-fill"/>
       </a>
     </div>
   </div>
 </template>
 
 <script>
-  import {NewsStatuses} from '@/shared/constants';
+  import {ModelStatuses} from '@/shared/constants';
   import companies from '@/mixins/companies';
 
   export default {
@@ -35,19 +38,19 @@
     computed: {
       publishState() {
         switch (this.company.status) {
-          case(NewsStatuses.STATUS_MODERATION):
+          case(ModelStatuses.STATUS_MODERATION):
             return {
-              color: 'text-yelow',
+              color: 'text-orange',
               icon: 'eye',
               text: 'Модерация'
             };
-          case(NewsStatuses.STATUS_NOT_PUBLISHED):
+          case(ModelStatuses.STATUS_NOT_PUBLISHED):
             return {
               color: 'text-gray',
               icon: 'eye-slash',
               text: 'Редактирование'
             };
-          case(NewsStatuses.STATUS_PUBLISHED):
+          case(ModelStatuses.STATUS_PUBLISHED):
             return {
               color: 'text-purple',
               icon: 'eye',
@@ -58,7 +61,7 @@
     },
     methods: {
       publicate() {
-        if (this.company.status === NewsStatuses.STATUS_NOT_PUBLISHED) {
+        if (this.company.status === ModelStatuses.STATUS_NOT_PUBLISHED) {
           this.publishCompany(this.company.id);
         }
         this.$emit('updated');
@@ -83,13 +86,17 @@
   .company-row {
     height: 5.0625rem;
     background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-
-    .picture {
-      width: 8.5rem;
-      height: 100%;
-      display: inline-block;
+    .image-cover {
+      width: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f1f1;
+      .picture {
+        height: 100%;
+      }
     }
 
     .text {

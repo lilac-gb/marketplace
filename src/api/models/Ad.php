@@ -81,13 +81,13 @@ class Ad extends \common\models\Ad
 
     public static function findOne($id)
     {
+        $condition = '';
+
         if (!is_numeric($id) && !is_array($id)) {
             $condition = ['url' => $id];
         } else if (is_numeric($id)) {
             $condition = ['id' => $id];
         }
-
-        $condition['status'] = Ad::STATUS_PUBLISHED;
 
         $dependency = new DbDependency(['sql' => 'SELECT max(created_at) FROM ads']);
 
@@ -108,22 +108,20 @@ class Ad extends \common\models\Ad
                 $conditionDesc = ['and'];
 
                 foreach ($terms as $key => $value) {
-                    $conditionName[] = ['like', 'name', $value];
-                    $conditionDesc[] = ['like', 'description', $value];
+                    $conditionName[] = ['like', 'LOWER(name)', $value];
+                    $conditionDesc[] = ['like', 'LOWER(description)', $value];
                 }
             } else {
-                $conditionName = ['like', 'name', $params];
-                $conditionDesc = ['like', 'description', $params];
+                $conditionName = ['like', 'LOWER(name)', $params['search']];
+                $conditionDesc = ['like', 'LOWER(description)', $params['search']];
             }
 
             $query->where($conditionName)->orWhere($conditionDesc);
         }
 
         if (isset($params['filter'])) {
-            $filter = json_decode($params['filter']);
+            parse_str($params['filter'], $filter);
         }
-
-        $pageSize = isset($params['pageSize']) ? $params['pageSize'] : 12;
 
         if ($this->my) {
             $query->andWhere(['user_id' => Yii::$app->user->id])
@@ -136,48 +134,46 @@ class Ad extends \common\models\Ad
 
         if (isset($filter)) {
 
-            if (isset($filter->section_id) && sizeof($filter->section_id)) {
-                $query->andFilterWhere(['in', 'section_id', $filter->section_id]);
+            if (isset($filter['section_id']) && sizeof($filter['section_id'])) {
+                $query->andFilterWhere(['in', 'section_id', $filter['section_id']]);
             }
 
-            if (isset($filter->type_id) && sizeof($filter->type_id)) {
-                $query->andFilterWhere(['in', 'type_id', $filter->type_id]);
+            if (isset($filter['type_id']) && sizeof($filter['type_id'])) {
+                $query->andFilterWhere(['in', 'type_id', $filter['type_id']]);
             }
 
-            if (isset($filter->term) && !!$filter->term) {
-                $query->andFilterWhere(['between', 'created_at', time() - $filter->term * 3600, time()]);
+            if (isset($filter['term']) && !!$filter['term']) {
+                $query->andFilterWhere(['between', 'created_at', time() - $filter['term'] * 3600, time()]);
             }
 
-            if (isset($filter->user_id) && $filter->user_id) {
-                $query->andFilterWhere(['user_id' => $filter->user_id]);
+            if (isset($filter['user_id']) && $filter['user_id']) {
+                $query->andFilterWhere(['user_id' => $filter['user_id']]);
             }
 
-            if (isset($filter->priceFrom) && $filter->priceFrom) {
-                $query->andFilterWhere(['>=', 'price', $filter->priceFrom]);
+            if (isset($filter['priceFrom']) && $filter['priceFrom']) {
+                $query->andFilterWhere(['>=', 'price', $filter['priceFrom']]);
             }
 
-            if (isset($filter->priceTo) && $filter->priceTo) {
-                $query->andFilterWhere(['<=', 'price', $filter->priceTo]);
+            if (isset($filter['priceTo']) && $filter['priceTo']) {
+                $query->andFilterWhere(['<=', 'price', $filter['priceTo']]);
             }
 
         };
+
+        if (isset($params['sortBy']) && isset($params['sortDesc'])) {
+            $sortBy = $params['sortBy'];
+            $sortDesc = $params['sortDesc'];
+            $query->orderBy("{$sortBy} {$sortDesc}");
+        }
 
         $query->groupBy('id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'attributes' => [
-                    'views',
-                    'created_at',
-                ],
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC,
-                ],
-                'enableMultiSort' => true,
-            ],
             'pagination' => [
-                'pageSize' => $pageSize,
+                'pageSize' => Yii::$app->request->get('pageSize',
+                    Yii::$app->cache->get(self::class . '_pageSize') ?
+                        Yii::$app->cache->get(self::class . '_pageSize') : 10),
             ],
         ]);
 

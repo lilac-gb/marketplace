@@ -12,7 +12,6 @@ export default {
     base_url: process.env.BASE_URL || 'https://marketplace.docker',
     appName: process.env.APP_NAME || 'Yii Nuxt',
   },
-
   /*
    ** Headers of the page
    */
@@ -115,6 +114,9 @@ export default {
   build: {
     extractCSS: true,
     transpile: ['vee-validate/dist/rules'],
+    babel: {
+      compact: false
+    },
     /*
      ** You can extend webpack config here
      */

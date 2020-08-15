@@ -1,5 +1,5 @@
 <template>
-  <div class="breadcrumbs-component-wrapper">
+  <b-row class="breadcrumbs-component-wrapper">
     <b-breadcrumb
       class="breadcrumbs-holder"
       item-scope
@@ -14,31 +14,22 @@
         <meta itemprop="position" content="1" />
         <span itemProp="name">Главная</span>
       </b-breadcrumb-item>
-      <b-breadcrumb-item v-for="item in crumbs" :key="item.key" :to="item.to">
-        <span itemProp="name">{{ item.text }}</span>
-        <meta itemProp="position" :content="`${item.key}`" />
+      <b-breadcrumb-item v-for="(item, key) in items" :key="key" :to="item.url" v-if="item.url">
+        <span itemProp="name">{{ item.label }}</span>
+        <meta itemProp="position" :content="`${key + 2}`" />
+      </b-breadcrumb-item>
+      <b-breadcrumb-item v-for="item in items" :key="item.key" active v-if="!item.url">
+        {{ item.label}}
       </b-breadcrumb-item>
     </b-breadcrumb>
-  </div>
+  </b-row>
 </template>
 <script>
 export default {
-  computed: {
-    crumbs: function () {
-      let pathArray = this.$route.path.split('/');
-      pathArray.shift();
-      return pathArray.reduce((breadcrumbArray, path, idx) => {
-        const text = path || this.$route.matched[idx].meta.breadCrumb;
-        breadcrumbArray.push({
-          path: path,
-          to: breadcrumbArray[idx - 1]
-            ? '/' + breadcrumbArray[idx - 1].path + '/' + path
-            : '/' + path,
-          text: text.charAt(0).toUpperCase() + text.slice(1),
-          key: ++idx + 1,
-        });
-        return breadcrumbArray;
-      }, []);
+  props: {
+    items: {
+      type: Array,
+      required: true,
     },
   },
 };

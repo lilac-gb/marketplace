@@ -1,5 +1,5 @@
 <template>
-  <b-container class="pt-5 pb-5 mt-4 h-100">
+  <b-container class="vh-100 d-flex align-items-center justify-content-center">
     <LoginForm />
   </b-container>
 </template>

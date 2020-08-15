@@ -74,8 +74,6 @@ class Ad extends ActiveRecord
                 'section_id',
                 'type_id',
                 'created_at',
-                'ended_at',
-                'life_time',
                 'status',
                 'user_id',
                 'views',
@@ -86,6 +84,7 @@ class Ad extends ActiveRecord
             [['description'], 'string', 'max' => 1000],
             [['name'], 'string', 'max' => 250],
             [['url_site'], 'url', 'message' => 'Сайт необходимо указать как https://site.com или http://site.com'],
+            [['ended_at', 'life_time'], 'safe']
         ];
     }
 

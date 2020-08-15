@@ -1,11 +1,10 @@
 <template>
-  <section>
-    <b-container>
+  <section id="page">
+    <b-container class="mt-4 mb-4">
+      <Breadcrumbs :items="breadcrumbs" class="d-flex" />
       <b-row class="flex-column">
-        <Breadcrumbs class="d-flex" />
         <b-col>
           <h1>{{ name }}</h1>
-
           <p v-html="description"></p>
         </b-col>
       </b-row>
@@ -29,12 +28,16 @@ export default {
     this.name = name;
     this.description = description;
     this.metaTags = _metaTags;
+    this.breadcrumbs = [
+      { label: this.name, url: null }
+    ];
   },
   data: () => ({
     link: '',
     name: '',
     description: '',
     metaTags: {},
+    breadcrumbs: [],
   }),
   head() {
     return {

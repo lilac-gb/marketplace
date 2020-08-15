@@ -3,7 +3,7 @@
     <b-navbar class="shadow-nav" toggleable="lg" type="light" variant="light" fixed="top">
       <b-container>
         <b-navbar-brand :to="`/`">
-          <img src="~assets/logo/header-logo.svg" alt="header__logo"/>
+          <img src="~assets/logo/header-logo.svg" alt="header-logo"/>
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"/>
         <b-collapse id="nav-collapse" is-nav>
@@ -64,7 +64,7 @@ export default {
   .shadow-nav {
     box-shadow: 0 0 5px rgba(0, 0, 0, .6);
   }
-  &__logo {
+  &-logo {
     height: 41px;
     width: 41px;
 
