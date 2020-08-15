@@ -1,5 +1,5 @@
 <template>
-  <section id="companies">
+  <section id="companies" class="min-vh-100">
     <div v-if="loading" class="main-loader">
       <Loader />
     </div>
@@ -85,8 +85,8 @@
       >
         Ничего не найдено, попробуйте изменить фильтрацию
       </div>
-      
-      <div v-if="companies.length > perPage" class="mb-4 mt-4 d-flex justify-content-center">
+
+      <div v-if="totalCount > perPage" class="mb-4 mt-4 d-flex justify-content-center">
         <b-link
           class="background-white text-purple mp-button-white mr-4 page-link"
           @click="fetchMoreItems"

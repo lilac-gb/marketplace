@@ -49,6 +49,7 @@
           </ValidationProvider>
           <div class="d-flex justify-content-between align-items-center">
             <b-button type="submit" variant="secondary" class="background-purple">Войти</b-button>
+            <Loader v-show="loading"/>
             <b-link class="text-muted" :to="`/recovery`">Забыли пароль?</b-link>
           </div>
         </b-form>
@@ -58,20 +59,23 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
+import Loader from '@/components/Loader';
 
 export default {
   name: 'LoginForm',
-  components: { ValidationProvider, ValidationObserver },
+  components: {ValidationProvider, ValidationObserver, Loader},
   data() {
     return {
       email: '',
       password: '',
       error: null,
+      loading: false,
     };
   },
   
   methods: {
     async login() {
+      this.loading = true;
       await this.$auth.loginWith('local', {
         data: {
           email: this.email,
@@ -82,6 +86,7 @@ export default {
       }).catch(error => {
         this.error = error.response.data.data.password;
       });
+      this.loading = false;
     },
   },
 };

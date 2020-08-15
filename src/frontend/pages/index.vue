@@ -1,5 +1,5 @@
 <template>
-  <section id="main-page" class="mt-n2">
+  <section id="main-page" class="mt-n2 min-vh-100">
     <div v-if="loading" class="main-loader">
       <Loader />
     </div>
@@ -69,7 +69,7 @@
           Смотреть все
         </nuxt-link>
       </div>
-      <div class="container mt-3 mb-3">
+      <div class="container mt-3 mb-5">
         <b-row class="publications-grid">
           <PublicationCard
             v-for="publication in publications"

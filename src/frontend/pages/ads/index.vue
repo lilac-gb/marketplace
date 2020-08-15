@@ -1,5 +1,5 @@
 <template>
-  <section id="ads">
+  <section id="ads" class="min-vh-100">
     <div v-if="loading" class="main-loader">
       <Loader />
     </div>
@@ -30,7 +30,7 @@
         </b-button>
         </b-col>
       </b-row>
-      <b-collapse id="filter-collapse" class="mt-2">
+      <b-collapse id="filter-collapse" class="mt-2 mb-4">
         <div class="mt-3">
           <b-row>
             <b-col lg="4">
@@ -99,8 +99,8 @@
 
         </div>
       </b-collapse>
-      
-      <div class="pt-5 pb-5">
+
+      <div class="pb-5">
         <b-row class="align-items-stretch">
           <b-col v-for="item in ads" :key="item.title" md="4" lg="4" class="mb-4">
             <Card :ad="item" />
@@ -121,8 +121,8 @@
       >
         Ничего не найдено, попробуйте изменить фильтрацию
       </div>
-      
-      <div v-if="ads.length > perPage" class="mb-4 mt-4 d-flex justify-content-center">
+
+      <div v-if="totalCount > perPage" class="mb-4 mt-4 d-flex justify-content-center">
         <b-link
           class="background-white text-purple mp-button-white mr-4 page-link"
           @click="fetchMoreItems"

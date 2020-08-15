@@ -12,6 +12,10 @@
         {{ fullUserName }}
       </div>
     </template>
+    <b-dropdown-item to="/cabinet/orders">
+      <img src="~assets/pics/icons/cart-gray.svg" alt="icon"/>
+      <span>Заказы</span>
+    </b-dropdown-item>
     <b-dropdown-item to="/cabinet/about">
       <img src="~assets/pics/icons/user.svg" alt="icon"/>
       <span>Мои данные</span>
@@ -83,72 +87,4 @@
       }
     }
   }
-
-  /*.user {
-      position: relative;
-
-      & a {
-        color: $purple;
-      }
-
-      &__photo {
-        height: $user-photo-size;
-        width: $user-photo-size;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-right: 1rem;
-
-        & img {
-          height: 100%;
-          width: 100%;
-        }
-      }
-
-      &__btn {
-        display: flex;
-        justify-content: space-between;
-
-        &-text {
-          max-width: 160px;
-          margin-right: 10px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        &:after {
-          width: 10px;
-          height: 10px;
-          content: '';
-          position: relative;
-          top: 4px;
-          transform: rotate(45deg);
-          border-style: solid;
-          border-color: rgb(78, 41, 132);
-          border-image: initial;
-          border-width: 0 2px 2px 0;
-        }
-
-        &.active:after {
-          top: 7px;
-          transform: rotate(225deg);
-        }
-      }
-
-      &__dropdown {
-        position: absolute;
-        min-width: 210px;
-        right: 0;
-        top: 40px;
-        background: #fff;
-        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-        z-index: 90;
-        padding: 18px;
-
-        & img {
-          height: 17px;
-          margin-right: 15px;
-        }
-      }
-    }*/
 </style>

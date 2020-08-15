@@ -368,7 +368,7 @@ export default {
 .user-form {
   font-size: 13px;
   input {
-    font-size: 13px;
+
   }
 }
 

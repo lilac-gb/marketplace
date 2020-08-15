@@ -17,13 +17,6 @@ use yii\web\NotFoundHttpException;
 
 class UserController extends ActiveController
 {
-    public $modelClass = 'api\models\User';
-
-    public $serializer = [
-        'class' => 'api\components\Serializer',
-        'collectionEnvelope' => 'models',
-    ];
-
     public function actions()
     {
         $actions = parent::actions();

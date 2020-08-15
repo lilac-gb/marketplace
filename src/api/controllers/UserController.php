@@ -44,4 +44,11 @@ class UserController extends \api\modules\v1\controllers\UserController {
             '{nickname}' => '<id:[A-za-z0-9.-_-]+>',
         ],
     ];
+
+    public $modelClass = 'api\models\User';
+
+    public $serializer = [
+        'class' => 'api\components\Serializer',
+        'collectionEnvelope' => 'models',
+    ];
 }
