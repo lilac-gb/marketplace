@@ -15,7 +15,7 @@
             <b-form-input
               v-model="searchText"
               class="mp-input search-field mr-2"
-              placeholder="Введите название"
+              placeholder="Введите адрес или № заказа"
             ></b-form-input>
             <b-button
               class="mp-btn-transparent background-white"
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-    import OrdersRow from '@/components/cabinet/orders/OrdersRow';
+  import OrdersRow from '@/components/cabinet/orders/OrdersRow';
   import Breadcrumbs from '@/components/Breadcrumbs';
   import CabinetNav from '@/components/cabinet/CabinetNav';
   import orders from '@/mixins/orders';
@@ -127,7 +127,7 @@
     },
     async fetch() {
       this.loading = true;
-      await this.getMyOrders(this.ordersApiParams, true);
+      await this.getMyOrders(this.ordersApiParams);
       this.breadcrumbs = [
         { label: 'Кабинет', url: '/cabinet' },
         { label: 'Заказы', url: null },
@@ -149,20 +149,22 @@
       breadcrumbs: [],
       loading: false,
     }),
-    ordersApiParams() {
-      let params = {
-        page: this.currentPage,
-        pageSize: this.perPage,
-        sortBy: this.sortBy,
-        sortDesc: this.sortDesc,
-      };
-      if (this.status !== null) {
-        params['status'] = this.status;
-      }
-      if (this.searchText) {
-        params['Order[name]'] = this.searchText;
-      }
-      return params;
+    computed: {
+      ordersApiParams() {
+        let params = {
+          page: this.currentPage,
+          pageSize: this.perPage,
+          sortBy: this.sortBy,
+          sortDesc: this.sortDesc,
+        };
+        if (this.status !== null) {
+          params.status = this.status;
+        }
+        if (this.searchText) {
+          params.search = this.searchText;
+        }
+        return params;
+      },
     },
     methods: {
       fetchMoreItems() {
@@ -171,11 +173,6 @@
       },
       sortByDate(direction) {
         this.sortBy = ModelParams.CREATED_AT;
-        this.sortDesc = direction;
-        this.$fetch();
-      },
-      sortByViews(direction) {
-        this.sortBy = ModelParams.VIEWS;
         this.sortDesc = direction;
         this.$fetch();
       },

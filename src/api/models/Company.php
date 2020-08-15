@@ -24,6 +24,7 @@ class Company extends \common\models\Company
             'time_from',
             'time_to',
             'description',
+            'email',
             'site',
             'phone',
             'user' => function () {
@@ -59,17 +60,15 @@ class Company extends \common\models\Company
 
     public static function findOne($id)
     {
+        $condition = '';
+
         if (!is_numeric($id) && !is_array($id)) {
             $condition = ['url' => $id];
         } else if (is_numeric($id)) {
             $condition = ['id' => $id];
         }
 
-        $dependency = new DbDependency(['sql' => 'SELECT max(created_at) FROM companies']);
-
-        return parent::getDb()->cache(function () use ($condition) {
-            return parent::findOne($condition);
-        }, 0, $dependency);
+        return parent::findOne($condition);
     }
 
     public function search($params = null)

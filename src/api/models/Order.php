@@ -150,19 +150,23 @@ class Order extends \common\models\Order
             $terms = explode(" ", $params['search']);
 
             if (count($terms) > 1) {
-                $conditionName = ['and'];
-                $conditionDesc = ['and'];
+                $address = ['and'];
+                $id = ['and'];
 
                 foreach ($terms as $key => $value) {
-                    $conditionName[] = ['like', 'LOWER(name)', $value];
-                    $conditionDesc[] = ['like', 'LOWER(description)', $value];
+                    $address[] = ['like', 'LOWER(address)', $value];
+                    $id[] = ['like', 'LOWER(id)', $value];
                 }
             } else {
-                $conditionName = ['like', 'LOWER(name)', $params['search']];
-                $conditionDesc = ['like', 'LOWER(description)', $params['search']];
+                $address = ['like', 'LOWER(address)', $params['search']];
+                $id = ['like', 'LOWER(id)', $params['search']];
             }
 
-            $query->where($conditionName)->orWhere($conditionDesc);
+            $query->where($address)->orWhere($id);
+        }
+
+        if (isset($params['status'])) {
+            $query->andFilterWhere(['status' => $params['status']]);
         }
 
         if (isset($params['sortBy']) && isset($params['sortDesc'])) {

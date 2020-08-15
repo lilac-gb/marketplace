@@ -65,7 +65,7 @@ export default {
   middleware: ['auth'],
   props: {
     id: {
-      type: String,
+      type: Number,
       required: true,
     },
     entity: {

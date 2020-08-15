@@ -2,24 +2,26 @@
   <div class="company-row w-100 d-flex flex-row mb-3">
     <div class="image-cover">
       <img
-          class="picture"
-          :src="company.images.preview"
+        v-if="company.images"
+        class="picture"
+        :src="company.images.preview"
       />
     </div>
     <div class="text d-flex align-items-center">{{ company.name }}</div>
     <div class="info d-flex align-items-center justify-content-end">
       <a href="#" @click.prevent="publicate">
         <b-icon
-            :class="publishState.color"
-            :icon="publishState.icon"
-            v-b-tooltip.hover
-            :title="publishState.text"/>
+          :class="publishState.color"
+          :icon="publishState.icon"
+          v-b-tooltip.hover
+          :title="publishState.text"
+        ></b-icon>
       </a>
       <a href="#" @click.prevent="edit">
-        <i class="fas fa-pencil-alt text-muted"/>
+        <i class="fas fa-pencil-alt text-muted"></i>
       </a>
       <a href="#" @click.prevent="deleteP">
-        <b-icon class="text-muted" icon="trash-fill"/>
+        <b-icon class="text-muted" icon="trash-fill"></b-icon>
       </a>
     </div>
   </div>
@@ -90,6 +92,8 @@
     border-radius: 5px;
     .image-cover {
       width: 110px;
+      overflow: hidden;
+      border-radius: 5px 0 0 5px;
       display: flex;
       align-items: center;
       justify-content: center;

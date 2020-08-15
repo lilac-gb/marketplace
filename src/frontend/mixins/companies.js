@@ -1,5 +1,5 @@
 import config from '@/config';
-import {constructUrl} from '@/shared/api';
+import { constructUrl } from '@/shared/api';
 
 export default {
   data: () => ({
@@ -50,7 +50,9 @@ export default {
         params['expand'] = '_metaTags';
       }
 
-      let result = await this.$http.$get(constructUrl(`${config.api_url}/company/${id}`, params));
+      let result = await this.$http.$get(
+        constructUrl(`${config.api_url}/company/${id}`, params),
+      );
       this.company = result.data;
       if (metatags) {
         this.metaTags = result.data._metaTags;
@@ -74,7 +76,10 @@ export default {
     },
     async updateCompany(id, payload) {
       this.$http.setToken(this.$auth.getToken('local'));
-      let result = await this.$http.$put(`${config.api_url}/company/${id}/update`, payload);
+      let result = await this.$http.$put(
+        `${config.api_url}/company/${id}/update`,
+        payload,
+      );
       this.$http.setToken(false);
       return result;
     },

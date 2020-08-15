@@ -199,17 +199,15 @@
                 class="pr-3 pt-3 w-100"
               >
                 <multiselect
-                  label="day"
                   :options="weekDayOptions"
                   track-by="dayNumber"
+                  label="day"
                   v-model="weekDay"
-                  :custom-label="customLabel"
-                  form="input-9"
                   placeholder="Выберите рабочие дни"
                   select-label="Нажмите ввод для выбора"
-                  selected-label=""
                   :max-height="300"
                   :option-height="40"
+                  selected-label="Выбрано"
                   deselect-label="Нажмите ввод для удаления"
                   :close-on-select="false"
                   :multiple="true"
@@ -279,7 +277,6 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import Loader from '@/components/Loader';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import companies from '@/mixins/companies';
-import config from '@/config';
 import { mapActions } from 'vuex';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import Avatar from '@/components/cabinet/Avatar';
@@ -341,7 +338,7 @@ export default {
       this.phone = this.company.phone;
       this.site = this.company.site;
       this.email = this.company.email;
-      this.weekDay = this.company.working_days ? this.company.working_days.split(',') : null;
+      this.weekDay = this.getObjectDays(this.company.working_days);
       this.time_from = this.company.time_from;
       this.time_to = this.company.time_to;
     }
@@ -360,8 +357,18 @@ export default {
   },
   methods: {
     ...mapActions(['setMessage']),
-    customLabel({ day, dayNumber }) {
-      return `${day}`;
+    getObjectDays(string) {
+      let result = [];
+      if (string) {
+        let indexes = string.split(',');
+        for (let item in this.weekDayOptions) {
+          if (Object.values(indexes).includes(item)) {
+            result.push(this.weekDayOptions[item]);
+          }
+        }
+      }
+    
+      return result;
     },
     addTag(weekDay) {
       const day = {
@@ -383,9 +390,7 @@ export default {
         email: this.company.email,
         id_number: this.company.id_number,
         vat: this.company.vat,
-        working_days: !!this.company.weekDay.length ? this.company.weekDay
-          .map((day) => day.dayNumber)
-          .join(',') : '',
+        working_days: !!this.weekDay.length ? this.weekDay.map((day) => day.dayNumber).sort().join(',') : '',
         time_from: this.company.time_from,
         time_to: this.company.time_to,
         status: 0,
@@ -405,9 +410,7 @@ export default {
         email: this.company.email,
         id_number: this.company.id_number,
         vat: this.company.vat,
-        working_days: !!this.company.weekDay.length ? this.company.weekDay
-          .map((day) => day.dayNumber)
-          .join(',') : '',
+        working_days: !!this.weekDay.length ? this.weekDay.map((day) => day.dayNumber).sort().join(',') : '',
         time_from: this.company.time_from,
         time_to: this.company.time_to,
         status: 0,

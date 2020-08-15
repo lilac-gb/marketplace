@@ -95,6 +95,8 @@ export default {
     width: 110px;
     display: flex;
     align-items: center;
+    overflow: hidden;
+    border-radius: 5px 0 0 5px;
     justify-content: center;
     background: #f1f1f1;
     .picture {

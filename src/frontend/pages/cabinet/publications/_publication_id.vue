@@ -10,15 +10,20 @@
         <CabinetNav />
       </b-col>
       <b-col lg="10" md="10" sm="9" xs="8">
-         <div class="gallery">
-          <div
+        <b-carousel
+          id="carousel-fade"
+          fade
+          indicators
+        >
+          <b-carousel-slide
+            img-height="200px"
             v-if="gallery"
             v-for="image in gallery"
             :key="image.id"
+            :img-src="image.preview"
           >
-            <img class="gallery-image" :src="image.preview"/>
-          </div>
-        </div>
+          </b-carousel-slide>
+        </b-carousel>
         <vue2Dropzone
           ref="myVueDropzone"
           id="dropzone"

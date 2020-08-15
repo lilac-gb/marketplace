@@ -1,9 +1,9 @@
 <template>
-  <section id="cabinet-publications">
+  <section id="cabinet-publications" class="min-vh-100">
     <div v-if="loading" class="main-loader">
       <Loader />
     </div>
-    <b-container class="cabinet-publications py-3 vh-100">
+    <b-container class="cabinet-publications py-3">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">

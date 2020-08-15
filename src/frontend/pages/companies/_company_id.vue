@@ -13,9 +13,36 @@
                 :src="company.images.original"
               />
             </div>
-            <div v-if="!!company.user" class="icon user">{{ company.user.name }}</div>
-            <div class="icon create-at">{{ timestampToDate(company.created_at) }}</div>
-            <div class="icon views">{{ company.views }}</div>
+            <label class="mt-2 mb-2 text-muted">ВРЕМЯ РАБОТЫ</label>
+            <div
+              v-if="company.working_days"
+              class="text-muted mb-2"
+            >
+              {{ getObjectDays(company.working_days) }}
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                class="text-muted mr-1"
+                v-if="company.time_from"
+              >
+              С {{ company.time_from }}
+            </div>
+            <div
+              class="text-muted"
+              v-if="company.time_to"
+            >
+              до {{ company.time_to }}
+            </div>
+            </div>
+               <div
+                 v-if="!!company.user"
+                 class="text-muted mt-2 icon user"
+               >
+                 {{ company.user.name }}
+               </div>
+            <div class="text-muted mt-2 icon views">
+              {{ company.views }}
+            </div>
             <div class="d-flex flex-row mt-5">
               <a href="#" class="social-link">
                 <font-awesome-icon :icon="['fab', 'facebook-square']" />
@@ -74,6 +101,15 @@
         sortBy: ModelParams.CREATED_AT,
         sortDesc: SortDirection.ASK,
         breadcrumbs: [],
+        weekDayOptions: [
+          { dayNumber: 0, day: 'ПН' },
+          { dayNumber: 1, day: 'ВТ' },
+          { dayNumber: 2, day: 'СР' },
+          { dayNumber: 3, day: 'ЧТ' },
+          { dayNumber: 4, day: 'ПТ' },
+          { dayNumber: 5, day: 'СБ' },
+          { dayNumber: 6, day: 'ВС' },
+        ],
       };
     },
     computed: {
@@ -87,6 +123,19 @@
       },
     },
     methods: {
+      getObjectDays(string) {
+        let result = [];
+        if (string) {
+          let indexes = string.split(',');
+          for (let item in this.weekDayOptions) {
+            if (Object.values(indexes).includes(item)) {
+              result.push(this.weekDayOptions[item].day);
+            }
+          }
+        }
+    
+        return result.join(', ');
+      },
       async goRight() {
         if (this.currentPage !== this.pageCount) {
           this.currentPage += 1;

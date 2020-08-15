@@ -96,6 +96,8 @@ export default {
   .image-cover {
     width: 110px;
     display: flex;
+    overflow: hidden;
+    border-radius: 5px 0 0 5px;
     align-items: center;
     justify-content: center;
     background: #f1f1f1;

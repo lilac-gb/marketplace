@@ -261,6 +261,7 @@
       </b-col>
       <b-col lg="3" md="3" sm="3" xs="12" class="mt-3">
         <Avatar
+          v-if="user.id"
           :id="user.id"
           :img-src="loggedInUser.images.preview"
           entity="user"

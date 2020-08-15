@@ -15,6 +15,7 @@ export default {
       this.totalCount = result.data._meta.totalCount;
     },
     async getMyOrders(params) {
+      console.log(params);
       this.$http.setToken(this.$auth.getToken('local'));
       let result = await this.$http.$get(
         constructUrl(`${config.api_url}/order/my`, params),

@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     downDisabled() {
-      return this.direction === SortDirection.DESK ? 'text-light-gray' : '';
+      return this.direction === SortDirection.DESC ? 'text-light-gray' : '';
     },
     upDisabled() {
       return this.direction === SortDirection.ASK ? 'text-light-gray' : '';
@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     changeDirection() {
-      this.direction = this.direction === SortDirection.ASK ? SortDirection.DESK : SortDirection.ASK;
+      this.direction = (this.direction === SortDirection.ASK ? SortDirection.DESC : SortDirection.ASK);
       this.$emit('changed', this.direction);
     },
   },
