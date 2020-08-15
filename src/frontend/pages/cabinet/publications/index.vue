@@ -24,7 +24,7 @@
               Поиск
             </b-button>
             <b-button class="background-purple mp-button-purple" @click="create">
-              Создать публикацю
+              Создать публикацию
             </b-button>
           </div>
           

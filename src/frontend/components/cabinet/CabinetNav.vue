@@ -4,20 +4,20 @@
       <b-list-group-item
           exact
           active-class="active"
-          to="/cabinet/orders"
-          class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
-      >
-        <img src="~assets/pics/icons/cart.svg" alt="icon"/>
-        <span>Заказы</span>
-      </b-list-group-item>
-      <b-list-group-item
-          exact
-          active-class="active"
           to="/cabinet/about"
           class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
       >
         <img src="~assets/pics/icons/user_prpl.svg" alt="icon" />
         <span>О себе</span>
+      </b-list-group-item>
+      <b-list-group-item
+        exact
+        active-class="active"
+        to="/cabinet/orders"
+        class="cabinet-nav__item py-4 d-flex flex-column align-items-center"
+      >
+        <img src="~assets/pics/icons/cart.svg" alt="icon"/>
+        <span>Заказы</span>
       </b-list-group-item>
       <b-list-group-item
         exact

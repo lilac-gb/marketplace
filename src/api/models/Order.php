@@ -25,21 +25,22 @@ class Order extends \common\models\Order
             'name',
             'text',
             'status',
-            'time_create',
+            'created_at',
             'items' => function () {
                 /** @var $model self */
                 $result = [];
                 $items = OrderItem::findAll(['order_id' => $this->id]);
                 foreach ($items as $item) {
                     /** @var $item OrderItem */
-                    $ad = Ad::findOne(['id' => $item->model_id]);
-                    $image = $ad->getAttachmentList()[0];
+                    $ad = \common\models\Ad::findOne(['id' => $item->model_id]);
+                    /** @var $ad Ad */
+                    $image = $ad->getPreview() ?? '';
                     $result[] = [
                         'id' => $item->id,
                         'ad_name' => $ad->name,
                         'ad_id' => $ad->id,
                         'ad_type' => $ad->type_id,
-                        'ad_url' => $ad->getUrl(),
+                        'ad_url' => $ad->url,
                         'ad_img' => $image,
                         'count' => $item->count,
                         'price' => $item->price,
@@ -57,8 +58,8 @@ class Order extends \common\models\Order
         if ($insert) {
             $this->status = Order::STATUS_PROCESS;
             $this->ip = Yii::$app->request->userIP;
-            $this->time_create = time();
-            $this->time_update = time();
+            $this->created_at = time();
+            $this->updated_at = time();
             $request = Yii::$app->request;
             $email = trim($request->post('email'));
             $name = trim($request->post('name'));
@@ -72,21 +73,19 @@ class Order extends \common\models\Order
 
                 return [
                     'statusCode' => 200,
-                    'message' => Yii::t('order/index', 'message_email'),
+                    'message' => 'Заказ успешно сохранен в Вашем личном кабинете',
                 ];
 
             } else if (isset($email)) {
                 $model = new User();
                 $model->email = $email;
-                $model->name = $name ?: 'Пользователь';
-                $model->lang = Yii::$app->language;
+                $model->first_name = $name ?: 'Пользователь';
                 $password = Yii::$app->security->generateRandomString(8);
                 $model->password_hash = Yii::$app->security->generatePasswordHash($password);
                 $model->auth_key = $model->generateAuthKey();
                 $model->confirmation_secret = Yii::$app->security->generateRandomString(8);
                 $model->status = User::STATUS_INACTIVE;
                 $model->role = User::ROLE_USER;
-                $model->type = User::TYPE_USER;
                 if ($model->save(false)) {
                     UserService::sendActivationEmail($model);
 
@@ -95,7 +94,7 @@ class Order extends \common\models\Order
 
                     return [
                         'statusCode' => 200,
-                        'message' => Yii::t('order/index', 'message_activate_email'),
+                        'message' => 'Заказ сохранен в личном кабинете. На ваш почтовый ящик, выслано письмо с данными для активации',
                     ];
                 }
             }
@@ -121,8 +120,8 @@ class Order extends \common\models\Order
                         $orderItem->count = $ad->count;
                         $orderItem->price = $exist->price == $ad->price ? $exist->price : $ad->price;
                         $orderItem->status = $ad->price ? OrderItem::STATUS_DONE : OrderItem::STATUS_PROCESS;
-                        $orderItem->time_create = time();
-                        $orderItem->time_update = time();
+                        $orderItem->created_at = time();
+                        $orderItem->updated_at = time();
                         $orderItem->save();
                     }
                 }
@@ -147,10 +146,10 @@ class Order extends \common\models\Order
             $this->user_id = Yii::$app->user->id;
         }
 
-        if ($this->time_create && strpos($this->time_create, ' - ')) {
-            $time = explode(' - ', $this->time_create);
+        if ($this->created_at && strpos($this->created_at, ' - ')) {
+            $time = explode(' - ', $this->created_at);
 
-            $query->andFilterWhere(['between', 'time_create', strtotime($time[0]), strtotime($time[1])]);
+            $query->andFilterWhere(['between', 'created_at', strtotime($time[0]), strtotime($time[1])]);
         }
 
         $query->with(['user']);
@@ -165,7 +164,7 @@ class Order extends \common\models\Order
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'time_create' => SORT_DESC,
+                    'created_at' => SORT_DESC,
                 ],
             ],
         ]);

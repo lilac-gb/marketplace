@@ -1,9 +1,21 @@
-export function timestampToDate(timestamp) {
+export function timestampToDate(timestamp, time = false) {
   // function returns date in dd.mm.yyyy format
   // according to this https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
   // timestamp should be multiplied by 1000
   let date = new Date(timestamp * 1000);
-  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+  if (!time) {
+    return `${date.getDate()}.${pad(
+      date.getMonth() + 1
+    )}.${date.getFullYear()}`;
+  } else {
+    return `${date.getDate()}.${pad(
+      date.getMonth() + 1
+    )}.${date.getFullYear()} в ${date.getHours()}:${date.getMinutes()}`;
+  }
+}
+
+function pad(month) {
+  return month < 10 ? `0${month}` : month;
 }
 
 export function getFullName(user) {
