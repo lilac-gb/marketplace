@@ -1,5 +1,9 @@
 <template>
-  <b-container class="cabinet-ads py-3 vh-100">
+  <section id="cabinet-ads">
+    <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
+    <b-container class="cabinet-ads py-3 vh-100">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
@@ -83,10 +87,12 @@
       </b-col>
     </b-row>
   </b-container>
+  </section>
 </template>
 
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
+import Loader from '@/components/Loader';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import AdsRow from '@/components/cabinet/ads/AdsRow';
 import ads from '@/mixins/ads';
@@ -108,21 +114,30 @@ const paginationSize = [
 
 export default {
   name: 'Ads',
-  components: { CabinetNav, Breadcrumbs, AdsRow, SortingButton },
+  components: {
+    CabinetNav,
+    Breadcrumbs,
+    AdsRow,
+    SortingButton,
+    Loader,
+  },
   mixins: [ads],
   middleware: ['auth'],
   async fetch() {
+    this.loading = true;
     await this.getMyAds(this.adsApiParams, true);
     this.breadcrumbs = [
       { label: 'Кабинет', url: '/cabinet' },
       { label: 'Объявления', url: null },
     ];
+    this.loading = false;
   },
   data() {
     return {
       ModelStatusesNames,
       paginationSize,
       ads: [],
+      loading: false,
       searchText: null,
       authorFilterValue: null,
       status: null,

@@ -1,5 +1,9 @@
 <template>
-  <b-container class="py-3 vh-100">
+  <section id="cabinet-companies">
+    <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
+    <b-container class="py-3 vh-100">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
@@ -86,10 +90,12 @@
       </b-col>
     </b-row>
   </b-container>
+  </section>
 </template>
 
 <script>
   import Breadcrumbs from '@/components/Breadcrumbs';
+  import Loader from '@/components/Loader';
   import CabinetNav from '@/components/cabinet/CabinetNav';
   import CompaniesRow from '@/components/cabinet/companies/CompaniesRow';
   import { ModelParams, SortDirection } from '@/shared/constants';
@@ -111,6 +117,7 @@
       Breadcrumbs,
       CompaniesRow,
       SortingButton,
+      Loader,
     },
     mixins: [companies],
     data() {
@@ -124,6 +131,7 @@
         perPage: 10,
         totalCount: null,
         breadcrumbs: [],
+        loading: false,
       };
     },
     computed: {
@@ -152,11 +160,13 @@
     },
     middleware: ['auth'],
     async fetch() {
+      this.loading = true;
       await this.getMyCompanies(this.companyApiParams, true);
       this.breadcrumbs = [
         { label: 'Кабинет', url: '/cabinet' },
         { label: 'Компании', url: null },
       ];
+      this.loading = false;
     },
   };
 </script>

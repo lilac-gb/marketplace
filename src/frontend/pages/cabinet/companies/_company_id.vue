@@ -1,5 +1,9 @@
 <template>
-  <b-container class="py-3">
+  <section id="cabinet-company-edit">
+     <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
+    <b-container class="py-3">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="3" sm="3" xs="12">
@@ -76,11 +80,11 @@
                   class="pr-3 pt-3"
                 >
                   <b-form-input
-                      id="input-4"
-                      v-model="company.vat"
-                      required
-                      placeholder="ИНН"
-                      :class="{
+                    id="input-4"
+                    v-model="company.vat"
+                    required
+                    placeholder="ИНН"
+                    :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
@@ -102,10 +106,10 @@
                   class="pr-3 pt-3"
                 >
                   <b-form-input
-                      id="input-5"
-                      v-model="company.id_number"
-                      placeholder="ОГРН"
-                      :class="{
+                    id="input-5"
+                    v-model="company.id_number"
+                    placeholder="ОГРН"
+                    :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
@@ -123,11 +127,11 @@
                   class="pr-3 pt-3"
                 >
                   <b-form-input
-                      id="input-6"
-                      v-model="company.phone"
-                      type="phone"
-                      placeholder="Телефон"
-                      :class="{
+                    id="input-6"
+                    v-model="company.phone"
+                    type="phone"
+                    placeholder="Телефон"
+                    :class="{
                       'is-invalid': v.invalid && (v.touched || v.changed),
                       'is-valid': v.valid && v.dirty,
                     }"
@@ -222,12 +226,12 @@
                 class="pr-3 w-50"
               >
                 <b-form-timepicker
-                    v-model="company.time_from"
-                    locale="de"
-                    form="input-10"
-                    label-no-time-selected="Начало работы"
-                    no-close-button
-                    class="time"
+                  v-model="company.time_from"
+                  locale="de"
+                  form="input-10"
+                  label-no-time-selected="Начало работы"
+                  no-close-button
+                  class="time"
                 />
               </b-form-group>
               <b-form-group
@@ -237,12 +241,12 @@
                 class="pr-3 w-50"
               >
                 <b-form-timepicker
-                    v-model="company.time_to"
-                    locale="de"
-                    form="input-11"
-                    label-no-time-selected="Окончание работы"
-                    no-close-button
-                    class="time"
+                  v-model="company.time_to"
+                  locale="de"
+                  form="input-11"
+                  label-no-time-selected="Окончание работы"
+                  no-close-button
+                  class="time"
                 />
               </b-form-group>
             </div>
@@ -257,11 +261,11 @@
       </b-col>
       <b-col lg="3" md="4" sm="4" xs="12" class="mt-3">
         <Avatar
-            v-if="company.id"
-            :id="company.id"
-            entity="company"
-            :img-src="company.images.preview"
-            behavior="logoBehavior"
+          v-if="company.id"
+          :id="company.id"
+          entity="company"
+          :img-src="company.images.preview"
+          behavior="logoBehavior"
         />
         <div v-else="!company.id">
           Фото можно сохранить только после создания компании
@@ -269,10 +273,12 @@
       </b-col>
     </b-row>
   </b-container>
+  </section>
 </template>
 
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
+import Loader from '@/components/Loader';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import companies from '@/mixins/companies';
 import config from '@/config';
@@ -290,6 +296,7 @@ export default {
     Breadcrumbs,
     ValidationObserver,
     ValidationProvider,
+    Loader,
   },
   middleware: ['auth'],
   mixins: [companies],
@@ -320,9 +327,11 @@ export default {
       user: {},
       show: true,
       breadcrumbs: [],
+      loader: false,
     }
   },
   async fetch() {
+    this.loading = true;
     this.user = await this.$auth.user;
     if (this.isUpdate) {
       await this.getCompany(this.$route.params.company_id, true);
@@ -345,6 +354,7 @@ export default {
       { label: 'Компании', url: '/cabinet/companies' },
       { label: `${this.isUpdate ? 'Обновление компании' : 'Создание компании' }`, url: null },
     ];
+    this.loading = false;
   },
   computed: {
     isUpdate() {

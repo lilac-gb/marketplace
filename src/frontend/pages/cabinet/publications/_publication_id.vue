@@ -1,5 +1,9 @@
 <template>
-  <b-container class="cabinet-publications-edit py-3 vh-100">
+  <section id="cabinet-publication-edit">
+    <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
+    <b-container class="cabinet-publications-edit py-3 vh-100">
     <Breadcrumbs :items="breadcrumbs"/>
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
@@ -16,11 +20,11 @@
           </div>
         </div>
         <vue2Dropzone
-            ref="myVueDropzone"
-            id="dropzone"
-            v-if="isUpdate && dropzoneOptions.url"
-            :useCustomSlot="true"
-            :options="dropzoneOptions"
+          ref="myVueDropzone"
+          id="dropzone"
+          v-if="isUpdate && dropzoneOptions.url"
+          :useCustomSlot="true"
+          :options="dropzoneOptions"
         >
           <div class="dropzone-custom-content">
             <div class="dropzone-custom-title text-small">
@@ -36,25 +40,25 @@
           <b-icon icon="image" class="mt-3 pic"></b-icon>
         </div>
         <b-form-input
-            v-model="name"
-            class="text-small mt-4"
-            placeholder="Введите название"
+          v-model="name"
+          class="text-small mt-4"
+          placeholder="Введите название"
         ></b-form-input>
         <b-form-textarea
-            v-model="anons"
-            class="text-small mt-4"
-            placeholder="Введите короткое описание"
-            rows="3"
+          v-model="anons"
+          class="text-small mt-4"
+          placeholder="Введите короткое описание"
+          rows="3"
         ></b-form-textarea>
         <VueEditor
-            v-model="description"
-            placeholder="Веедите полный текст публикации, добавляя ссылки и форматируя текст"
-            class="mt-4"
+          v-model="description"
+          placeholder="Веедите полный текст публикации, добавляя ссылки и форматируя текст"
+          class="mt-4"
         />
         <div class="text-right mt-4">
           <b-button
-              class="background-purple mp-button-purple"
-              @click="isUpdate ? update() : create()"
+            class="background-purple mp-button-purple"
+            @click="isUpdate ? update() : create()"
           >
             Сохранить публикацю
           </b-button>
@@ -62,10 +66,12 @@
       </b-col>
     </b-row>
   </b-container>
+  </section>
 </template>
 
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
+import Loader from '@/components/Loader';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import publications from '@/mixins/publications';
 import vue2Dropzone from 'vue2-dropzone';
@@ -81,6 +87,7 @@ export default {
     Breadcrumbs,
     vue2Dropzone,
     VueEditor,
+    Loader,
   },
   mixins: [publications],
   middleware: ['auth'],
@@ -99,9 +106,11 @@ export default {
       anons: '',
       breadcrumbs: [],
       gallery: [],
+      loading: false,
     };
   },
   async fetch() {
+    this.loading = true;
     this.user = await this.$auth.user;
     if (this.isUpdate) {
       await this.getPublication(this.$route.params.publication_id, true);
@@ -118,6 +127,7 @@ export default {
       { label: 'Объявления', url: '/cabinet/publications'},
       { label: `${this.isUpdate ? 'Обновление публикации' : 'Создание публикации' }`, url: null }
     ];
+    this.loading = false;
   },
   computed: {
     isUpdate() {

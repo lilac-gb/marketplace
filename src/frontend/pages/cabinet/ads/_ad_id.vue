@@ -1,5 +1,9 @@
 <template>
-  <b-container class="cabinet-ads-edit mt-4 mb-4">
+  <section id="cabinet-ad-edit">
+    <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
+    <b-container class="cabinet-ads-edit mt-4 mb-4">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
@@ -83,10 +87,12 @@
       </b-col>
     </b-row>
   </b-container>
+  </section>
 </template>
 
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
+import Loader from '@/components/Loader';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import ads from '@/mixins/ads';
 import vue2Dropzone from 'vue2-dropzone';
@@ -102,6 +108,7 @@ export default {
     Breadcrumbs,
     vue2Dropzone,
     VueEditor,
+    Loader,
   },
   mixins: [ads],
   middleware: ['auth'],
@@ -127,9 +134,11 @@ export default {
       user_id: null,
       gallery: [],
       breadcrumbs: [],
+      loading: false,
     };
   },
   async fetch() {
+    this.loading = true;
     await Promise.all([
       this.getSections(),
       this.getTypes(),
@@ -153,12 +162,12 @@ export default {
         console.log(err);
       }
     }
-    
     this.breadcrumbs = [
       { label: 'Кабинет', url: '/cabinet' },
       { label: 'Объявления', url: '/cabinet/ads' },
       { label: `${this.isUpdate ? 'Обновление объявления' : 'Создание объявления' }`, url: null },
     ];
+    this.loading = false;
   },
   computed: {
     isUpdate() {

@@ -1,5 +1,9 @@
 <template>
-  <b-container class="py-3 vh-100">
+  <section id="cabinet-user-edit">
+    <div v-if="loading" class="main-loader">
+      <Loader />
+    </div>
+    <b-container class="py-3 vh-100">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
@@ -265,10 +269,12 @@
       </b-col>
     </b-row>
   </b-container>
+  </section>
 </template>
 
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';
+import Loader from '@/components/Loader';
 import CabinetNav from '@/components/cabinet/CabinetNav';
 import config from '@/config/config';
 import { mapActions, mapGetters } from 'vuex';
@@ -283,9 +289,11 @@ export default {
     Breadcrumbs,
     ValidationObserver,
     ValidationProvider,
+    Loader,
   },
   middleware: ['auth'],
   async fetch() {
+    this.loading = true;
     try {
       this.user = await {
         ...this.$auth.user,
@@ -302,6 +310,7 @@ export default {
       { label: 'Кабинет', url: '/cabinet' },
       { label: 'Моя информация', url: null },
     ];
+    this.loading = false;
   },
   data: () => ({
     user: {},
@@ -313,6 +322,7 @@ export default {
       oneDigAndSpec: /^(?=.*[0-9])(?=.*[!@#$%^&*])/,
     },
     breadcrumbs: [],
+    loading: false,
   }),
   computed: mapGetters(['loggedInUser']),
   methods: {
