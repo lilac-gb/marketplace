@@ -1,6 +1,6 @@
 <template>
   <b-container class="py-3">
-    <Breadcrumbs />
+    <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
         <CabinetNav />
@@ -123,6 +123,7 @@
         pageCount: 1,
         perPage: 10,
         totalCount: null,
+        breadcrumbs: [],
       };
     },
     computed: {
@@ -152,6 +153,10 @@
     middleware: ['auth'],
     async fetch() {
       await this.getMyCompanies(this.companyApiParams, true);
+      this.breadcrumbs = [
+        { label: 'Кабинет', url: '/cabinet' },
+        { label: 'Компании', url: null },
+      ];
     },
   };
 </script>

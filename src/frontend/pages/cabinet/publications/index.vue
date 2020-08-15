@@ -1,6 +1,6 @@
 <template>
   <b-container class="cabinet-publications mt-4 mb-4 wh-100">
-    <Breadcrumbs />
+    <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
         <CabinetNav />
@@ -113,11 +113,20 @@ const paginationSize = [
 
 export default {
   name: 'Publications',
-  components: { CabinetNav, Breadcrumbs, PublicationsRow, SortingButton },
+  components: {
+    CabinetNav,
+    Breadcrumbs,
+    PublicationsRow,
+    SortingButton,
+  },
   mixins: [publications],
   middleware: ['auth'],
   async fetch() {
     await this.getMyPublications(this.publicationsApiParams, true);
+    this.breadcrumbs = [
+      { label: 'Кабинет', url: '/cabinet' },
+      { label: 'Публикации', url: null },
+    ];
   },
   data() {
     return {
@@ -133,6 +142,7 @@ export default {
       totalCount: null,
       sortBy: ModelParams.CREATED_AT,
       sortDesc: SortDirection.ASK,
+      breadcrumbs: [],
     };
   },
   computed: {

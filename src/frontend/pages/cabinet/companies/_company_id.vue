@@ -1,6 +1,6 @@
 <template>
   <b-container class="py-3">
-    <Breadcrumbs />
+    <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="3" sm="3" xs="12">
         <CabinetNav />
@@ -319,6 +319,7 @@ export default {
       },
       user: {},
       show: true,
+      breadcrumbs: [],
     }
   },
   async fetch() {
@@ -338,6 +339,12 @@ export default {
       this.time_from = this.company.time_from;
       this.time_to = this.company.time_to;
     }
+  
+    this.breadcrumbs = [
+      { label: 'Кабинет', url: '/cabinet' },
+      { label: 'Компании', url: '/cabinet/companies' },
+      { label: `${this.isUpdate ? 'Обновление компании' : 'Создание компании' }`, url: null },
+    ];
   },
   computed: {
     isUpdate() {

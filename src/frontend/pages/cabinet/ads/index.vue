@@ -1,6 +1,6 @@
 <template>
   <b-container class="cabinet-ads mt-4 mb-4">
-    <Breadcrumbs />
+    <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
         <CabinetNav />
@@ -113,6 +113,10 @@ export default {
   middleware: ['auth'],
   async fetch() {
     await this.getMyAds(this.adsApiParams, true);
+    this.breadcrumbs = [
+      { label: 'Кабинет', url: '/cabinet' },
+      { label: 'Объявления', url: null },
+    ];
   },
   data() {
     return {
@@ -128,6 +132,7 @@ export default {
       totalCount: null,
       sortBy: ModelParams.CREATED_AT,
       sortDesc: SortDirection.ASK,
+      breadcrumbs: [],
     };
   },
   computed: {
