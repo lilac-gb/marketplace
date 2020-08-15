@@ -1,5 +1,5 @@
 <template>
-  <section id="cabinet-ad-edit">
+  <section id="cabinet-ad-edit" class="min-vh-100">
     <div v-if="loading" class="main-loader">
       <Loader />
     </div>

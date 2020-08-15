@@ -9,11 +9,34 @@ use common\models\Company;
 use common\models\News;
 use common\models\Page;
 use Yii;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 
 class CompanyController extends ActiveController
 {
+    /**
+     * @param string              $action
+     * @param \api\models\Company|null $model
+     * @param array               $params
+     * @throws ForbiddenHttpException
+     */
+    /*public function checkAccess($action, $model = null, $params = [])
+    {
+        parent::checkAccess($action, $model, $params);
+
+        if ((
+                $action == 'update'
+                || $action == 'delete'
+                || $action == 'create'
+                || $action == 'publish'
+                || $action == 'imgAttachApi'
+            ) && $model->owner_id != Yii::$app->user->id)
+        {
+            throw new ForbiddenHttpException();
+        }
+    }*/
+
     public function actions()
     {
         $actions = parent::actions();

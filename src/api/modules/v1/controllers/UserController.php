@@ -17,6 +17,25 @@ use yii\web\NotFoundHttpException;
 
 class UserController extends ActiveController
 {
+    /**
+     * @param string              $action
+     * @param \api\models\User|null $model
+     * @param array               $params
+     * @throws ForbiddenHttpException
+     */
+    /*public function checkAccess($action, $model = null, $params = [])
+    {
+        parent::checkAccess($action, $model, $params);
+        if ((
+                $action == 'update'
+                || $action == 'delete'
+                || $action == 'imgAttachApi'
+            ) && $model->id != Yii::$app->user->id)
+        {
+            throw new ForbiddenHttpException();
+        }
+    }*/
+
     public function actions()
     {
         $actions = parent::actions();

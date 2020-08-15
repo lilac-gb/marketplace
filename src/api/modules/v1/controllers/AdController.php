@@ -30,6 +30,27 @@ class AdController extends ActiveController
         return $behaviors;
     }
 
+    /**
+     * @param string              $action
+     * @param \api\models\Ad|null $model
+     * @param array               $params
+     * @throws ForbiddenHttpException
+     */
+    /*public function checkAccess($action, $model = null, $params = [])
+    {
+        parent::checkAccess($action, $model, $params);
+        if ((
+            $action == 'update'
+            || $action == 'delete'
+            || $action == 'create'
+            || $action == 'publish'
+            || $action == 'galleryApi'
+            ) && $model->user_id != Yii::$app->user->id)
+        {
+            throw new ForbiddenHttpException();
+        }
+    }*/
+
     public function actions()
     {
         $actions = parent::actions();
@@ -173,30 +194,4 @@ class AdController extends ActiveController
 
         return $result;
     }
-
-    /**
-     * @param string              $action
-     * @param \api\models\Ad|null $model
-     * @param array               $params
-     * @throws ForbiddenHttpException
-     */
-    /*public function checkAccess($action, $model = null, $params = [])
-    {
-        parent::checkAccess($action, $model, $params);
-        if (($action == 'update' ||
-                $action == 'delete' ||
-                $action == 'publish'
-            )
-            && $model->user_id != Yii::$app->user->id) {
-            throw new ForbiddenHttpException();
-        }
-        if ($action == 'view'
-            && in_array($model->status, [
-                Ad::STATUS_NOT_PUBLISHED,
-                Ad::STATUS_DELETED,
-            ])
-            && ($model->user_id != Yii::$app->user->id || $model->role != 'admin')) {
-            throw new NotFoundHttpException();
-        }
-    }*/
 }

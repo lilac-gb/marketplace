@@ -1,5 +1,5 @@
 <template>
-  <div class="company-row w-100 d-flex flex-row">
+  <div class="company-row w-100 d-flex flex-row mb-3">
     <div class="image-cover">
       <img
           class="picture"

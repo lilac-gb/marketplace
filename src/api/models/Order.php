@@ -146,26 +146,39 @@ class Order extends \common\models\Order
             $this->user_id = Yii::$app->user->id;
         }
 
-        if ($this->created_at && strpos($this->created_at, ' - ')) {
-            $time = explode(' - ', $this->created_at);
+        if (isset($params['search'])) {
+            $terms = explode(" ", $params['search']);
 
-            $query->andFilterWhere(['between', 'created_at', strtotime($time[0]), strtotime($time[1])]);
+            if (count($terms) > 1) {
+                $conditionName = ['and'];
+                $conditionDesc = ['and'];
+
+                foreach ($terms as $key => $value) {
+                    $conditionName[] = ['like', 'LOWER(name)', $value];
+                    $conditionDesc[] = ['like', 'LOWER(description)', $value];
+                }
+            } else {
+                $conditionName = ['like', 'LOWER(name)', $params['search']];
+                $conditionDesc = ['like', 'LOWER(description)', $params['search']];
+            }
+
+            $query->where($conditionName)->orWhere($conditionDesc);
         }
 
-        $query->with(['user']);
+        if (isset($params['sortBy']) && isset($params['sortDesc'])) {
+            $sortBy = $params['sortBy'];
+            $sortDesc = $params['sortDesc'];
+            $query->orderBy("{$sortBy} {$sortDesc}");
+        }
 
-        //adjust the query by adding the filters
-        $query->filterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['in', 'user_id', $this->user_id]);
-        $query->andFilterWhere(['in', 'status', $this->status]);
-        $query->andFilterWhere(['<>', 'status', self::STATUS_DELETED]);
+        $query->groupBy('id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC,
-                ],
+            'pagination' => [
+                'pageSize' => Yii::$app->request->get('pageSize',
+                    Yii::$app->cache->get(self::class . '_pageSize') ?
+                        Yii::$app->cache->get(self::class . '_pageSize') : 10),
             ],
         ]);
 

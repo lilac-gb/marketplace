@@ -1,5 +1,6 @@
 <template>
-  <b-container class="pt-3 pb-3">
+  <section id="cabinet" class="min-vh-100">
+    <b-container class="pt-3 pb-3">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
@@ -10,6 +11,7 @@
       </b-col>
     </b-row>
   </b-container>
+  </section>
 </template>
 <script>
 import Breadcrumbs from '@/components/Breadcrumbs';

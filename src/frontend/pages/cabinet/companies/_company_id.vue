@@ -1,5 +1,5 @@
 <template>
-  <section id="cabinet-company-edit">
+  <section id="cabinet-company-edit" class="min-vh-100">
      <div v-if="loading" class="main-loader">
       <Loader />
     </div>
@@ -199,7 +199,11 @@
                 class="pr-3 pt-3 w-100"
               >
                 <multiselect
-                  v-model="company.weekDay"
+                  label="day"
+                  :options="weekDayOptions"
+                  track-by="dayNumber"
+                  v-model="weekDay"
+                  :custom-label="customLabel"
                   form="input-9"
                   placeholder="Выберите рабочие дни"
                   select-label="Нажмите ввод для выбора"
@@ -207,17 +211,11 @@
                   :max-height="300"
                   :option-height="40"
                   deselect-label="Нажмите ввод для удаления"
-                  label="day"
-                  track-by="dayNumber"
                   :close-on-select="false"
-                  :options="weekDayOptions"
                   :multiple="true"
                   :taggable="true"
                   @tag="addTag"
                 />
-                <pre
-                  class="language-json"
-                ><code>{{ company.weekDay }}</code></pre>
               </b-form-group>
               <b-form-group
                 id="input-group-10"
@@ -304,13 +302,13 @@ export default {
     return {
       weekDay: null,
       weekDayOptions: [
-        {dayNumber: 1, day: 'ПН'},
-        {dayNumber: 2, day: 'ВТ'},
-        {dayNumber: 3, day: 'СР'},
-        {dayNumber: 4, day: 'ЧТ'},
-        {dayNumber: 5, day: 'ПТ'},
-        {dayNumber: 6, day: 'СБ'},
-        {dayNumber: 7, day: 'ВС'},
+        { dayNumber: 0, day: 'ПН' },
+        { dayNumber: 1, day: 'ВТ' },
+        { dayNumber: 2, day: 'СР' },
+        { dayNumber: 3, day: 'ЧТ' },
+        { dayNumber: 4, day: 'ПТ' },
+        { dayNumber: 5, day: 'СБ' },
+        { dayNumber: 6, day: 'ВС' },
       ],
       company: {
         id: '',
@@ -335,7 +333,6 @@ export default {
     this.user = await this.$auth.user;
     if (this.isUpdate) {
       await this.getCompany(this.$route.params.company_id, true);
-      console.log(this.company);
       this.id = this.company.id;
       this.name = this.company.name;
       this.description = this.company.description;
@@ -344,7 +341,7 @@ export default {
       this.phone = this.company.phone;
       this.site = this.company.site;
       this.email = this.company.email;
-      this.weekDay = this.company.working_days;
+      this.weekDay = this.company.working_days ? this.company.working_days.split(',') : null;
       this.time_from = this.company.time_from;
       this.time_to = this.company.time_to;
     }
@@ -363,6 +360,9 @@ export default {
   },
   methods: {
     ...mapActions(['setMessage']),
+    customLabel({ day, dayNumber }) {
+      return `${day}`;
+    },
     addTag(weekDay) {
       const day = {
         day: weekDay,
@@ -388,8 +388,11 @@ export default {
           .join(',') : '',
         time_from: this.company.time_from,
         time_to: this.company.time_to,
+        status: 0,
       });
       this.loading = false;
+  
+      await this.$router.push({ name: 'cabinet-companies' });
     },
     async update() {
       this.loading = true;
@@ -407,8 +410,11 @@ export default {
           .join(',') : '',
         time_from: this.company.time_from,
         time_to: this.company.time_to,
+        status: 0,
       });
       this.loading = false;
+  
+      await this.$router.push({ name: 'cabinet-companies' });
     },
     onReset() {
       // Reset our form values

@@ -6,6 +6,7 @@ use api\components\ActiveController;
 use common\models\Ad;
 use common\models\Order;
 use Yii;
+use yii\web\ForbiddenHttpException;
 
 
 /**
@@ -13,7 +14,25 @@ use Yii;
  */
 class OrderController extends ActiveController
 {
-    public $modelClass = 'api\models\Order';
+
+    /**
+     * @param string              $action
+     * @param \api\models\Order|null $model
+     * @param array               $params
+     * @throws ForbiddenHttpException
+     */
+    /*public function checkAccess($action, $model = null, $params = [])
+    {
+        parent::checkAccess($action, $model, $params);
+        if ((
+                $action == 'update'
+                || $action == 'delete'
+                || $action == 'create'
+            ) && $model->user_id != Yii::$app->user->id)
+        {
+            throw new ForbiddenHttpException();
+        }
+    }*/
 
     public function actions()
     {

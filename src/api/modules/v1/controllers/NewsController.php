@@ -15,6 +15,27 @@ use yii\web\NotFoundHttpException;
 
 class NewsController extends ActiveController
 {
+    /**
+     * @param string              $action
+     * @param \api\models\News|null $model
+     * @param array               $params
+     * @throws ForbiddenHttpException
+     */
+   /* public function checkAccess($action, $model = null, $params = [])
+    {
+        parent::checkAccess($action, $model, $params);
+        if ((
+                $action == 'update'
+                || $action == 'delete'
+                || $action == 'create'
+                || $action == 'publish'
+                || $action == 'galleryApi'
+            ) && $model->user_id != Yii::$app->user->id)
+        {
+            throw new ForbiddenHttpException();
+        }
+    }*/
+
     public function actions()
     {
         $actions = parent::actions();
@@ -50,34 +71,6 @@ class NewsController extends ActiveController
 
         return $behaviors;
     }
-
-    /**
-     * @param string                $action
-     * @param \api\models\News|null $model
-     * @param array                 $params
-     * @throws ForbiddenHttpException|NotFoundHttpException
-     */
-    /*public function checkAccess($action, $model = null, $params = [])
-    {
-        parent::checkAccess($action, $model, $params);
-
-        $user = User::findOne(Yii::$app->user->id);
-        $publish = $model->status == News::STATUS_PUBLISHED;
-        $author = $model->user_id == Yii::$app->user->id;
-        $admin = $user->role == 'admin';
-
-        if ((
-                $action == 'update'
-                || $action == 'delete'
-                || $action == 'publish'
-            ) && !$author) {
-            throw new ForbiddenHttpException();
-        }
-
-        if ($action == 'view' && !$publish && !$author && !$admin) {
-            throw new NotFoundHttpException();
-        }
-    }*/
 
     public function actionMy()
     {
