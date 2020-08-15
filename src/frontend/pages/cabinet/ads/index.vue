@@ -1,5 +1,5 @@
 <template>
-  <b-container class="cabinet-ads mt-4 mb-4">
+  <b-container class="cabinet-ads py-3 vh-100">
     <Breadcrumbs :items="breadcrumbs" />
     <b-row>
       <b-col lg="2" md="2" sm="3" xs="4">
