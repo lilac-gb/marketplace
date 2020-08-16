@@ -12,11 +12,15 @@
     </b-link>
     <b-modal
       id="cartModal"
+      class="position-relative"
       v-model="openModal"
       size="xl"
-      title="Форма заказа"
+      title="Форма оформления заказа"
       @hidden="resetModal"
     >
+      <div v-if="loading" class="main-loader">
+        <Loader />
+      </div>
       <ValidationObserver v-slot="{ handleSubmit }">
         <b-form
           v-if="show"
@@ -160,15 +164,32 @@
           
           <b-table
             striped
+            v-if="!loading"
             hover
             :items="cartResult"
             :fields="fields"
           >
+            <template v-slot:cell(count)="row">
+              <div class="d-flex align-items-center justify-content-center">
+                <b-button size="sm" @click="countUp(row.item.id)" variant="link" class="text-muted">
+                +
+              </b-button>
+                <div>{{ row.item.count }}</div>
+              <b-button size="sm" @click="countDown(row.item.id)" variant="link" class="text-muted">
+                -
+              </b-button>
+              </div>
+            </template>
+            <template v-slot:cell(actions)="row">
+              <b-button size="sm" @click="deletePosition(row.item.id)" variant="link" class="text-muted">
+                <b-icon class="text-muted" icon="trash-fill"></b-icon>
+              </b-button>
+            </template>
             <template v-slot:table-caption>
               <h3 class="text-right w-100">
-                {{ cartResult.totalCount }}
-                {{ declinationName(cartResult.totalCount, ['позиция', 'позиции', 'позиций']) }}
-                на сумму: {{ cartResult.totalPrice }} $
+                {{ totalCount }}
+                {{ declinationName(totalCount, ['позиция', 'позиции', 'позиций']) }}
+                на сумму: {{ totalPrice }} $
               </h3>
             </template>
           </b-table>
@@ -183,7 +204,7 @@
               Очистить заказ
             </b-button>
             <b-button type="submit" class="float-right mp-btn mp-btn-sm mp-btn-transparent">
-              {{ loading ? 'Подождите, оформляем...' : 'Оформить заказ' }}
+              {{ loading ? 'Подождите...' : 'Оформить заказ' }}
             </b-button>
           </div>
         </b-form>
@@ -222,6 +243,8 @@
         breadcrumbs: [],
         openModal: false,
         loading: false,
+        totalCount: 0,
+        totalPrice: 0,
         fields: [
           {
             key: 'id',
@@ -248,6 +271,10 @@
             label: 'Итого $',
             sortable: true,
           },
+          {
+            key: 'actions',
+            label: 'Действия',
+          },
         ],
       };
     },
@@ -259,6 +286,59 @@
     },
     methods: {
       ...mapActions(['setMessage']),
+      countUp(id) {
+        let bufferCard = [];
+        if (localStorage.cart) {
+          this.cart = JSON.parse(localStorage.cart);
+          this.cart.forEach((item) => {
+            if (item.id === id) {
+              item.count += 1;
+              localStorage.cart = JSON.stringify(this.cart);
+            }
+          });
+          this.cartResult.forEach((item) => {
+            if (item.id === id) {
+              item.count += 1;
+              bufferCard = this.cartResult;
+            }
+          });
+          this.cartResult = bufferCard;
+          this.processModal();
+        }
+      },
+      countDown(id) {
+        let bufferCard = [];
+        if (localStorage.cart) {
+          this.cart = JSON.parse(localStorage.cart);
+          this.cart.forEach((item) => {
+            if (item.id === id && item.count !== 1) {
+              item.count -= 1;
+              localStorage.cart = JSON.stringify(this.cart);
+            }
+          });
+          this.cartResult.forEach((item) => {
+            if (item.id === id && item.count !== 1) {
+              item.count -= 1;
+              bufferCard = this.cartResult;
+            }
+          });
+          this.cartResult = bufferCard;
+          this.processModal();
+        }
+      },
+      deletePosition(id) {
+        if (localStorage.cart) {
+          this.cart = JSON.parse(localStorage.cart);
+          this.cart = this.cart.filter(item => item.id !== id);
+          this.cartResult = this.cartResult.filter(item => item.id !== id);
+          if (this.cartResult.length === 0) {
+            this.loading = false;
+            this.openModal = false;
+          }
+          localStorage.cart = JSON.stringify(this.cart);
+          this.processModal();
+        }
+      },
       async onSubmit() {
         this.loading = true;
         let payload = {
@@ -332,8 +412,8 @@
               };
             }).then(() => {
               if (counter === this.cart.length) {
-                this.cartResult['totalCount'] = totalCounter;
-                this.cartResult['totalPrice'] = totalPrice * 100 / 100;
+                this.totalCount = totalCounter;
+                this.totalPrice = Math.floor(totalPrice * 100) / 100;
                 this.loading = false;
                 this.openModal = true;
               }
