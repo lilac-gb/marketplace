@@ -61,7 +61,7 @@
         <div class="companies-rows">
           <CompaniesRow
             v-for="company in companies"
-            key="company.id"
+            :key="company.id"
             :company="company"
             @updated="$fetch"
           />
@@ -122,6 +122,7 @@
     mixins: [companies],
     data() {
       return {
+        ModelStatusesNames: [],
         searchText: null,
         companies: [],
         paginationSize,
@@ -141,10 +142,10 @@
           pageSize: this.perPage,
         };
         if (this.status !== null) {
-          params['status'] = this.status;
+          params.status = this.status;
         }
         if (this.searchText) {
-          params['Company[name]'] = this.searchText;
+          params.search = this.searchText;
         }
         return params;
       },
@@ -155,6 +156,16 @@
       },
       fetchMoreItems() {
         this.perPage += 12;
+        this.$fetch();
+      },
+      sortByDate(direction) {
+        this.sortBy = ModelParams.CREATED_AT;
+        this.sortDesc = direction;
+        this.$fetch();
+      },
+      sortByViews(direction) {
+        this.sortBy = ModelParams.VIEWS;
+        this.sortDesc = direction;
         this.$fetch();
       },
     },

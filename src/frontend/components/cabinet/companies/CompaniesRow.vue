@@ -20,7 +20,7 @@
       <a href="#" @click.prevent="edit">
         <i class="fas fa-pencil-alt text-muted"></i>
       </a>
-      <a href="#" @click.prevent="deleteP">
+      <a href="#" @click.prevent="handleDeleteClick(company.name)">
         <b-icon class="text-muted" icon="trash-fill"></b-icon>
       </a>
     </div>
@@ -62,6 +62,23 @@
       }
     },
     methods: {
+      handleDeleteClick(name) {
+        this.$confirm(
+          {
+            message: `Вы точно хотите удалить компанию "${name}"`,
+            button: {
+              no: 'Нет',
+              yes: 'Да',
+            },
+        
+            callback: confirm => {
+              if (confirm) {
+                this.deleteCompany();
+              }
+            },
+          },
+        );
+      },
       publicate() {
         if (this.company.status === ModelStatuses.STATUS_NOT_PUBLISHED) {
           this.publishCompany(this.company.id);

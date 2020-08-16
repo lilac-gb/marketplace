@@ -25,7 +25,7 @@
             </b-button>
           </div>
           
-            <div class="d-flex flex-row align-items-center justify-content-between mb-4">
+          <div class="d-flex flex-row align-items-center justify-content-between mb-4">
               <div class="d-flex">
                 <SortingButton
                   class="ml-0 mr-3"
@@ -52,10 +52,9 @@
               ></b-form-select>
               </div>
             </div>
-         
         </div>
 
-        <div class="order-rows">
+        <div class="order-rows" v-if="orders.length">
           <OrdersRow
             v-for="order in orders"
             :key="order.id"

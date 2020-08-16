@@ -1,8 +1,8 @@
 <template>
-  <div class="order-row w-100">
+  <div class="order-row w-100" v-if="order">
     <div class="d-flex flex-row align-items-center">
       <div class="text d-flex align-items-center">
-        Заказ №{{ order.id }} - <span :class="`ml-2 ${statusState.color}`">{{ statusState.text }}</span>
+        Заказ №{{ order.id }} - <span :class="`ml-2 ${statusState.color}`">{{statusState.text }}</span>
         <div class="icon create-at ml-3">
           от {{ timestampToDate(order.created_at, true) }}
         </div>
@@ -11,7 +11,7 @@
         <a href="#" @click.prevent="openInfo(order.id)">
           <i class="fas fa-info text-muted"></i>
         </a>
-        <a href="#" @click.prevent="deleteP">
+        <a href="#" @click.prevent="handleDeleteClick(order.id)">
           <b-icon class="text-muted" icon="trash-fill"></b-icon>
         </a>
       </div>
@@ -70,7 +70,6 @@ export default {
   }),
   computed: {
     statusState() {
-      console.log(this.order);
       switch (this.order.status) {
         case(ModelStatuses.STATUS_SHIPPING):
           return {
@@ -94,6 +93,23 @@ export default {
     },
   },
   methods: {
+    handleDeleteClick(id) {
+      this.$confirm(
+        {
+          message: `Вы точно хотите удалить заказ "${id}"`,
+          button: {
+            no: 'Нет',
+            yes: 'Да',
+          },
+          
+          callback: confirm => {
+            if (confirm) {
+              this.deleteP();
+            }
+          },
+        },
+      );
+    },
     deleteP() {
       this.deleteOrder(this.order.id);
       this.$emit('updated');

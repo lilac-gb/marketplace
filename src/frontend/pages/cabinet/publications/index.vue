@@ -63,7 +63,7 @@
         <div class="publication-rows">
           <PublicationsRow
             v-for="publication in publications"
-            key="publication.id"
+            :key="publication.id"
             :publication="publication"
             @updated="$fetch"
           />

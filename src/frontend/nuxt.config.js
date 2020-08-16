@@ -55,7 +55,7 @@ export default {
       'bootstrap-vue/nuxt',
       {
         icons: true,
-      }
+      },
     ],
     '@nuxt/http',
     '@nuxtjs/style-resources',

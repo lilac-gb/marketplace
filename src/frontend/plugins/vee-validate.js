@@ -53,8 +53,7 @@ extend('name', (name) => {
 });
 
 extend('username', (name) => {
-  const regExp = /^[\sa-zA-Z0-9-]+$/;
-  //TODO: добавить точку в регулярку, если Женя не добавил
+  const regExp = /^[\sa-zA-Z0-9-.]+$/;
   if (!regExp.test(name)) {
     return 'Имя пользователя не может содержать кирилицу и символы кроме "-" и "."';
   }

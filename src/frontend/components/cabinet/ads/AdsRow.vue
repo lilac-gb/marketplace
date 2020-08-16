@@ -20,7 +20,7 @@
       <a href="#" @click.prevent="edit">
         <i class="fas fa-pencil-alt text-muted"></i>
       </a>
-      <a href="#" @click.prevent="deleteP">
+      <a href="#" @click.prevent="handleDeleteClick(ad.name)">
         <b-icon class="text-muted" icon="trash-fill"></b-icon>
       </a>
     </div>
@@ -62,13 +62,30 @@ export default {
     },
   },
   methods: {
+    handleDeleteClick(name) {
+      this.$confirm(
+        {
+          message: `Вы точно хотите удалить компанию "${name}"`,
+          button: {
+            no: 'Нет',
+            yes: 'Да',
+          },
+        
+          callback: confirm => {
+            if (confirm) {
+              this.deleteAdItem();
+            }
+          },
+        },
+      );
+    },
     publicate() {
       if (this.ad.status === ModelStatuses.STATUS_NOT_PUBLISHED) {
         this.publishAd(this.ad.id);
       }
       this.$emit('updated');
     },
-    deleteP() {
+    deleteAdItem() {
       this.deleteAd(this.ad.id);
       this.$emit('updated');
     },

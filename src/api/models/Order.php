@@ -79,6 +79,7 @@ class Order extends \common\models\Order
             } else if (isset($email)) {
                 $model = new User();
                 $model->email = $email;
+                $model->username = $this->generateUserName($email);
                 $model->first_name = $name ?: 'Пользователь';
                 $password = Yii::$app->security->generateRandomString(8);
                 $model->password_hash = Yii::$app->security->generatePasswordHash($password);
@@ -101,6 +102,25 @@ class Order extends \common\models\Order
         }
 
         return parent::beforeSave($insert);
+    }
+
+    private function generateUniqueName($word) {
+        $exists = User::find()->where(['username' => $word])->exists();
+        if ($exists) {
+            $str = Yii::$app->security->generateRandomString(4);
+            $this->generateUniqueName($word . '-' . $str);
+        }
+
+        return $word;
+    }
+
+    private function generateUserName(string $email) {
+        if ($email) {
+            $name = strstr($email, '@', true);
+            return $this->generateUniqueName($name);
+        }
+
+        return false;
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -143,7 +163,8 @@ class Order extends \common\models\Order
         }
 
         if ($this->my) {
-            $this->user_id = Yii::$app->user->id;
+            $query->andWhere(['user_id' => Yii::$app->user->id])
+                ->andWhere(['<>', 'status', self::STATUS_DELETED]);
         }
 
         if (isset($params['search'])) {

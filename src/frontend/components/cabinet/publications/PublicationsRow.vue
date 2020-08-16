@@ -22,7 +22,7 @@
       <a href="#" @click.prevent="edit">
         <i class="fas fa-pencil-alt text-muted"></i>
       </a>
-      <a href="#" @click.prevent="deleteP">
+      <a href="#" @click.prevent="handleDeleteClick(publication.name)">
         <b-icon class="text-muted" icon="trash-fill"></b-icon>
       </a>
     </div>
@@ -37,7 +37,7 @@ export default {
   name: 'PublicationsRow',
   mixins: [publications],
   props: {
-    publication: { type: Object, required: true }
+    publication: { type: Object, required: true },
   },
   computed: {
     publishState() {
@@ -46,24 +46,41 @@ export default {
           return {
             color: 'text-yelow',
             icon: 'eye',
-            text: 'Модерация'
+            text: 'Модерация',
           };
         case(ModelStatuses.STATUS_NOT_PUBLISHED):
           return {
             color: 'text-gray',
             icon: 'eye-slash',
-            text: 'Редактирование'
+            text: 'Редактирование',
           };
         case(ModelStatuses.STATUS_PUBLISHED):
           return {
             color: 'text-purple',
             icon: 'eye',
-            text: 'Опубликовано'
-          }
+            text: 'Опубликовано',
+          };
       }
-    }
+    },
   },
   methods: {
+    handleDeleteClick(name) {
+      this.$confirm(
+        {
+          message: `Вы точно хотите удалить материал "${name}"`,
+          button: {
+            no: 'Нет',
+            yes: 'Да',
+          },
+         
+          callback: confirm => {
+            if (confirm) {
+              this.deleteP();
+            }
+          },
+        },
+      );
+    },
     publicate() {
       if (this.publication.status === ModelStatuses.STATUS_NOT_PUBLISHED) {
         this.publishPublication(this.publication.id);
@@ -81,9 +98,9 @@ export default {
           publication_id: this.publication.id,
         },
       });
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -110,23 +127,23 @@ export default {
     height: 100%;
     padding: 0 22px 0 22px;
   }
-
+  
   .info {
     height: 100%;
     padding: 0 28px 0 0;
-
+    
     a {
       margin-left: 20px;
-
+      
       i::before,
       .b-icon {
-
+        
         height: 1.5625rem;
         width: 1.25rem;
         font-size: 1.25rem;
       }
     }
-
+    
     a:first-of-type {
       margin-left: 0;
     }

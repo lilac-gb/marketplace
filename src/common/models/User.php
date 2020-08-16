@@ -7,6 +7,7 @@ use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Yii;
 use yii\base\NotSupportedException;
+use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
 

@@ -1,5 +1,5 @@
 import config from '@/config';
-import {constructUrl} from '@/shared/api';
+import { constructUrl } from '@/shared/api';
 
 export default {
   data: () => ({
@@ -57,7 +57,9 @@ export default {
         params['expand'] = 'gallery';
       }
 
-      let result = await this.$http.$get(constructUrl(`${config.api_url}/ad/${id}`, params));
+      let result = await this.$http.$get(
+        constructUrl(`${config.api_url}/ad/${id}`, params)
+      );
       this.ad = result.data;
 
       if (metatags) {
@@ -82,7 +84,10 @@ export default {
     },
     async updateAd(id, payload) {
       this.$http.setToken(this.$auth.getToken('local'));
-      let result = await this.$http.$put(`${config.api_url}/ad/${id}/update`, payload);
+      let result = await this.$http.$put(
+        `${config.api_url}/ad/${id}/update`,
+        payload
+      );
       this.$http.setToken(false);
       return result;
     },
@@ -93,24 +98,26 @@ export default {
 
       let result = [{ text: 'Направление', value: null }];
 
-      sections.data.map((option) => result.push({
-        value: option.id,
-        text: option.name,
-      }));
+      sections.data.map((option) =>
+        result.push({
+          value: option.id,
+          text: option.name,
+        })
+      );
 
       this.sections = result;
     },
     async getTypes() {
-      const types = await this.$axios.$get(
-        `${config.api_url}/ad/ads-types`
+      const types = await this.$axios.$get(`${config.api_url}/ad/ads-types`);
+
+      let result = [{ text: 'Тип', value: null }];
+
+      types.data.map((option) =>
+        result.push({
+          value: option.id,
+          text: option.name,
+        })
       );
-
-      let result = [{ text: 'Тип', value: null,  }];
-
-      types.data.map((option) => result.push({
-        value: option.id,
-        text: option.name,
-      }));
 
       this.types = result;
     },

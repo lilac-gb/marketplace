@@ -14,11 +14,11 @@ export const actions = {
     commit('clearMessage');
   },
 
-  setCart({commit}, object) {
+  setCart({ commit }, object) {
     commit('updateCart', object);
   },
 
-  clearCart({commit}) {
+  clearCart({ commit }) {
     commit('clearCart');
   },
 };

@@ -302,7 +302,6 @@ export default {
         password: '',
         repeatPassword: '',
       };
-      console.log(this.user.images.preview);
     } catch (e) {
       console.log(e);
     }
@@ -340,10 +339,10 @@ export default {
       }).then((response) => {
         this.setMessage(response.data.data.message[0]);
         this.$router.push('/cabinet/about');
+        this.loading = false;
       }).catch((error) => {
         if (error.response && error.response.data) {
           this.loading = false;
-          //console.log(error.response);
           this.errors = error.response;
         }
       });

@@ -3,69 +3,230 @@
     <b-link class="pr-3" @click="processModal">
       <div class="position-relative">
         <div class="loader">
-          <Loader v-show="loading"/>
+          <Loader v-show="loading" />
         </div>
-        <img src="~assets/pics/icons/cart.svg" alt="icon"/>
+        <img src="~assets/pics/icons/cart.svg" alt="icon" />
         <div id="cart-count" class="counter">0</div>
         <span>Корзина</span>
       </div>
     </b-link>
     <b-modal
-        id="cartModal"
-        v-model="openModal"
-        size="xl"
-        title="Форма заказа"
-        @hidden="resetModal"
+      id="cartModal"
+      v-model="openModal"
+      size="xl"
+      title="Форма заказа"
+      @hidden="resetModal"
     >
-      <b-table
-          striped
-          hover
-          :items="cartResult"
-          :fields="fields"
-      >
-        <template v-slot:table-caption>
-          <h3 class="text-right w-100">
-            <b>Количество:</b> {{cartResult.totalCount}} <b>на сумму:</b> {{cartResult.totalPrice}} $
-          </h3>
-        </template>
-      </b-table>
-      <template v-slot:modal-footer>
-        <div class="w-100">
-          <b-button
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <b-form
+          v-if="show"
+          class="user-form d-flex flex-row flex-wrap"
+          @submit.prevent="handleSubmit(onSubmit)"
+        >
+          <ValidationProvider
+            v-slot="v"
+            v-if="!isAuthenticated"
+            rules="min:2|max:100|name|required"
+            class="w-50"
+          >
+            <b-form-group
+              id="input-group-1"
+              label-for="input-1"
+              description=""
+              class="pr-3 pt-3"
+            >
+              <b-form-input
+                id="input-1"
+                v-model="name"
+                placeholder="Введите ФИО"
+                :class="{
+                    'is-invalid': v.invalid && (v.touched || v.changed),
+                    'is-valid': v.valid && v.dirty,
+                  }"
+              ></b-form-input>
+              <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
+                {{ v.errors[0] }}
+              </b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+          
+          <ValidationProvider
+            v-slot="v"
+            v-if="!isAuthenticated"
+            rules="min:5|max:100|email|required"
+            class="w-50"
+          >
+            <b-form-group
+              id="input-group-4"
+              label-for="input-4"
+              description=""
+              class="pr-3 pt-3"
+            >
+              <b-form-input
+                id="input-4"
+                v-model="email"
+                type="email"
+                placeholder="Введите e-mail адрес"
+                :class="{
+                    'is-invalid': v.invalid && (v.touched || v.changed),
+                    'is-valid': v.valid && v.dirty,
+                  }"
+              ></b-form-input>
+              <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
+                {{ v.errors[0] }}
+              </b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+          
+          <ValidationProvider
+            v-slot="v"
+            rules="min:5|max:100|tel|required"
+            class="w-50"
+          >
+            <b-form-group
+              id="input-group-4"
+              label-for="input-4"
+              description=""
+              class="pr-3 pt-3"
+            >
+              <b-form-input
+                id="input-4"
+                v-model="phone"
+                type="tel"
+                placeholder="Введите телефон"
+                :class="{
+                    'is-invalid': v.invalid && (v.touched || v.changed),
+                    'is-valid': v.valid && v.dirty,
+                  }"
+              ></b-form-input>
+              <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
+                {{ v.errors[0] }}
+              </b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+          
+          <ValidationProvider
+            v-slot="v"
+            rules="min:5|max:200"
+            class="w-50"
+          >
+            <b-form-group
+              id="input-group-4"
+              label-for="input-4"
+              description=""
+              class="pr-3 pt-3"
+            >
+              <b-form-input
+                id="input-4"
+                v-model="address"
+                type="text"
+                placeholder="Введите адрес доставки если она необходима"
+                :class="{
+                     'is-invalid': v.invalid && (v.touched || v.changed),
+                     'is-valid': v.valid && v.dirty,
+                   }"
+              ></b-form-input>
+              <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
+                {{ v.errors[0] }}
+              </b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+          
+          <ValidationProvider
+            v-slot="v"
+            rules="min:5|max:1000"
+            class="w-100"
+          >
+            <b-form-group
+              id="input-group-1"
+              label-for="input-1"
+              description="Примечания для мененджера по желанию"
+              class="pr-3 pt-3"
+            >
+              <b-form-textarea
+                id="input-1"
+                v-model="text"
+                placeholder="Введите сообщение"
+                :class="{
+                     'is-invalid': v.invalid && (v.touched || v.changed),
+                     'is-valid': v.valid && v.dirty,
+                   }"
+              ></b-form-textarea>
+              <b-form-invalid-feedback :class="{ 'd-block': v.errors }">
+                {{ v.errors[0] }}
+              </b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+          
+          <b-table
+            striped
+            hover
+            :items="cartResult"
+            :fields="fields"
+          >
+            <template v-slot:table-caption>
+              <h3 class="text-right w-100">
+                {{ cartResult.totalCount }}
+                {{ declinationName(cartResult.totalCount, ['позиция', 'позиции', 'позиций']) }}
+                на сумму: {{ cartResult.totalPrice }} $
+              </h3>
+            </template>
+          </b-table>
+          
+          <div class="d-flex align-items-center justify-content-between w-100">
+            <b-button
               variant="outline-danger"
               size="sm"
               @click="resetLocalStorage"
               class="float-left"
-          >
-            Очистить заказ
-          </b-button>
-          <b-button class="float-right mp-btn mp-btn-sm mp-btn-transparent">
-            Оформить заказ
-          </b-button>
-        </div>
+            >
+              Очистить заказ
+            </b-button>
+            <b-button type="submit" class="float-right mp-btn mp-btn-sm mp-btn-transparent">
+              {{ loading ? 'Подождите, оформляем...' : 'Оформить заказ' }}
+            </b-button>
+          </div>
+        </b-form>
+      </ValidationObserver>
+      
+      <template v-slot:modal-footer>
+        {{' '}}
       </template>
     </b-modal>
   </div>
 </template>
 
 <script>
-  import config from "@/config/config";
+  import config from '@/config/config';
   import Loader from '@/components/Loader';
-
+  import orders from '@/mixins/orders';
+  import { ValidationObserver, ValidationProvider } from 'vee-validate';
+  import { mapGetters, mapActions } from 'vuex';
+  import utils from '@/mixins/utils';
+  
   export default {
     name: 'MiniCart',
-    components: {Loader},
+    components: { Loader, ValidationObserver, ValidationProvider },
+    mixins: [orders, utils],
     data() {
       return {
+        email: '',
+        name: '',
+        phone: '',
+        address: '',
+        text: '',
         cart: [],
         cartResult: [],
+        user: {},
+        show: true,
+        breadcrumbs: [],
         openModal: false,
         loading: false,
         fields: [
           {
             key: 'id',
             label: '#',
-            sortable: true
+            sortable: true,
           },
           {
             key: 'name',
@@ -86,14 +247,45 @@
             key: 'total',
             label: 'Итого $',
             sortable: true,
-          }
+          },
         ],
-      }
+      };
     },
     mounted() {
-      this.getLocalStorage()
+      this.getLocalStorage();
+    },
+    computed: {
+      ...mapGetters(['loggedInUser', 'isAuthenticated']),
     },
     methods: {
+      ...mapActions(['setMessage']),
+      async onSubmit() {
+        this.loading = true;
+        let payload = {
+          email: this.email || this.user.email,
+          name: this.name || `${this.user.first_name}${this.user.last_name ? ` ${this.user.last_name}` : ''}`,
+          address: this.address,
+          phone: this.phone,
+          items: this.cartResult,
+          text: this.text,
+        };
+        let result = await this.createOrder(payload);
+        if (result.success) {
+          if (this.isAuthenticated) {
+            this.resetLocalStorage();
+            this.setMessage('Ваш заказ успешно размещен в кабинете');
+            this.$router.push({ name: 'cabinet-orders' });
+          } else {
+            this.resetLocalStorage();
+            this.setMessage(
+              'Заказ успешно сформирован! В случае, если Вы еще не зарегистрированы, то для Вас будет создан кабинет, где вы сможете отслеживать заказ. Письмо с инструкциями будет отправлено на указанный email');
+            this.$router.push('/');
+          }
+        } else {
+          this.setMessage('Что-то пошло не так...');
+        }
+        this.loading = false;
+      },
       resetLocalStorage() {
         localStorage.removeItem('cart');
         const cartCount = document.getElementById('cart-count');
@@ -119,29 +311,29 @@
       },
       processModal() {
         this.getLocalStorage();
+        this.user = { ...this.$auth.user };
         if (!!this.cart && !!this.cart.length) {
           let counter = 0;
           this.loading = true;
           let totalCounter = 0;
           let totalPrice = 0;
           this.cart.forEach((item, i) => {
-            this.$http.$get(`${config.api_url}/ad/${item.id}`)
-              .then((response) => {
-                counter += 1;
-                totalCounter += item.count;
-                totalPrice += (item.count * item.price);
-                this.cartResult[i] = {
-                  id: item.id,
-                  name: response.data.name,
-                  url: response.data.url,
-                  count: item.count,
-                  price: item.price,
-                  total: Math.floor((item.count * item.price) * 100) / 100,
-                };
-              }).then(() => {
+            this.$http.$get(`${config.api_url}/ad/${item.id}`).then((response) => {
+              counter += 1;
+              totalCounter += item.count;
+              totalPrice += (item.count * item.price);
+              this.cartResult[i] = {
+                id: item.id,
+                name: response.data.name,
+                url: response.data.url,
+                count: item.count,
+                price: item.price,
+                total: Math.floor((item.count * item.price) * 100) / 100,
+              };
+            }).then(() => {
               if (counter === this.cart.length) {
                 this.cartResult['totalCount'] = totalCounter;
-                this.cartResult['totalPrice'] = Math.floor(totalPrice * 100) / 100;
+                this.cartResult['totalPrice'] = totalPrice * 100 / 100;
                 this.loading = false;
                 this.openModal = true;
               }
@@ -150,7 +342,7 @@
         } else {
           this.loading = false;
         }
-      }
+      },
     },
   };
 </script>
@@ -197,14 +389,19 @@
       font-size: 10px;
       color: #fff;
     }
-
+  
     & a {
       color: $purple;
     }
-
+  
     & img {
       height: 17px;
       margin-right: 10px;
     }
+  }
+
+  .modal-footer {
+    padding: 0;
+    border-top: 0;
   }
 </style>

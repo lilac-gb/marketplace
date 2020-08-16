@@ -137,9 +137,6 @@ export default {
   },
   computed: {
     ...mapGetters(['loggedInUser']),
-    uploadDisabled() {
-      return this.files.length === 0;
-    },
     isUpdate() {
       return this.$route.params.publication_id !== 'new';
     },
@@ -209,10 +206,13 @@ export default {
   
       if (result.data.id) {
         await this.upload(result.data.id);
-    
-        await this.$router.push(`/cabinet/publications/${result.data.id}`);
-    
-        await this.$fetch();
+        
+        this.$router.push({
+          name: 'cabinet-publications-publication_id',
+          params: {
+            publication_id: result.data.id,
+          },
+        });
       }
     },
     async update() {
