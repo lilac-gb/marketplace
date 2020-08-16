@@ -103,6 +103,7 @@ import PublicationsRow from '@/components/cabinet/publications/PublicationsRow';
 import publications from '@/mixins/publications';
 import { ModelParams, SortDirection } from '@/shared/constants';
 import SortingButton from '@/components/SortingButton';
+import { mapGetters } from 'vuex';
 
 const ModelStatusesNames = [
   { value: 0, text: 'Редактирование' },
@@ -156,6 +157,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['loggedInUser']),
     publicationsApiParams() {
       let params = {
         page: this.currentPage,
