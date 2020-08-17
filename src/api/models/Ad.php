@@ -134,11 +134,11 @@ class Ad extends \common\models\Ad
 
         if (isset($filter)) {
 
-            if (isset($filter['section_id']) && sizeof($filter['section_id'])) {
+            if (isset($filter['section_id']) && count($filter['section_id'])) {
                 $query->andFilterWhere(['in', 'section_id', $filter['section_id']]);
             }
 
-            if (isset($filter['type_id']) && sizeof($filter['type_id'])) {
+            if (isset($filter['type_id']) && count($filter['type_id'])) {
                 $query->andFilterWhere(['in', 'type_id', $filter['type_id']]);
             }
 
