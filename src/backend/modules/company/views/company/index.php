@@ -42,18 +42,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($model->name, Yii::$app->params['domainFrontend'] . $model->getUrl(), ['target' => '_blank']);
                 }
             ],
-            /*[
+            [
                 'attribute' => 'working_days',
                 'value' => function ($model) {
                     $days = [];
-
+                    /** @var $model common\models\Company */
                     $arrDays = explode(',', $model->working_days);
                     foreach ($arrDays as $day) {
                         $days[] = Company::$weekDays[(int)$day];
                     }
                     return implode(",", $days);
                 },
-            ],*/
+            ],
             [
                 'attribute' => 'time_from',
                 'value' => function ($model) {
