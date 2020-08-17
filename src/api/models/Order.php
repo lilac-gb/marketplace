@@ -84,7 +84,7 @@ class Order extends \common\models\Order
                 $password = Yii::$app->security->generateRandomString(8);
                 $model->password_hash = Yii::$app->security->generatePasswordHash($password);
                 $model->auth_key = $model->generateAuthKey();
-                $model->confirmation_secret = Yii::$app->security->generateRandomString(8);
+                $model->confirmation_secret = Yii::$app->security->generateRandomString(10);
                 $model->status = User::STATUS_INACTIVE;
                 $model->role = User::ROLE_USER;
                 if ($model->save(false)) {
