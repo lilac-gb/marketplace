@@ -1,0 +1,92 @@
+@import "variables";
+@import "fonts";
+@import "color";
+@import "components";
+@import "icons";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-size: $font-size;
+  font-family: Roboto Regular, sans-serif;
+  font-weight: 300;
+  line-height: 1.3em;
+  letter-spacing: 0.05em;
+  color: #1f1f1f;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+.main-loader{
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  z-index: 1200;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, .4)
+}
+
+ul {
+  list-style: none;
+}
+
+.__nuxt-error-page {
+  height: 100vh;
+}
+
+h1, h2, h3, h4, ul {
+  margin: 0;
+  padding: 0;
+}
+.forms{
+  min-width: 40%;
+}
+@media screen and (max-width:786px) {
+  .forms{
+    margin-top: 100px !important;
+    min-width: 100%;
+  }
+}
+.dropdown-item.active, .dropdown-item:active {
+  background-color: $purple;
+}
+
+.custom-control-label::before {
+  border-color: $purple;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: $purple;
+  background-color: $purple;
+}
+
+.custom-checkbox .custom-control-input:disabled:checked ~ .custom-control-label::before {
+  background-color: $purple;
+}
+
+.custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
+  background-color: white;
+}
+
+.custom-control-input[disabled] ~ .custom-control-label, .custom-control-input:disabled ~ .custom-control-label {
+  color: black;
+}
+
+p, .p {
+  margin-bottom: 1rem;
+}

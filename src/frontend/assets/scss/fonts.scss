@@ -1,0 +1,36 @@
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+
+@font-face {
+  font-family: 'Roboto Regular';
+  src: url("~assets/fonts/Roboto/Roboto-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Roboto Thin';
+  src: url("~assets/fonts/Roboto/Roboto-Thin.ttf");
+}
+
+.text-title {
+  font-style: normal;
+  font-weight: 100;
+  font-size: 2.25rem;
+  line-height: 2.625rem;
+  letter-spacing: 0.06em;
+}
+
+.text-regular {
+  font-style: normal;
+  font-weight: 100;
+  font-size: 1rem;
+  line-height: 1.1875rem;
+  letter-spacing: 0.06em;
+}
+
+.text-small {
+  font-style: normal;
+  font-weight: 100;
+  font-size: 0.8125rem;
+  line-height: 0.9375rem;
+}

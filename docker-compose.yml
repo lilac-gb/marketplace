@@ -1,0 +1,122 @@
+version: '3'
+services:
+  frontend:
+    container_name: mp_frontend
+    image: node:latest
+    command: bash -c "npm install && npm run dev"
+    volumes:
+      - ./src/frontend:/var/www/html/app
+    working_dir: /var/www/html/app
+    ports:
+      - "3000:3000"
+    environment:
+      HOST: 0.0.0.0
+    networks:
+      - mp
+
+  mysql:
+    container_name: mp_mysql
+    image: mysql:5.7
+    environment:
+      TZ: "Europe/Moscow"
+      MYSQL_DATABASE: 'mp'
+      MYSQL_ROOT_PASSWORD: 'toor'
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysql", "-uroot", "-ptoor"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - mysql_volume:/var/lib/mysql:cached
+      - ./mysql/my.custom.cnf:/etc/mysql/conf.d/my.custom.cnf:cached
+    networks:
+      - mp
+
+  redis:
+    container_name: mp_redis
+    image: bitnami/redis:6.0.5
+    networks:
+      - mp
+    environment:
+      TZ: "Europe/Moscow"
+      REDIS_PASSWORD: toor
+    expose:
+      - "6379"
+    ports:
+      - "6378:6379"
+    volumes:
+      - redis_volume:/bitnami:cached
+
+  phpmyadmin:
+    container_name: mp_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '8888:80'
+    expose:
+      - 80
+    networks:
+      - mp
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+    depends_on:
+      - mysql
+
+  nginx:
+    container_name: mp_nginx
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=true
+    volumes:
+      - ./ssl/docker:/etc/nginx/ssl
+      - ./src:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./logs:/logs:cached
+      - sock_volume:/var/run
+    links:
+      - php
+    depends_on:
+      - php
+    networks:
+      - mp
+
+  php:
+    container_name: mp_php
+    image: merorafael/php:7.1-fpm
+    environment:
+      TZ: "Europe/Moscow"
+    working_dir: /var/www/html
+    volumes:
+      - ./src:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/conf.d/php.ini:cached
+      - ./php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:cached
+      - sock_volume:/var/run
+    command: bash -c "bash init.sh --env=docker && php-fpm"
+    restart: on-failure
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - mp
+
+volumes:
+  mysql_volume: {}
+  redis_volume: {}
+  sock_volume: {}
+
+networks:
+  mp:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.0.0.1/24
