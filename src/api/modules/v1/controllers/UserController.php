@@ -353,7 +353,7 @@ class UserController extends ActiveController
         $hash = Yii::$app->request->post('hash');
 
         try {
-            $confirmationHash = base64_decode(str_replace(' ', '+', $hash));
+            $confirmationHash = base64_decode($hash);
 
             $email = Yii::$app->security->decryptByKey($confirmationHash, $user->confirmation_secret);
 
