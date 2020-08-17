@@ -23,7 +23,7 @@ class UserController extends ActiveController
      * @param array               $params
      * @throws ForbiddenHttpException
      */
-    /*public function checkAccess($action, $model = null, $params = [])
+    public function checkAccess($action, $model = null, $params = [])
     {
         parent::checkAccess($action, $model, $params);
         if ((
@@ -34,7 +34,7 @@ class UserController extends ActiveController
         {
             throw new ForbiddenHttpException();
         }
-    }*/
+    }
 
     public function actions()
     {
@@ -353,7 +353,7 @@ class UserController extends ActiveController
         $hash = Yii::$app->request->post('hash');
 
         try {
-            $confirmationHash = base64_decode($hash);
+            $confirmationHash = base64_decode(str_replace(' ', '+', $hash));
 
             $email = Yii::$app->security->decryptByKey($confirmationHash, $user->confirmation_secret);
 
