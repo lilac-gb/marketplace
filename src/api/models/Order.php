@@ -108,7 +108,8 @@ class Order extends \common\models\Order
         $exists = User::find()->where(['username' => $word])->exists();
         if ($exists) {
             $str = Yii::$app->security->generateRandomString(4);
-            $this->generateUniqueName($word . '-' . $str);
+
+            return $this->generateUniqueName($word . '-' . $str);
         }
 
         return $word;
